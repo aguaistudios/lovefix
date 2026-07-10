@@ -1054,7 +1054,6 @@ function buildFinalHTML(s, slug){
 '<title>' + esc(FIXED.brand) + ' — ' + esc(s.songTitle) + '</title>\n' +
 '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">\n' +
-'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><' + '/script>\n' +
 '<style>\n' +
 '  :root{\n' +
 '    --black:#000000;\n' +
@@ -1110,16 +1109,6 @@ function buildFinalHTML(s, slug){
 '    color:var(--red);\n' +
 '  }\n' +
 '  .page-label{font-size:18.5px; font-weight:700; color:var(--text);}\n' +
-'  .actions{display:flex; align-items:center; gap:10px;}\n' +
-'  .share-pill{\n' +
-'    display:flex; align-items:center; gap:5px;\n' +
-'    background:#2a2a2a; border:none; border-radius:999px;\n' +
-'    color:var(--text); font-size:11px; font-weight:700;\n' +
-'    padding:7px 12px; cursor:pointer; white-space:nowrap;\n' +
-'  }\n' +
-'  .share-pill svg{width:13px; height:13px; flex-shrink:0;}\n' +
-'  .share-pill:active{opacity:0.7;}\n' +
-'  .share-pill:disabled{opacity:0.5; cursor:default;}\n' +
 '  .icon-btn{\n' +
 '    position:relative;\n' +
 '    background:none;\n' +
@@ -1535,16 +1524,6 @@ function buildFinalHTML(s, slug){
 '      <span class="logo-word">' + esc(FIXED.brand) + '</span>\n' +
 '      <span class="page-label">' + esc(FIXED.categoryLabel) + '</span>\n' +
 '    </div>\n' +
-'    <div class="actions">\n' +
-'      <button class="share-pill" onclick="shareMemory()" aria-label="分享這個頁面">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
-'        <span>分享這個頁面</span>\n' +
-'      </button>\n' +
-'      <button class="share-pill" id="saveImageBtn" onclick="saveAsImage()" aria-label="儲存圖片">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>\n' +
-'        <span>儲存圖片</span>\n' +
-'      </button>\n' +
-'    </div>\n' +
 '  </div>\n' +
 '\n' +
 '  <div class="pill-row">\n' +
@@ -1703,10 +1682,6 @@ lyricsHTML + '\n' +
 '      </a>\n' +
 '    </div>\n' +
 '    <div class="share-btn-row">\n' +
-'      <button class="share-btn" onclick="shareMemory()">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
-'        分享這個頁面\n' +
-'      </button>\n' +
 '      <button class="share-btn" onclick="copyPageLink()">\n' +
 '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>\n' +
 '        複製分享連結\n' +
@@ -1813,29 +1788,6 @@ lyricsHTML + '\n' +
 '    }\n' +
 '  }\n' +
 '\n' +
-'  async function shareMemory(){\n' +
-'    const shareData = {\n' +
-'      title: \'' + escJs(FIXED.brand) + '｜' + escJs(s.songTitle) + '\',\n' +
-'      text: \'謝謝你出現在我的世界裡 ♡ 這是我們的故事，從那天開始...\',\n' +
-'      url: window.location.href\n' +
-'    };\n' +
-'    if(navigator.share){\n' +
-'      try{\n' +
-'        await navigator.share(shareData);\n' +
-'      }catch(err){\n' +
-'      }\n' +
-'    } else if(navigator.clipboard){\n' +
-'      try{\n' +
-'        await navigator.clipboard.writeText(shareData.url);\n' +
-'        showToast(\'已複製連結，貼給他分享吧！\');\n' +
-'      }catch(err){\n' +
-'        showToast(\'請手動複製網址分享給他\');\n' +
-'      }\n' +
-'    } else {\n' +
-'      showToast(\'請手動複製網址分享給他\');\n' +
-'    }\n' +
-'  }\n' +
-'\n' +
 '  function restartShow(){\n' +
 '    window.scrollTo({top:0, behavior:\'smooth\'});\n' +
 '  }\n' +
@@ -1859,37 +1811,6 @@ lyricsHTML + '\n' +
 '    }catch(err){\n' +
 '      showToast(\'複製失敗，請手動選取網址複製\');\n' +
 '    }\n' +
-'  }\n' +
-'\n' +
-'  async function saveAsImage(){\n' +
-'    const btn = document.getElementById(\'saveImageBtn\');\n' +
-'    const target = document.querySelector(\'.page\');\n' +
-'    if(typeof html2canvas === \'undefined\'){\n' +
-'      showToast(\'圖片工具載入失敗，請確認網路連線後再試\');\n' +
-'      return;\n' +
-'    }\n' +
-'    if(btn) btn.disabled = true;\n' +
-'    showToast(\'圖片產生中，請稍候...（頁面較長可能需要幾秒）\');\n' +
-'    try{\n' +
-'      const canvas = await html2canvas(target, {backgroundColor: \'#141414\', useCORS: true, scale: 1.5});\n' +
-'      await new Promise(function(resolve){\n' +
-'        canvas.toBlob(function(blob){\n' +
-'          const url = URL.createObjectURL(blob);\n' +
-'          const a = document.createElement(\'a\');\n' +
-'          a.href = url;\n' +
-'          a.download = \'LOVEFIX-\' + Date.now() + \'.png\';\n' +
-'          document.body.appendChild(a);\n' +
-'          a.click();\n' +
-'          a.remove();\n' +
-'          setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);\n' +
-'          resolve();\n' +
-'        }, \'image/png\');\n' +
-'      });\n' +
-'      showToast(\'📸 圖片已儲存！\');\n' +
-'    }catch(e){\n' +
-'      showToast(\'圖片產生失敗，請稍後再試\');\n' +
-'    }\n' +
-'    if(btn) btn.disabled = false;\n' +
 '  }\n' +
 '\n' +
 '  function openLightbox(cardEl){\n' +
