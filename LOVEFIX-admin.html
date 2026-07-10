@@ -460,9 +460,9 @@ const FIXED = {
   credit1: '見怪不怪 x 客製化歌曲 原創呈現',
   credit2: 'AguaiStudios · 2026',
   website: 'http://aguaistudios.com',
-  websiteLabel: '官網：aguaistudios.com',
+  websiteLabel: '官網',
   instagram: 'http://instagram.com/mysong.tw',
-  instagramLabel: 'IG：@mysong.tw'
+  instagramLabel: 'Instagram'
 };
 
 const defaultState = {
@@ -1109,7 +1109,15 @@ function buildFinalHTML(s, slug){
 '    color:var(--red);\n' +
 '  }\n' +
 '  .page-label{font-size:18.5px; font-weight:700; color:var(--text);}\n' +
-'  .actions{display:flex; align-items:center; gap:16px;}\n' +
+'  .actions{display:flex; align-items:center; gap:10px;}\n' +
+'  .share-pill{\n' +
+'    display:flex; align-items:center; gap:5px;\n' +
+'    background:#2a2a2a; border:none; border-radius:999px;\n' +
+'    color:var(--text); font-size:11px; font-weight:700;\n' +
+'    padding:7px 12px; cursor:pointer; white-space:nowrap;\n' +
+'  }\n' +
+'  .share-pill svg{width:13px; height:13px; flex-shrink:0;}\n' +
+'  .share-pill:active{opacity:0.7;}\n' +
 '  .icon-btn{\n' +
 '    position:relative;\n' +
 '    background:none;\n' +
@@ -1242,6 +1250,23 @@ function buildFinalHTML(s, slug){
 '    padding:5px 9px; cursor:pointer; white-space:nowrap;\n' +
 '  }\n' +
 '  .section-sub{font-size:14px; color:var(--text-mute); margin-bottom:18px;}\n' +
+'  .season-cover{\n' +
+'    position:relative; width:100%; aspect-ratio:16/8; border-radius:12px;\n' +
+'    overflow:hidden; margin-bottom:22px; cursor:pointer;\n' +
+'    box-shadow:0 10px 26px rgba(0,0,0,0.5);\n' +
+'  }\n' +
+'  .season-cover img{width:100%; height:100%; object-fit:cover; display:block;}\n' +
+'  .season-cover::after{\n' +
+'    content:""; position:absolute; inset:0;\n' +
+'    background:linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.92) 100%);\n' +
+'  }\n' +
+'  .season-cover-overlay{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; z-index:2;}\n' +
+'  .season-cover-badge{\n' +
+'    display:inline-block; background:var(--red); color:#fff;\n' +
+'    font-size:10.5px; font-weight:800; letter-spacing:1px;\n' +
+'    padding:3px 8px; border-radius:3px; margin-bottom:7px;\n' +
+'  }\n' +
+'  .season-cover-title{color:#fff; font-size:17.5px; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,0.5);}\n' +
 '  .top5-outer{position:relative;}\n' +
 '  .top5-track{\n' +
 '    display:flex; align-items:flex-end;\n' +
@@ -1258,14 +1283,15 @@ function buildFinalHTML(s, slug){
 '  .rank-number{\n' +
 '    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
 '    font-weight:900; font-size:142.5px; line-height:0.68;\n' +
-'    color:#2c2c2c;\n' +
-'    text-shadow:-1px -1px 0 rgba(255,255,255,0.12), 3px 4px 10px rgba(0,0,0,0.8);\n' +
+'    color:transparent;\n' +
+'    -webkit-text-stroke:2.5px #fff;\n' +
+'    text-shadow:3px 4px 10px rgba(0,0,0,0.8);\n' +
 '    margin-right:-26px; position:relative; z-index:1;\n' +
 '    user-select:none;\n' +
 '  }\n' +
 '  .top5-item.rank1 .rank-number{\n' +
-'    color:var(--gold);\n' +
-'    text-shadow:-1px -1px 0 rgba(255,255,255,0.25), 3px 4px 14px rgba(230,182,79,0.45);\n' +
+'    -webkit-text-stroke:3px var(--gold);\n' +
+'    text-shadow:3px 4px 14px rgba(230,182,79,0.45);\n' +
 '  }\n' +
 '  .top5-card{\n' +
 '    position:relative; z-index:2; width:130px; flex-shrink:0;\n' +
@@ -1440,10 +1466,15 @@ function buildFinalHTML(s, slug){
 '  .end-btn svg{width:15px; height:15px;}\n' +
 '  .end-btn:active{opacity:0.8;}\n' +
 '  .end-meta{font-size:12.5px; color:var(--text-mute); letter-spacing:0.5px;}\n' +
-'  .end-links{margin-top:14px; font-size:12.5px;}\n' +
-'  .end-links a{color:var(--gold); text-decoration:none; font-weight:700;}\n' +
-'  .end-links a:active{opacity:0.7;}\n' +
-'  .end-links-sep{color:var(--text-mute); margin:0 8px;}\n' +
+'  .end-links{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px;}\n' +
+'  .end-link-btn{\n' +
+'    display:inline-flex; align-items:center; gap:6px;\n' +
+'    background:rgba(255,255,255,0.06); border:1px solid #444; border-radius:999px;\n' +
+'    padding:8px 16px; font-size:12px; font-weight:700; color:var(--text);\n' +
+'    text-decoration:none;\n' +
+'  }\n' +
+'  .end-link-btn svg{width:14px; height:14px; flex-shrink:0;}\n' +
+'  .end-link-btn:active{opacity:0.7; background:rgba(255,255,255,0.12);}\n' +
 '  .share-btn-row{\n' +
 '    display:flex; flex-wrap:wrap; align-items:center; justify-content:center;\n' +
 '    gap:10px; margin-top:26px;\n' +
@@ -1506,10 +1537,11 @@ function buildFinalHTML(s, slug){
 '      <button class="icon-btn" onclick="showToast(\'已切換為僅限你本人瀏覽\')" aria-label="隱私模式">\n' +
 '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>\n' +
 '      </button>\n' +
-'      <button class="icon-btn" onclick="shareMemory()" aria-label="分享">\n' +
+'      <button class="share-pill" onclick="shareMemory()" aria-label="分享這個頁面">\n' +
 '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
+'        <span>分享這個頁面</span>\n' +
 '      </button>\n' +
-'      <button class="icon-btn bell" onclick="showToast(\'有 2 則甜蜜回憶提醒\')" aria-label="提醒">\n' +
+'      <button class="icon-btn bell" onclick="showToast(\'你親愛的對方，還在等待你收到的反應。\')" aria-label="提醒">\n' +
 '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>\n' +
 '        <span class="badge">2</span>\n' +
 '      </button>\n' +
@@ -1540,12 +1572,6 @@ function buildFinalHTML(s, slug){
 '        <span>' + esc(FIXED.metaStatus) + '</span>\n' +
 '      </div>\n' +
 '      <div class="hero-text">' + esc(s.heroText) + '</div>\n' +
-'      <div class="hero-actions">\n' +
-'        <button class="btn-play" onclick="togglePlay()">\n' +
-'          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>\n' +
-'          播放我們的歌\n' +
-'        </button>\n' +
-'      </div>\n' +
 '    </div>\n' +
 '  </div>\n' +
 '\n' +
@@ -1574,6 +1600,14 @@ top5HTML + '\n' +
 '      <div class="season-pill" onclick="showToast(\'目前僅有第一季，敬請期待未來的每一季 ♡\')">' + esc(FIXED.seasonLabel) + ' ▾</div>\n' +
 '    </div>\n' +
 '    <div class="section-sub">' + esc(FIXED.episodesSub) + '</div>\n' +
+'\n' +
+'    <div class="season-cover" onclick="scrollToSection(\'song-section\', event)">\n' +
+'      <img src="' + heroImg + '" alt="' + esc(FIXED.journeyTitle) + ' 封面">\n' +
+'      <div class="season-cover-overlay">\n' +
+'        <div class="season-cover-badge">' + esc(FIXED.seasonLabel).toUpperCase() + '</div>\n' +
+'        <div class="season-cover-title">' + esc(FIXED.journeyTitle) + '</div>\n' +
+'      </div>\n' +
+'    </div>\n' +
 '\n' +
 episodesHTML + '\n' +
 '  </div>\n' +
@@ -1635,7 +1669,6 @@ lyricsHTML + '\n' +
 '    <div class="msg-card">\n' +
 '      <div class="msg-heading">我想對你說的話 ♡</div>\n' +
 '      <p>' + nl2br(s.msgP1) + '</p>\n' +
-'      <div class="msg-sign">' + esc(FIXED.msgSign) + '</div>\n' +
 '\n' +
 '      <svg class="flower" viewBox="0 0 100 140" fill="none" stroke="#e50914" stroke-width="1.4">\n' +
 '        <path d="M50 130 C 48 90, 55 70, 50 40"/>\n' +
@@ -1661,9 +1694,14 @@ lyricsHTML + '\n' +
 '    <div class="end-meta">' + esc(FIXED.credit1) + '</div>\n' +
 '    <div class="end-meta" style="margin-top:4px;">' + esc(FIXED.credit2) + '</div>\n' +
 '    <div class="end-links">\n' +
-'      <a href="' + esc(FIXED.website) + '" target="_blank" rel="noopener">' + esc(FIXED.websiteLabel) + '</a>\n' +
-'      <span class="end-links-sep">·</span>\n' +
-'      <a href="' + esc(FIXED.instagram) + '" target="_blank" rel="noopener">' + esc(FIXED.instagramLabel) + '</a>\n' +
+'      <a class="end-link-btn" href="' + esc(FIXED.website) + '" target="_blank" rel="noopener">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>\n' +
+'        <span>' + esc(FIXED.websiteLabel) + '</span>\n' +
+'      </a>\n' +
+'      <a class="end-link-btn" href="' + esc(FIXED.instagram) + '" target="_blank" rel="noopener">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>\n' +
+'        <span>' + esc(FIXED.instagramLabel) + '</span>\n' +
+'      </a>\n' +
 '    </div>\n' +
 '    <div class="share-btn-row">\n' +
 '      <button class="share-btn" onclick="shareMemory()">\n' +
