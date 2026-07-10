@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOVEFIX 後台</title>
+<style>
+  :root{
+    --black:#000; --bg:#0d0d0d; --panel:#161616; --panel2:#1e1e1e;
+    --red:#e50914; --gold:#e6b64f; --green:#2ecc71;
+    --text:#f2f2f2; --text-soft:#b8b8b8; --text-mute:#7a7a7a;
+    --border:#2c2c2c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  }
+  a{color:var(--gold);}
+  .app-header{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+    background:var(--black); border-bottom:1px solid var(--border);
+    padding:14px 20px;
+  }
+  .app-title{font-weight:900; font-size:17px; letter-spacing:0.5px; display:flex; align-items:center; gap:10px;}
+  .app-title span{color:var(--red);}
+  .app-title .id-chip{
+    font-size:11.5px; font-weight:700; color:var(--gold);
+    background:#241a05; border:1px solid #4a3a12; border-radius:6px; padding:3px 9px;
+  }
+  .app-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .app-actions button{
+    background:#2a2a2a; color:#fff; border:1px solid #3a3a3a;
+    border-radius:6px; padding:9px 14px; font-size:12.5px; font-weight:700;
+    cursor:pointer;
+  }
+  .app-actions button:hover{background:#333;}
+  .app-actions button.primary{background:var(--red); border-color:var(--red);}
+  .app-actions button.primary:hover{background:#ff1622;}
+  .app-actions button.ghost{background:transparent;}
+  .app-actions button:disabled{opacity:0.5; cursor:not-allowed;}
+
+  .app-body{
+    max-width:1400px; margin:0 auto; padding:20px;
+  }
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---- Connect view ---- */
+  .connect-wrap{max-width:640px; margin:20px auto;}
+  .connect-wrap h2{font-size:20px; margin:0 0 6px;}
+  .connect-wrap h3{font-size:14px; color:var(--gold); margin:26px 0 10px;}
+
+  /* ---- Dashboard view ---- */
+  .dash-toolbar{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+  .dash-toolbar input[type=text]{
+    flex:1; min-width:220px; background:#0c0c0c; border:1px solid #333; color:var(--text);
+    border-radius:7px; padding:10px 14px; font-size:13px;
+  }
+  .dash-toolbar button{
+    background:#2a2a2a; color:#fff; border:1px solid #3a3a3a;
+    border-radius:7px; padding:10px 16px; font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .dash-toolbar button.primary{background:var(--red); border-color:var(--red);}
+  .dash-toolbar button.ghost{background:transparent;}
+  .customer-row{
+    display:flex; align-items:center; gap:14px;
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; margin-bottom:10px;
+  }
+  .customer-id{
+    font-weight:900; font-size:14px; color:var(--gold);
+    background:#241a05; border-radius:6px; padding:6px 10px; flex-shrink:0;
+  }
+  .customer-name{flex:1; font-size:14px; font-weight:700;}
+  .customer-actions{display:flex; gap:8px;}
+  .customer-actions a, .customer-actions button{
+    font-size:12px; font-weight:700; border-radius:6px; padding:8px 12px;
+    text-decoration:none; cursor:pointer; border:1px solid #3a3a3a;
+  }
+  .customer-actions a{background:transparent; color:var(--text-soft);}
+  .customer-actions button{background:var(--red); border-color:var(--red); color:#fff;}
+  .empty-hint{color:var(--text-mute); font-size:13px; text-align:center; padding:40px 0;}
+
+  /* ---- Editor view ---- */
+  .editor-topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin-bottom:18px; flex-wrap:wrap;
+  }
+  .editor-topbar .left{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .editor-topbar button.back{
+    background:#2a2a2a; color:#fff; border:1px solid #3a3a3a; border-radius:6px;
+    padding:9px 14px; font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .id-name-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .id-name-row input{
+    background:#0c0c0c; border:1px solid #333; color:var(--text);
+    border-radius:7px; padding:8px 12px; font-size:13px;
+  }
+  .id-name-row input#inCustomerId{width:80px;}
+  .id-name-row input#inCustomerName{width:160px;}
+  .save-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .save-actions button{
+    border-radius:6px; padding:10px 16px; font-size:12.5px; font-weight:700; cursor:pointer; border:1px solid #3a3a3a;
+  }
+  .save-actions button.primary{background:var(--red); border-color:var(--red); color:#fff;}
+  .save-actions button.secondary{background:#2a2a2a; color:#fff;}
+
+  .app-body-editor{display:flex; gap:20px; align-items:flex-start;}
+  .form-panel{flex:1; min-width:0;}
+  .preview-panel{
+    position:sticky; top:80px;
+    width:400px; flex-shrink:0;
+    display:flex; flex-direction:column; align-items:center;
+    gap:10px;
+  }
+  .phone-frame{
+    width:380px; height:780px;
+    background:#000; border-radius:34px;
+    border:6px solid #2a2a2a; box-shadow:0 20px 50px rgba(0,0,0,0.6);
+    overflow:hidden; padding:8px;
+  }
+  .phone-frame iframe{
+    width:100%; height:100%; border:none; border-radius:26px; background:#000;
+  }
+  .preview-hint{font-size:11.5px; color:var(--text-mute); text-align:center;}
+  .live-url-box{
+    margin-top:8px; background:var(--panel); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; font-size:12px; color:var(--text-soft); width:100%; word-break:break-all;
+  }
+  .live-url-box a{color:var(--gold); font-weight:700;}
+
+  details{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; margin-bottom:14px; overflow:hidden;
+  }
+  summary{
+    cursor:pointer; padding:16px 18px; font-weight:900; font-size:14.5px;
+    list-style:none; display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel2);
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"▾"; color:var(--text-mute); font-size:12px;}
+  details[open] summary::after{content:"▴";}
+  .details-body{padding:18px;}
+
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:block; font-size:12px; font-weight:700; color:var(--text-soft);
+    margin-bottom:6px;
+  }
+  .field .hint{font-size:11px; color:var(--text-mute); margin-top:4px; line-height:1.6;}
+  .field input[type=text], .field textarea{
+    width:100%; background:#0c0c0c; border:1px solid #333; color:var(--text);
+    border-radius:7px; padding:10px 12px; font-size:13px; font-family:inherit;
+    resize:vertical;
+  }
+  .field input[type=text]:focus, .field textarea:focus{outline:1px solid var(--red);}
+
+  .file-drop{
+    display:flex; align-items:center; gap:12px;
+    background:#0c0c0c; border:1px dashed #3a3a3a; border-radius:8px;
+    padding:10px 12px;
+  }
+  .file-drop input[type=file]{color:var(--text-soft); font-size:12px; flex:1;}
+  .file-preview{
+    width:52px; height:52px; border-radius:6px; overflow:hidden;
+    background:#1a1a1a; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  }
+  .file-preview img{width:100%; height:100%; object-fit:cover;}
+  .file-preview.audio-preview{width:auto; height:auto; background:none;}
+  .file-preview.audio-preview audio{width:220px; height:32px;}
+
+  .item-card{
+    background:#141414; border:1px solid var(--border); border-radius:10px;
+    padding:14px; margin-bottom:12px;
+  }
+  .item-card .item-title{
+    font-size:12.5px; font-weight:900; color:var(--gold); margin-bottom:10px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .qa-sub-card{
+    border-left:2px dashed #333; margin-left:6px; padding-left:14px; margin-top:10px;
+  }
+  .qa-question-label{
+    font-size:13px; font-weight:700; color:var(--text-soft); margin-bottom:6px;
+  }
+
+  .section-note{
+    font-size:12px; color:var(--text-mute); margin-bottom:14px; line-height:1.7;
+    background:#141414; border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+  }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translate(-50%,20px);
+    background:rgba(20,20,20,0.97); border:1px solid var(--red); color:#fff;
+    font-size:12.5px; padding:10px 18px; border-radius:999px;
+    opacity:0; pointer-events:none; transition:all .25s ease; z-index:200; white-space:nowrap;
+    max-width:80vw; overflow:hidden; text-overflow:ellipsis;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0);}
+
+  .busy-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.75);
+    display:none; align-items:center; justify-content:center; z-index:300;
+  }
+  .busy-overlay.show{display:flex;}
+  .busy-box{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    padding:28px 36px; text-align:center;
+  }
+  .spinner{
+    width:34px; height:34px; border-radius:50%;
+    border:3px solid #333; border-top-color:var(--red);
+    animation:spin 0.8s linear infinite; margin:0 auto 14px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  #busyMsg{font-size:13px; color:var(--text-soft);}
+
+  @media (max-width: 980px){
+    .app-body-editor{flex-direction:column;}
+    .preview-panel{position:static; width:100%;}
+    .phone-frame{width:100%; max-width:380px; margin:0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-title"><span>LOVEFIX</span> 後台 <span class="id-chip" id="repoChip" style="display:none;"></span></div>
+  <div class="app-actions" id="headerActions"></div>
+</div>
+
+<div class="app-body">
+
+  <!-- ============ CONNECT VIEW ============ -->
+  <div id="view-connect" class="view">
+    <div class="connect-wrap">
+      <h2>連接你的 GitHub 倉庫</h2>
+      <div class="section-note">
+        這個後台會把每一位客戶的資料與成品網頁，直接存進你自己的 GitHub 帳號，並用 GitHub Pages 把成品網頁上線。<br><br>
+        <b>請注意：</b>免費方案下 GitHub Pages 必須使用「公開（public）」倉庫，代表每位客戶的照片、情書文字、音樂檔案，理論上任何人只要拿到確切的網址或倉庫連結都能看到（不會被主動列在搜尋結果或首頁，但並非真正加密私密）。若客戶內容較敏感，建議提醒客戶妥善保管專屬連結，不要公開分享。
+      </div>
+
+      <div class="section-note" id="storageWarning" style="display:none; border-color:#e50914; color:#ffb3b3;"></div>
+
+      <div class="section-note" id="fileProtocolWarning" style="border-color:#e6b64f; color:#f3d9a4;">
+        ⚠️ <b>如果你是直接雙擊打開這個檔案</b>（網址列開頭是 <code>file://</code>），下面的「連接並初始化」會失敗，出現「Failed to fetch」——這不是壞掉，是瀏覽器本身不允許本機檔案直接連上外部網站，任何工具都無法繞過。請改用以下手動方式做「僅限第一次」的設定：
+        <ol style="margin:10px 0 0; padding-left:20px; line-height:2;">
+          <li>到 <a href="https://github.com/new" target="_blank">github.com/new</a> 建立一個新倉庫（Public，勾選 Add a README file）</li>
+          <li>進倉庫 Settings → Pages → Source 選 Deploy from a branch → Branch 選 main、資料夾選 <code>/ (root)</code> → Save</li>
+          <li>回到倉庫首頁 → Add file → Upload files → 把這個 LOVEFIX-admin.html 拖進去 → Commit changes</li>
+          <li>等 30～60 秒，改用網址打開：<code>https://你的帳號.github.io/倉庫名稱/LOVEFIX-admin.html</code></li>
+        </ol>
+        用網址（https://）打開後，下面照樣填帳號／倉庫／權杖，「連接並初始化」就會正常運作（此時只是驗證，不用再重新建立）。
+      </div>
+
+      <h3>① GitHub 帳號名稱</h3>
+      <div class="field">
+        <input type="text" id="inOwner" placeholder="例如 aguaistudio（就是 github.com/後面的那個 ID，不是信箱）">
+      </div>
+
+      <h3>② 倉庫（Repository）名稱</h3>
+      <div class="field">
+        <input type="text" id="inRepo" placeholder="例如 lovefix-pages（沒有的話會自動幫你建立）">
+      </div>
+
+      <h3>③ Personal Access Token</h3>
+      <div class="field">
+        <input type="text" id="inToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <div class="hint">
+          到 github.com → 右上角頭像 → Settings → 左側最下方 Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。<br>
+          Repository access 選「Only select repositories」（如果倉庫還沒建立，先選「All repositories」，之後在倉庫設定裡再收緊也可以）。<br>
+          Permissions 底下找到 <b>Contents</b> 設為 <b>Read and write</b>，<b>Administration</b> 設為 <b>Read and write</b>（用來自動建立倉庫、開啟 Pages）。<br>
+          按 Generate token，複製產生的字串貼在上面。<b>這組權杖只會儲存在你目前這台電腦的瀏覽器本機，不會傳給任何第三方，請勿分享給別人。</b>
+        </div>
+      </div>
+
+      <button class="primary" id="btnInit" style="width:100%; padding:14px; font-size:14px; border:none; border-radius:8px; background:#e50914; color:#fff; margin-top:8px; cursor:pointer;">連接並初始化</button>
+
+      <h3>接下來還需要做一次（僅限第一次）</h3>
+      <div class="section-note" id="postInitHint">
+        如果上面的「連接並初始化」成功了（代表你現在已經是用 https:// 網址打開這個後台），系統會在這裡顯示接下來要把 LOVEFIX-admin.html 上傳到哪裡；如果你目前是用 file:// 直接打開檔案，請先照上方黃色說明手動設定一次。
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD VIEW ============ -->
+  <div id="view-dashboard" class="view">
+    <div class="dash-toolbar">
+      <input type="text" id="searchBox" placeholder="輸入客戶編號或名稱查詢...">
+      <button class="primary" id="btnNewCustomer">+ 新增客戶</button>
+      <button class="ghost" id="btnRefreshList">重新整理</button>
+      <button class="ghost" id="btnReconnect">設定</button>
+    </div>
+    <div id="customerListWrap"></div>
+  </div>
+
+  <!-- ============ EDITOR VIEW ============ -->
+  <div id="view-editor" class="view">
+    <div class="editor-topbar">
+      <div class="left">
+        <button class="back" id="btnBackToDash">← 返回列表</button>
+        <div class="id-name-row">
+          <input type="text" id="inCustomerId" placeholder="編號">
+          <input type="text" id="inCustomerName" placeholder="客戶名稱">
+        </div>
+      </div>
+      <div class="save-actions">
+        <button class="secondary" id="btnExport">下載成品網頁</button>
+        <button class="secondary" id="btnSaveJson">下載資料備份</button>
+        <button class="primary" id="btnSyncSave">儲存並同步上線</button>
+      </div>
+    </div>
+
+    <div class="app-body-editor">
+      <div class="form-panel" id="formPanel">
+
+        <div class="section-note">
+          這裡只需要填寫「資料」——照片、音樂、問題的回答、歌詞內容。版面上的標題、標籤、分類等文字都已經設計好，不會出現在下面的表單裡。
+        </div>
+
+        <!-- Hero photo -->
+        <details open>
+          <summary>① 封面照片</summary>
+          <div class="details-body">
+            <div class="field">
+              <label>封面照片</label>
+              <div class="file-drop">
+                <div class="file-preview" data-preview="heroImage"></div>
+                <input type="file" accept="image/*" data-path="heroImage">
+              </div>
+              <div class="hint">留空則使用示範照片</div>
+            </div>
+            <div class="field">
+              <label>歌名</label>
+              <input type="text" data-path="songTitle">
+            </div>
+            <div class="field">
+              <label>敘述</label>
+              <textarea rows="3" data-path="heroText"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <!-- Top5 -->
+        <details>
+          <summary>② 我們愛情故事 TOP 5</summary>
+          <div class="details-body">
+            <div class="section-note">TOP 1 會顯示在最左邊，依序排到 TOP 5。每一張填一張照片＋一句情境敘述。</div>
+            <div id="top5Container"></div>
+          </div>
+        </details>
+
+        <!-- Episodes -->
+        <details>
+          <summary>③ 我們的故事（問卷回答）</summary>
+          <div class="details-body">
+            <div id="episodesContainer"></div>
+          </div>
+        </details>
+
+        <!-- Special / message -->
+        <details>
+          <summary>④ 我想對你說的話</summary>
+          <div class="details-body">
+            <div class="field">
+              <label>文字內容</label>
+              <textarea rows="5" data-path="msgP1"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <!-- Song -->
+        <details>
+          <summary>⑤ 我們的歌</summary>
+          <div class="details-body">
+            <div class="field">
+              <label>副標</label>
+              <input type="text" data-path="songSubtitle">
+            </div>
+            <div class="field">
+              <label>專輯封面（留空則使用封面照片）</label>
+              <div class="file-drop">
+                <div class="file-preview" data-preview="albumCover"></div>
+                <input type="file" accept="image/*" data-path="albumCover">
+              </div>
+            </div>
+            <div class="field">
+              <label>音樂檔案（mp3 / m4a 等）</label>
+              <div class="file-drop">
+                <div class="file-preview audio-preview" data-preview="songFile"></div>
+                <input type="file" accept="audio/*" data-path="songFile">
+              </div>
+              <div class="hint">留空則先用示範音樂展示效果。檔案越大，儲存並同步上線的時間會越久，建議壓縮到 8MB 以內。</div>
+            </div>
+            <div class="field">
+              <label>選曲故事</label>
+              <textarea rows="3" data-path="reasonText"></textarea>
+            </div>
+            <div class="field">
+              <label>歌詞（一行一句）</label>
+              <textarea rows="10" data-path="lyricsText"></textarea>
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <div class="preview-panel">
+        <div class="phone-frame"><iframe id="previewFrame"></iframe></div>
+        <div class="preview-hint">即時預覽（手機版面）</div>
+        <div class="live-url-box" id="liveUrlBox" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="busy-overlay" id="busyOverlay">
+  <div class="busy-box">
+    <div class="spinner"></div>
+    <div id="busyMsg">處理中...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="jsonFileInput" accept="application/json,.json" style="display:none">
+
+<script>
+/* ============ Fixed, pre-designed copy (not user-editable) ============ */
+const FIXED = {
+  brand: 'LOVEFIX',
+  categoryLabel: '回憶',
+  ratingBadge: '🔥 閃光注意',
+  metaYear: '2026',
+  metaGenre1: '愛情',
+  metaGenre2: '劇情',
+  metaStatus: '現正熱映中',
+  journeyTitle: '第一季：我們的開始',
+  seasonLabel: '第 1 季',
+  episodesSub: '4 集 · 愛情劇 · 現正熱映中',
+  episodeMeta: [
+    {title:'EP1 · 相遇', sub:'故事的開始', desc:'兩個陌生人，在同一個時空交會，誰也沒想到這只是個開始。',
+      qaTags:['🌱 我們是怎麼認識的','👀 第一眼對你的感覺']},
+    {title:'EP2 · 相處', sub:'慢慢靠近', desc:'兩顆心開始有了默契，平凡的日常也變得閃閃發光。',
+      qaTags:['💬 開始心動的瞬間','🎈 我們最愛一起做的事','💭 最印象深刻的一件事']},
+    {title:'EP3 · 磨合', sub:'最難熬的一集', desc:'每部好劇都有低潮，這一集，我們差點以為要提前完結。',
+      qaTags:['🌧️ 我們吵過最大的一次架','😤 最討厭你做的事']},
+    {title:'EP4 · 現在', sub:'因為有你', desc:'走過起承轉合，故事還沒完結——這一季的結局，是我們的新起點。',
+      qaTags:['🏡 現在的你對我來說是','💍 想對未來的我們說']}
+  ],
+  msgSign: '我愛你，永遠永遠 ♥',
+  endTitle: '我們的劇，正在繼續...',
+  endSub: '感謝你，成為這部影集最重要的主角。\n而我們的故事，其實才正要開始。',
+  credit1: '見怪不怪 x 客製化歌曲 原創呈現',
+  credit2: 'AguaiStudios · 2026'
+};
+
+const defaultState = {
+  heroImage: '',
+  heroText: '從陌生到熟悉，從路人到唯一。這是我們的故事，也是我最想和你一起看到最後的一部影集——而你，是唯一的主角。',
+  top5: [
+    {image:'', caption:'我們的第一次告白，海邊的夕陽下，你點頭的那一刻，是我人生最重要的瞬間。'},
+    {image:'', caption:'你生日那年，我偷偷準備的驚喜派對，看到你感動的表情我也紅了眼眶。'},
+    {image:'', caption:'我們一起搬進新家的那一天，雖然累到癱在地上，但很踏實很幸福。'},
+    {image:'', caption:'第一次見到你的家人，緊張到說話都結巴，還好最後大家都很喜歡我。'},
+    {image:'', caption:'我們第一次一起出遠門旅行，緊張又期待的心情到現在都還記得。'}
+  ],
+  episodes: [
+    {qa:['在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。','笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。']},
+    {qa:['有次深夜聊天聊到捨不得掛電話，那時候我才確定，我好像喜歡上你了。','窩在沙發上看電影配鹹酥雞，什麼都不用做也覺得很幸福。','那次我們在墾丁被雨淋成落湯雞，你卻笑到肚子痛，我才發現狼狽的樣子也可以這麼可愛。']},
+    {qa:['因為一次誤會冷戰了三天，最後是你先傳訊息說想我，我才知道兩個人願意先低頭有多重要。','明明快遲到了還在那邊挑衣服，不過看你認真的樣子，還是覺得很可愛啦。']},
+    {qa:['是回家的方向，不管外面多累，只要想到你，就覺得一切都值得。','謝謝過去的每一步都有你，接下來的路，換我牽著你走下去。']}
+  ],
+  msgP1: '還記得我們第一次見面的那天嗎？\n那時候的你，笑起來眼睛彎彎的，就像天上最亮的星星。\n從那天起，我的世界因為你變得不一樣了。\n謝謝你陪我度過每一個開心的日子，也陪我一起面對所有的挑戰。\n謝謝你的包容、你的體貼、你的愛，讓我成為更好的人。\n未來的日子，換我來好好照顧你，牽著你的手，一起創造更多美好的回憶。',
+  songTitle: '因為有你',
+  songSubtitle: '獻給最愛的你',
+  albumCover: '',
+  songFile: '',
+  reasonText: '這是我們第一次約會時，計程車廣播裡剛好放的歌。後來每次聽到前奏，都會想起那天你笑著說「這首歌好好聽」的樣子。希望這首歌能一直陪著我們，就像我想一直陪著你一樣。',
+  lyricsText: '因為有你 我的世界變得不一樣\n每一天 都有了新的光芒\n因為有你 生命有了新的意義\n未來的每一刻 都想和你一起\n你的笑容 是我最大的力量\n你的溫柔 讓我不再迷惘\n謝謝你一直在我身旁\n讓我學會愛 學會成長\n牽著你的手 走向幸福的方向\n不管未來有多少風浪\n我都會在你身邊\n永遠不放開你的手'
+};
+
+let state = JSON.parse(JSON.stringify(defaultState));
+let currentSlug = null; // slug of the customer currently being edited, or null for "new"
+
+const FALLBACK_HERO = 'https://picsum.photos/seed/loveheroA/800/1000';
+const FALLBACK_COVER = 'https://picsum.photos/seed/loveheroA/200/200';
+const FALLBACK_TOP5 = [
+  'https://picsum.photos/seed/lovepic1/320/380',
+  'https://picsum.photos/seed/lovepic2/320/380',
+  'https://picsum.photos/seed/lovepic3/320/380',
+  'https://picsum.photos/seed/lovepic4/320/380',
+  'https://picsum.photos/seed/lovepic5/320/380'
+];
+const FALLBACK_AUDIO = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+
+/* ============================================================
+   GitHub API layer
+   ============================================================ */
+const GH_API = 'https://api.github.com';
+
+/* Some browsers (notably when a file is opened directly via file://, or in
+   strict private-browsing modes) throw a SecurityError on any localStorage
+   access. These wrappers make sure that never crashes the app — it just
+   falls back to in-memory storage for the current session instead. */
+const memoryStore = {};
+function safeGet(key){
+  try{ return localStorage.getItem(key); }catch(e){ return (key in memoryStore) ? memoryStore[key] : null; }
+}
+function safeSet(key, val){
+  try{ localStorage.setItem(key, val); }catch(e){ memoryStore[key] = val; }
+}
+function safeRemove(key){
+  try{ localStorage.removeItem(key); }catch(e){ delete memoryStore[key]; }
+}
+
+function ghConfig(){
+  return {
+    owner: safeGet('lovefix_gh_owner') || '',
+    repo: safeGet('lovefix_gh_repo') || '',
+    token: safeGet('lovefix_gh_token') || '',
+    branch: safeGet('lovefix_gh_branch') || 'main'
+  };
+}
+function saveGhConfig(owner, repo, token, branch){
+  safeSet('lovefix_gh_owner', owner);
+  safeSet('lovefix_gh_repo', repo);
+  safeSet('lovefix_gh_token', token);
+  safeSet('lovefix_gh_branch', branch || 'main');
+}
+function clearGhConfig(){
+  ['lovefix_gh_owner','lovefix_gh_repo','lovefix_gh_token','lovefix_gh_branch'].forEach(safeRemove);
+}
+function isConnected(){
+  const c = ghConfig();
+  return !!(c.owner && c.repo && c.token);
+}
+function ghHeaders(){
+  const {token} = ghConfig();
+  return {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+}
+async function ghRequest(path, options){
+  options = options || {};
+  const res = await fetch(GH_API + path, Object.assign({}, options, {
+    headers: Object.assign({}, ghHeaders(), options.headers || {})
+  }));
+  return res;
+}
+async function safeErr(res){
+  try{ const j = await res.json(); return j.message || JSON.stringify(j); }catch(e){ return res.statusText; }
+}
+
+/* UTF-8 safe, chunked base64 encode/decode (handles large payloads + Chinese text) */
+function b64Encode(str){
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  const chunk = 0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk));
+  }
+  return btoa(binary);
+}
+function b64Decode(b64){
+  const binary = atob(b64.replace(/\n/g,''));
+  const bytes = new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+async function ghGetFile(path){
+  const {owner, repo, branch} = ghConfig();
+  const res = await ghRequest('/repos/' + owner + '/' + repo + '/contents/' + encodeURIComponent(path).replace(/%2F/g,'/') + '?ref=' + encodeURIComponent(branch));
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error('讀取失敗 (' + res.status + ')：' + await safeErr(res));
+  const data = await res.json();
+  let content = null;
+  if(data.content){
+    content = b64Decode(data.content);
+  } else if(data.download_url){
+    const raw = await fetch(data.download_url);
+    content = await raw.text();
+  }
+  return {sha: data.sha, content: content};
+}
+
+async function ghPutFile(path, contentText, message){
+  const {owner, repo, branch} = ghConfig();
+  const existing = await ghGetFile(path);
+  const body = {
+    message: message || ((existing ? '更新 ' : '新增 ') + path),
+    content: b64Encode(contentText),
+    branch: branch
+  };
+  if(existing) body.sha = existing.sha;
+  const res = await ghRequest('/repos/' + owner + '/' + repo + '/contents/' + encodeURIComponent(path).replace(/%2F/g,'/'), {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if(!res.ok) throw new Error('寫入失敗 (' + res.status + ')：' + await safeErr(res));
+  return res.json();
+}
+
+async function ghListDir(path){
+  const {owner, repo, branch} = ghConfig();
+  const res = await ghRequest('/repos/' + owner + '/' + repo + '/contents/' + encodeURIComponent(path).replace(/%2F/g,'/') + '?ref=' + encodeURIComponent(branch));
+  if(res.status === 404) return [];
+  if(!res.ok) throw new Error('讀取列表失敗 (' + res.status + ')：' + await safeErr(res));
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+async function ghRepoInfo(){
+  const {owner, repo} = ghConfig();
+  const res = await ghRequest('/repos/' + owner + '/' + repo);
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error('檢查倉庫失敗 (' + res.status + ')：' + await safeErr(res));
+  return res.json();
+}
+
+async function ghCreateRepo(){
+  const {repo} = ghConfig();
+  const res = await fetch(GH_API + '/user/repos', {
+    method: 'POST',
+    headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()),
+    body: JSON.stringify({name: repo, description: 'LOVEFIX 客製化網頁', private:false, auto_init:true})
+  });
+  if(!res.ok) throw new Error('建立倉庫失敗 (' + res.status + ')：' + await safeErr(res));
+  return res.json();
+}
+
+async function ghEnablePages(branch){
+  const {owner, repo} = ghConfig();
+  const res = await ghRequest('/repos/' + owner + '/' + repo + '/pages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({build_type:'legacy', source:{branch: branch, path:'/'}})
+  });
+  if(res.status === 409) return {already:true};
+  if(!res.ok) throw new Error('啟用 Pages 失敗 (' + res.status + ')：' + await safeErr(res));
+  return res.json();
+}
+
+function pagesBaseUrl(){
+  const {owner, repo} = ghConfig();
+  if(repo.toLowerCase() === (owner + '.github.io').toLowerCase()){
+    return 'https://' + owner + '.github.io/';
+  }
+  return 'https://' + owner + '.github.io/' + repo + '/';
+}
+
+/* ============================================================
+   View management
+   ============================================================ */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  renderHeaderActions(name);
+}
+function renderHeaderActions(view){
+  const wrap = document.getElementById('headerActions');
+  wrap.innerHTML = '';
+  const chip = document.getElementById('repoChip');
+  if(isConnected()){
+    const c = ghConfig();
+    chip.style.display = 'inline-block';
+    chip.textContent = c.owner + '/' + c.repo;
+  } else {
+    chip.style.display = 'none';
+  }
+}
+function setBusy(on, msg){
+  const el = document.getElementById('busyOverlay');
+  document.getElementById('busyMsg').textContent = msg || '處理中...';
+  el.classList.toggle('show', !!on);
+}
+
+/* ============================================================
+   Connect view logic
+   ============================================================ */
+function loadConnectFormDefaults(){
+  const c = ghConfig();
+  document.getElementById('inOwner').value = c.owner;
+  document.getElementById('inRepo').value = c.repo;
+  document.getElementById('inToken').value = c.token;
+}
+
+document.getElementById('btnInit').addEventListener('click', async ()=>{
+  const owner = document.getElementById('inOwner').value.trim();
+  const repo = document.getElementById('inRepo').value.trim();
+  const token = document.getElementById('inToken').value.trim();
+  if(!owner || !repo || !token){ showToast('請完整填寫帳號、倉庫名稱與權杖'); return; }
+
+  saveGhConfig(owner, repo, token, 'main');
+  setBusy(true, '檢查倉庫中...');
+  try{
+    let info = await ghRepoInfo();
+    if(!info){
+      setBusy(true, '倉庫不存在，正在自動建立...');
+      info = await ghCreateRepo();
+      await new Promise(r=>setTimeout(r, 1500));
+    }
+    const branch = info.default_branch || 'main';
+    saveGhConfig(owner, repo, token, branch);
+
+    setBusy(true, '啟用 GitHub Pages 中...');
+    try{
+      await ghEnablePages(branch);
+    }catch(e){
+      showToast('自動啟用 Pages 失敗，請手動到倉庫 Settings → Pages 開啟（Branch: ' + branch + ' / 根目錄）');
+    }
+
+    setBusy(false);
+    const base = pagesBaseUrl();
+    document.getElementById('postInitHint').innerHTML =
+      '倉庫已就緒！接下來把這個 <b>LOVEFIX-admin.html</b> 檔案上傳到你的倉庫：到 ' +
+      '<a href="https://github.com/' + owner + '/' + repo + '" target="_blank">github.com/' + owner + '/' + repo + '</a>' +
+      ' → Add file → Upload files → 把檔案拖進去 → Commit changes。<br><br>' +
+      '大約 30～60 秒後，後台網址會是：<br>' +
+      '<a href="' + base + 'LOVEFIX-admin.html" target="_blank">' + base + 'LOVEFIX-admin.html</a>';
+    showToast('連接成功！');
+    await loadCustomerList();
+    showView('dashboard');
+  }catch(e){
+    setBusy(false);
+    if(location.protocol === 'file:' && /fetch/i.test(e.message)){
+      showToast('連接失敗：這是因為用 file:// 直接打開檔案，請照上方黃色說明先手動設定一次');
+    } else {
+      showToast('連接失敗：' + e.message);
+    }
+  }
+});
+
+document.getElementById('btnReconnect').addEventListener('click', ()=>{
+  loadConnectFormDefaults();
+  showView('connect');
+});
+
+/* ============================================================
+   Dashboard view logic
+   ============================================================ */
+let customerListCache = [];
+
+async function loadCustomerList(){
+  setBusy(true, '讀取客戶列表中...');
+  try{
+    const files = await ghListDir('customers');
+    const jsonFiles = files.filter(f => f.type === 'file' && f.name.endsWith('.json'));
+    customerListCache = jsonFiles.map(f=>{
+      const slug = f.name.replace(/\.json$/, '');
+      const m = slug.match(/^(\d+)-(.+)$/);
+      return {
+        id: m ? m[1] : slug,
+        name: m ? m[2] : '（未命名）',
+        slug: slug
+      };
+    }).sort((a,b)=> a.id.localeCompare(b.id, undefined, {numeric:true}));
+    renderCustomerList(customerListCache);
+  }catch(e){
+    showToast('讀取客戶列表失敗：' + e.message);
+    customerListCache = [];
+    renderCustomerList([]);
+  }
+  setBusy(false);
+}
+
+function renderCustomerList(list){
+  const wrap = document.getElementById('customerListWrap');
+  if(list.length === 0){
+    wrap.innerHTML = '<div class="empty-hint">目前還沒有任何客戶，按「+ 新增客戶」開始建立第一位。</div>';
+    return;
+  }
+  const base = pagesBaseUrl();
+  wrap.innerHTML = list.map(c=>{
+    const liveUrl = base + 'pages/' + encodeURIComponent(c.slug) + '/';
+    return '<div class="customer-row">' +
+      '<div class="customer-id">' + escHtml(c.id) + '</div>' +
+      '<div class="customer-name">' + escHtml(c.name) + '</div>' +
+      '<div class="customer-actions">' +
+        '<a href="' + liveUrl + '" target="_blank">查看網頁</a>' +
+        '<button data-edit="' + escHtml(c.slug) + '">編輯</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  wrap.querySelectorAll('button[data-edit]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openEditor(btn.dataset.edit));
+  });
+}
+
+function escHtml(s){
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.getElementById('searchBox').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){ renderCustomerList(customerListCache); return; }
+  const filtered = customerListCache.filter(c =>
+    c.id.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q)
+  );
+  renderCustomerList(filtered);
+});
+
+document.getElementById('btnRefreshList').addEventListener('click', loadCustomerList);
+document.getElementById('btnNewCustomer').addEventListener('click', ()=> openEditor(null));
+document.getElementById('btnBackToDash').addEventListener('click', async ()=>{
+  showView('dashboard');
+  await loadCustomerList();
+});
+
+function suggestNextId(){
+  let max = 0;
+  customerListCache.forEach(c=>{
+    const n = parseInt(c.id, 10);
+    if(!isNaN(n) && n > max) max = n;
+  });
+  return String(max + 1).padStart(3, '0');
+}
+
+/* ============================================================
+   Editor view logic
+   ============================================================ */
+async function openEditor(slug){
+  currentSlug = slug;
+  document.getElementById('liveUrlBox').style.display = 'none';
+
+  if(slug){
+    setBusy(true, '讀取客戶資料中...');
+    try{
+      const file = await ghGetFile('customers/' + slug + '.json');
+      if(!file){ showToast('找不到這位客戶的資料'); setBusy(false); return; }
+      const loaded = JSON.parse(file.content);
+      state = Object.assign(JSON.parse(JSON.stringify(defaultState)), loaded);
+      if(!Array.isArray(state.top5) || state.top5.length !== 5) state.top5 = defaultState.top5;
+      if(!Array.isArray(state.episodes) || state.episodes.length !== 4) state.episodes = defaultState.episodes;
+    }catch(e){
+      showToast('讀取失敗：' + e.message);
+      setBusy(false);
+      return;
+    }
+    const m = slug.match(/^(\d+)-(.+)$/);
+    document.getElementById('inCustomerId').value = m ? m[1] : slug;
+    document.getElementById('inCustomerName').value = m ? m[2] : '';
+    document.getElementById('inCustomerId').disabled = true;
+    document.getElementById('inCustomerName').disabled = true;
+    const base = pagesBaseUrl();
+    const liveUrl = base + 'pages/' + encodeURIComponent(slug) + '/';
+    const box = document.getElementById('liveUrlBox');
+    box.style.display = 'block';
+    box.innerHTML = '目前上線網址：<br><a href="' + liveUrl + '" target="_blank">' + liveUrl + '</a>';
+  } else {
+    state = JSON.parse(JSON.stringify(defaultState));
+    document.getElementById('inCustomerId').value = suggestNextId();
+    document.getElementById('inCustomerName').value = '';
+    document.getElementById('inCustomerId').disabled = false;
+    document.getElementById('inCustomerName').disabled = false;
+  }
+
+  populateForm();
+  showView('editor');
+  setBusy(false);
+}
+
+/* ---- Path helpers ---- */
+function getPath(obj, path){
+  return path.split('.').reduce((o,k)=> (o==null?undefined:o[/^\d+$/.test(k)?parseInt(k):k]), obj);
+}
+function setPath(obj, path, value){
+  const keys = path.split('.');
+  let cur = obj;
+  for(let i=0;i<keys.length-1;i++){
+    const k = /^\d+$/.test(keys[i]) ? parseInt(keys[i]) : keys[i];
+    cur = cur[k];
+  }
+  const lastKey = /^\d+$/.test(keys[keys.length-1]) ? parseInt(keys[keys.length-1]) : keys[keys.length-1];
+  cur[lastKey] = value;
+}
+
+/* ---- Build dynamic form pieces (Top5 + Episode answers) — built once ---- */
+const top5Container = document.getElementById('top5Container');
+defaultState.top5.forEach((item, i)=>{
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  card.innerHTML =
+    '<div class="item-title">🏆 TOP ' + (i+1) + '</div>' +
+    '<div class="field"><label>照片</label><div class="file-drop">' +
+      '<div class="file-preview" data-preview="top5.' + i + '.image"></div>' +
+      '<input type="file" accept="image/*" data-path="top5.' + i + '.image">' +
+    '</div></div>' +
+    '<div class="field"><label>情境敘述</label><textarea rows="2" data-path="top5.' + i + '.caption"></textarea></div>';
+  top5Container.appendChild(card);
+});
+
+const episodesContainer = document.getElementById('episodesContainer');
+defaultState.episodes.forEach((ep, i)=>{
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  const epMeta = FIXED.episodeMeta[i];
+  let qaHTML = '';
+  ep.qa.forEach((_, j)=>{
+    qaHTML += '<div class="qa-sub-card">' +
+      '<div class="qa-question-label">' + epMeta.qaTags[j] + '</div>' +
+      '<div class="field"><textarea rows="2" data-path="episodes.' + i + '.qa.' + j + '"></textarea></div>' +
+    '</div>';
+  });
+  card.innerHTML = '<div class="item-title">📺 ' + epMeta.title + '</div>' + qaHTML;
+  episodesContainer.appendChild(card);
+});
+
+/* ---- Wire inputs generically ---- */
+function wireInputs(){
+  document.querySelectorAll('[data-path]').forEach(el=>{
+    if(el.tagName === 'INPUT' && el.type === 'file'){
+      el.addEventListener('change', ()=> handleFileInput(el));
+      return;
+    }
+    el.addEventListener('input', ()=>{
+      setPath(state, el.dataset.path, el.value);
+      scheduleRender();
+    });
+  });
+}
+
+function readFileAsDataURL(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleFileInput(el){
+  const file = el.files[0];
+  if(!file) return;
+  if(file.size > 20*1024*1024){
+    showToast('檔案超過 20MB，儲存會變慢，建議先壓縮');
+  }
+  const dataUrl = await readFileAsDataURL(file);
+  setPath(state, el.dataset.path, dataUrl);
+  const previewEl = document.querySelector('[data-preview="' + el.dataset.path + '"]');
+  if(previewEl){
+    if(file.type.startsWith('audio/')){
+      previewEl.innerHTML = '<audio controls src="' + dataUrl + '"></audio>';
+    } else {
+      previewEl.innerHTML = '<img src="' + dataUrl + '" alt="preview">';
+    }
+  }
+  showToast('已載入：' + file.name);
+  scheduleRender();
+}
+
+function populateForm(){
+  document.querySelectorAll('[data-path]').forEach(el=>{
+    if(el.tagName === 'INPUT' && el.type === 'file') return;
+    const v = getPath(state, el.dataset.path);
+    el.value = v == null ? '' : v;
+  });
+  document.querySelectorAll('[data-preview]').forEach(el=>{
+    const path = el.dataset.preview;
+    const v = getPath(state, path);
+    if(!v){ el.innerHTML = ''; return; }
+    if(path.indexOf('songFile') !== -1){
+      el.innerHTML = '<audio controls src="' + v + '"></audio>';
+    } else {
+      el.innerHTML = '<img src="' + v + '" alt="preview">';
+    }
+  });
+  render();
+}
+
+/* ---- Escaping helpers ---- */
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function nl2br(s){
+  return esc(s).replace(/\n/g,'<br>\n');
+}
+function escJs(s){
+  return String(s == null ? '' : s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').replace(/\r/g,'');
+}
+function imgOr(v, fb){ return (v && v.length>0) ? v : fb; }
+
+/* ---- Build the final standalone HTML page (identical output to the standalone generator) ---- */
+function buildFinalHTML(s){
+  const heroImg = imgOr(s.heroImage, FALLBACK_HERO);
+  const coverImg = imgOr(s.albumCover, imgOr(s.heroImage, FALLBACK_COVER));
+  const audioSrc = imgOr(s.songFile, FALLBACK_AUDIO);
+  const heroTitleText = '《' + s.songTitle + '》';
+  const badgeLetter = esc(FIXED.brand.charAt(0).toUpperCase());
+
+  const top5HTML = s.top5.map((item, i)=>{
+    const rank = i+1;
+    const rankClass = rank===1 ? ' rank1' : '';
+    const img = imgOr(item.image, FALLBACK_TOP5[i] || FALLBACK_HERO);
+    return '        <div class="top5-item' + rankClass + '">\n' +
+      '          <div class="rank-number">' + rank + '</div>\n' +
+      '          <div class="top5-card">\n' +
+      '            <div class="rank-tag">TOP ' + rank + '</div>\n' +
+      '            <img src="' + img + '" alt="回憶照片' + rank + '">\n' +
+      '            <div class="top5-caption">' + esc(item.caption) + '</div>\n' +
+      '          </div>\n' +
+      '        </div>';
+  }).join('\n');
+
+  const episodesHTML = s.episodes.map((ep, i)=>{
+    const meta = FIXED.episodeMeta[i];
+    const qaHTML = ep.qa.map((answer, j)=>
+      '        <div class="qa-card">\n' +
+      '          <div class="qa-tag">' + esc(meta.qaTags[j]) + '</div>\n' +
+      '          <div class="qa-a">' + esc(answer) + '</div>\n' +
+      '        </div>'
+    ).join('\n');
+    return '    <div class="episode-block">\n' +
+      '      <div class="episode-row">\n' +
+      '        <div class="episode-info">\n' +
+      '          <div class="episode-title-row">\n' +
+      '            <div class="episode-title">' + esc(meta.title) + '</div>\n' +
+      '            <div class="episode-num-tag">' + esc(meta.sub) + '</div>\n' +
+      '          </div>\n' +
+      '          <div class="episode-desc">' + esc(meta.desc) + '</div>\n' +
+      '        </div>\n' +
+      '      </div>\n' +
+      '      <div class="chapter-cards">\n' +
+      qaHTML + '\n' +
+      '      </div>\n' +
+      '    </div>';
+  }).join('\n\n');
+
+  const lyricsLines = (s.lyricsText || '').split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  const lyricsHTML = lyricsLines.map(line=>'        <p>' + esc(line) + '</p>').join('\n');
+
+  return '<!DOCTYPE html>\n' +
+'<html lang="zh-Hant">\n' +
+'<head>\n' +
+'<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n' +
+'<title>' + esc(FIXED.brand) + ' — ' + esc(s.songTitle) + '</title>\n' +
+'<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">\n' +
+'<style>\n' +
+'  :root{\n' +
+'    --black:#000000;\n' +
+'    --bg:#141414;\n' +
+'    --bg-soft:#1c1c1c;\n' +
+'    --bg-card:#232323;\n' +
+'    --red:#e50914;\n' +
+'    --red-dim:rgba(229,9,20,0.15);\n' +
+'    --gold:#e6b64f;\n' +
+'    --gold-dim:rgba(230,182,79,0.15);\n' +
+'    --purple:#9b8cff;\n' +
+'    --purple-dim:rgba(155,140,255,0.14);\n' +
+'    --teal:#5fd6a8;\n' +
+'    --teal-dim:rgba(95,214,168,0.14);\n' +
+'    --text:#f2f2f2;\n' +
+'    --text-soft:#b8b8b8;\n' +
+'    --text-mute:#7a7a7a;\n' +
+'    --border:#333333;\n' +
+'  }\n' +
+'  *{box-sizing:border-box; margin:0; padding:0;}\n' +
+'  html,body{background:var(--black);}\n' +
+'  body{\n' +
+'    font-family:"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;\n' +
+'    color:var(--text);\n' +
+'    display:flex;\n' +
+'    justify-content:center;\n' +
+'  }\n' +
+'  .page{\n' +
+'    width:100%;\n' +
+'    max-width:480px;\n' +
+'    min-height:100vh;\n' +
+'    background:var(--bg);\n' +
+'    position:relative;\n' +
+'    overflow-x:hidden;\n' +
+'    box-shadow:0 0 50px rgba(0,0,0,0.7);\n' +
+'  }\n' +
+'  .topbar{\n' +
+'    display:flex;\n' +
+'    align-items:center;\n' +
+'    justify-content:space-between;\n' +
+'    padding:14px 16px;\n' +
+'    background:var(--black);\n' +
+'    position:sticky;\n' +
+'    top:0;\n' +
+'    z-index:40;\n' +
+'  }\n' +
+'  .brand{display:flex; align-items:baseline; gap:8px;}\n' +
+'  .logo-word{\n' +
+'    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
+'    font-weight:900;\n' +
+'    font-size:19px;\n' +
+'    letter-spacing:0.5px;\n' +
+'    color:var(--red);\n' +
+'  }\n' +
+'  .page-label{font-size:16px; font-weight:700; color:var(--text);}\n' +
+'  .actions{display:flex; align-items:center; gap:16px;}\n' +
+'  .icon-btn{\n' +
+'    position:relative;\n' +
+'    background:none;\n' +
+'    border:none;\n' +
+'    color:var(--text);\n' +
+'    display:flex;\n' +
+'    cursor:pointer;\n' +
+'    padding:2px;\n' +
+'  }\n' +
+'  .icon-btn svg{width:21px; height:21px;}\n' +
+'  .icon-btn:active{opacity:0.6;}\n' +
+'  .icon-btn .badge{\n' +
+'    position:absolute;\n' +
+'    top:-5px; right:-6px;\n' +
+'    background:var(--red);\n' +
+'    color:#fff;\n' +
+'    font-size:9px;\n' +
+'    font-weight:700;\n' +
+'    width:15px; height:15px;\n' +
+'    border-radius:50%;\n' +
+'    display:flex;\n' +
+'    align-items:center;\n' +
+'    justify-content:center;\n' +
+'  }\n' +
+'  .pill-row{\n' +
+'    display:flex;\n' +
+'    gap:8px;\n' +
+'    padding:12px 16px 14px;\n' +
+'    overflow-x:auto;\n' +
+'    scrollbar-width:none;\n' +
+'    background:var(--black);\n' +
+'  }\n' +
+'  .pill-row::-webkit-scrollbar{display:none;}\n' +
+'  .cat-pill{\n' +
+'    flex-shrink:0;\n' +
+'    font-size:12.5px;\n' +
+'    font-weight:700;\n' +
+'    color:var(--text);\n' +
+'    background:#2a2a2a;\n' +
+'    border:none;\n' +
+'    border-radius:6px;\n' +
+'    padding:8px 14px;\n' +
+'    cursor:pointer;\n' +
+'    white-space:nowrap;\n' +
+'  }\n' +
+'  .cat-pill.active{background:#fff; color:#000;}\n' +
+'  .cat-pill:active{opacity:0.75;}\n' +
+'  .hero{\n' +
+'    position:relative;\n' +
+'    width:100%;\n' +
+'    aspect-ratio:3/4;\n' +
+'    overflow:hidden;\n' +
+'    background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);\n' +
+'  }\n' +
+'  .hero img{width:100%; height:100%; object-fit:cover; display:block;}\n' +
+'  .hero::after{\n' +
+'    content:"";\n' +
+'    position:absolute; inset:0;\n' +
+'    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.94) 100%);\n' +
+'  }\n' +
+'  .hero-badge{\n' +
+'    position:absolute; top:14px; left:14px;\n' +
+'    width:26px; height:26px;\n' +
+'    background:var(--red); color:#fff;\n' +
+'    font-weight:900; font-size:14px;\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    border-radius:4px; z-index:3;\n' +
+'  }\n' +
+'  .hero-content{\n' +
+'    position:absolute; left:0; right:0; bottom:0;\n' +
+'    padding:0 20px 26px;\n' +
+'    z-index:2; color:#fff;\n' +
+'  }\n' +
+'  .hero-tag{\n' +
+'    display:inline-block;\n' +
+'    background:var(--red); color:#fff;\n' +
+'    font-size:11px; font-weight:700;\n' +
+'    padding:4px 9px; border-radius:3px;\n' +
+'    margin-bottom:12px;\n' +
+'  }\n' +
+'  .hero-title{\n' +
+'    font-size:30px;\n' +
+'    line-height:1.3;\n' +
+'    font-weight:900;\n' +
+'    letter-spacing:0.5px;\n' +
+'    text-shadow:0 2px 10px rgba(0,0,0,0.5);\n' +
+'    margin-bottom:10px;\n' +
+'  }\n' +
+'  .hero-meta-row{\n' +
+'    display:flex; align-items:center; flex-wrap:wrap;\n' +
+'    gap:6px;\n' +
+'    font-size:12px; color:var(--text-soft);\n' +
+'    margin-bottom:12px;\n' +
+'  }\n' +
+'  .rating-badge{\n' +
+'    border:1px solid #666; border-radius:3px;\n' +
+'    padding:1px 6px; font-size:10.5px; color:var(--text-soft);\n' +
+'  }\n' +
+'  .dot-sep{color:var(--text-mute);}\n' +
+'  .hero-text{\n' +
+'    font-size:13px; line-height:1.85;\n' +
+'    color:var(--text-soft);\n' +
+'    text-shadow:0 1px 6px rgba(0,0,0,0.5);\n' +
+'    max-width:280px;\n' +
+'  }\n' +
+'  .hero-actions{display:flex; gap:10px; margin-top:20px;}\n' +
+'  .btn-play, .btn-list{\n' +
+'    display:flex; align-items:center; gap:7px;\n' +
+'    border:none; border-radius:5px;\n' +
+'    font-size:13.5px; font-weight:700;\n' +
+'    padding:10px 17px; cursor:pointer;\n' +
+'  }\n' +
+'  .btn-play{background:#fff; color:#000;}\n' +
+'  .btn-play svg{width:15px; height:15px;}\n' +
+'  .btn-list{background:rgba(120,120,120,0.4); color:#fff; backdrop-filter:blur(4px);}\n' +
+'  .btn-list svg{width:16px; height:16px;}\n' +
+'  .btn-play:active, .btn-list:active{opacity:0.8;}\n' +
+'  .section{padding:28px 18px 6px;}\n' +
+'  .section-heading-row{\n' +
+'    display:flex; align-items:center; justify-content:space-between;\n' +
+'    margin-bottom:4px;\n' +
+'  }\n' +
+'  .section-heading{\n' +
+'    font-size:18px; font-weight:900; color:var(--text);\n' +
+'    display:flex; align-items:center; gap:6px;\n' +
+'  }\n' +
+'  .season-pill{\n' +
+'    font-size:11px; color:var(--text-soft);\n' +
+'    background:#2a2a2a; border-radius:4px;\n' +
+'    padding:5px 9px; cursor:pointer; white-space:nowrap;\n' +
+'  }\n' +
+'  .section-sub{font-size:12px; color:var(--text-mute); margin-bottom:18px;}\n' +
+'  .top5-outer{position:relative;}\n' +
+'  .top5-track{\n' +
+'    display:flex; align-items:flex-end;\n' +
+'    overflow-x:auto; scroll-snap-type:x mandatory;\n' +
+'    padding:30px 18px 18px 34px;\n' +
+'    -webkit-overflow-scrolling:touch;\n' +
+'    scrollbar-width:none;\n' +
+'  }\n' +
+'  .top5-track::-webkit-scrollbar{display:none;}\n' +
+'  .top5-item{\n' +
+'    display:flex; align-items:flex-end; flex-shrink:0;\n' +
+'    scroll-snap-align:start; margin-right:10px;\n' +
+'  }\n' +
+'  .rank-number{\n' +
+'    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
+'    font-weight:900; font-size:124px; line-height:0.68;\n' +
+'    color:#2c2c2c;\n' +
+'    text-shadow:-1px -1px 0 rgba(255,255,255,0.12), 3px 4px 10px rgba(0,0,0,0.8);\n' +
+'    margin-right:-26px; position:relative; z-index:1;\n' +
+'    user-select:none;\n' +
+'  }\n' +
+'  .top5-item.rank1 .rank-number{\n' +
+'    color:var(--gold);\n' +
+'    text-shadow:-1px -1px 0 rgba(255,255,255,0.25), 3px 4px 14px rgba(230,182,79,0.45);\n' +
+'  }\n' +
+'  .top5-card{\n' +
+'    position:relative; z-index:2; width:130px; flex-shrink:0;\n' +
+'    background:var(--bg-soft); border:1px solid var(--border);\n' +
+'    border-radius:8px; overflow:hidden;\n' +
+'    box-shadow:0 10px 24px rgba(0,0,0,0.6);\n' +
+'  }\n' +
+'  .top5-item.rank1 .top5-card{\n' +
+'    border:2px solid var(--gold);\n' +
+'    box-shadow:0 10px 26px rgba(230,182,79,0.3);\n' +
+'  }\n' +
+'  .top5-card img{width:100%; height:166px; object-fit:cover; display:block; background:#333;}\n' +
+'  .rank-tag{\n' +
+'    position:absolute; top:8px; left:8px;\n' +
+'    background:var(--red); color:#fff;\n' +
+'    font-size:9.5px; font-weight:700;\n' +
+'    padding:3px 7px; border-radius:3px;\n' +
+'    letter-spacing:0.3px; z-index:3;\n' +
+'  }\n' +
+'  .top5-item.rank1 .rank-tag{background:var(--gold); color:#241a05;}\n' +
+'  .top5-caption{\n' +
+'    padding:9px 10px 11px; font-size:11px; line-height:1.6;\n' +
+'    color:var(--text-soft); min-height:58px;\n' +
+'  }\n' +
+'  .car-arrow{\n' +
+'    position:absolute; top:110px;\n' +
+'    width:30px; height:30px; border-radius:50%;\n' +
+'    background:rgba(20,20,20,0.9); border:1px solid #444;\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    color:#fff; cursor:pointer; z-index:6;\n' +
+'  }\n' +
+'  .car-arrow.prev{left:4px;}\n' +
+'  .car-arrow.next{right:4px;}\n' +
+'  .car-arrow svg{width:14px; height:14px;}\n' +
+'  .dots{display:flex; justify-content:center; gap:6px; padding-bottom:8px;}\n' +
+'  .dot{width:6px; height:6px; border-radius:50%; background:#3a3a3a; transition:all .2s ease;}\n' +
+'  .dot.active{width:16px; background:var(--red);}\n' +
+'  .episode-block{margin-bottom:24px;}\n' +
+'  .episode-block:last-child{margin-bottom:0;}\n' +
+'  .episode-row{margin-bottom:12px;}\n' +
+'  .episode-info{min-width:0;}\n' +
+'  .episode-title-row{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}\n' +
+'  .episode-title{font-size:14px; font-weight:700; color:var(--text);}\n' +
+'  .episode-num-tag{font-size:11px; color:var(--text-mute); white-space:nowrap; flex-shrink:0;}\n' +
+'  .episode-desc{font-size:11.5px; color:var(--text-mute); line-height:1.6; margin-top:3px;}\n' +
+'  .chapter-cards{\n' +
+'    padding-left:16px; margin-left:13px;\n' +
+'    border-left:2px dashed #3a3a3a;\n' +
+'    display:flex; flex-direction:column; gap:10px;\n' +
+'  }\n' +
+'  .qa-card{\n' +
+'    position:relative; background:var(--bg-soft);\n' +
+'    border:1px solid var(--border); border-radius:12px;\n' +
+'    padding:12px 15px;\n' +
+'  }\n' +
+'  .qa-tag{\n' +
+'    display:inline-flex; align-items:center; gap:5px;\n' +
+'    font-size:11.5px; font-weight:700;\n' +
+'    padding:4px 11px; border-radius:5px; margin-bottom:8px;\n' +
+'  }\n' +
+'  .episode-block:nth-child(1) .qa-tag{background:var(--red-dim); color:#ff6b6b;}\n' +
+'  .episode-block:nth-child(2) .qa-tag{background:var(--gold-dim); color:var(--gold);}\n' +
+'  .episode-block:nth-child(3) .qa-tag{background:var(--purple-dim); color:var(--purple);}\n' +
+'  .episode-block:nth-child(4) .qa-tag{background:var(--teal-dim); color:var(--teal);}\n' +
+'  .qa-a{font-size:12.5px; line-height:1.8; color:var(--text-soft);}\n' +
+'  .special-badge{\n' +
+'    display:inline-block; background:var(--red); color:#fff;\n' +
+'    font-size:10.5px; font-weight:700; letter-spacing:0.5px;\n' +
+'    padding:4px 9px; border-radius:3px; margin-bottom:12px;\n' +
+'  }\n' +
+'  .msg-card{\n' +
+'    position:relative;\n' +
+'    background:linear-gradient(160deg,#241417,#1a1a1a 60%);\n' +
+'    border:1px solid var(--border);\n' +
+'    border-radius:14px;\n' +
+'    padding:22px 20px;\n' +
+'    overflow:hidden;\n' +
+'  }\n' +
+'  .msg-heading{\n' +
+'    font-size:17px; font-weight:900; color:var(--text);\n' +
+'    margin-bottom:16px; display:flex; align-items:center; gap:6px;\n' +
+'  }\n' +
+'  .msg-card p{font-size:13px; line-height:2; color:var(--text-soft); margin-bottom:14px;}\n' +
+'  .msg-sign{font-size:14.5px; font-weight:700; color:var(--red); display:flex; align-items:center; gap:6px;}\n' +
+'  .flower{position:absolute; right:14px; bottom:12px; width:64px; opacity:0.25;}\n' +
+'  .player-card{\n' +
+'    background:var(--bg-soft); border:1px solid var(--border);\n' +
+'    border-radius:14px; padding:16px;\n' +
+'    display:flex; flex-direction:column; gap:14px; margin-bottom:14px;\n' +
+'  }\n' +
+'  .player-top{display:flex; gap:14px; align-items:center;}\n' +
+'  .player-cover{\n' +
+'    width:64px; height:64px; border-radius:8px; object-fit:cover;\n' +
+'    flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a);\n' +
+'  }\n' +
+'  .player-meta{flex:1; min-width:0;}\n' +
+'  .player-meta .song{font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px;}\n' +
+'  .player-meta .sub{font-size:12px; color:var(--text-mute);}\n' +
+'  .progress-row{display:flex; flex-direction:column; gap:6px;}\n' +
+'  .progress-bar{position:relative; height:4px; background:#3a3a3a; border-radius:999px; cursor:pointer;}\n' +
+'  .progress-fill{position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--red); border-radius:999px;}\n' +
+'  .progress-fill::after{\n' +
+'    content:""; position:absolute; right:-5px; top:50%;\n' +
+'    width:11px; height:11px; background:var(--red); border-radius:50%;\n' +
+'    transform:translateY(-50%); box-shadow:0 1px 4px rgba(0,0,0,0.5);\n' +
+'  }\n' +
+'  .time-row{display:flex; justify-content:space-between; font-size:11px; color:var(--text-mute);}\n' +
+'  .controls-row{display:flex; align-items:center; justify-content:center; gap:26px;}\n' +
+'  .ctrl-btn{background:none; border:none; color:var(--text); cursor:pointer; display:flex; padding:4px;}\n' +
+'  .ctrl-btn svg{width:18px; height:18px;}\n' +
+'  .ctrl-btn.main{\n' +
+'    width:46px; height:46px; border-radius:50%; background:var(--red);\n' +
+'    color:#fff; display:flex; align-items:center; justify-content:center;\n' +
+'  }\n' +
+'  .ctrl-btn.main svg{width:18px; height:18px;}\n' +
+'  .ctrl-btn:active{opacity:0.7;}\n' +
+'  .reason-card{\n' +
+'    background:linear-gradient(160deg,#241417,#1a1a1a 60%);\n' +
+'    border:1px solid var(--border); border-radius:14px;\n' +
+'    padding:18px 20px; margin-bottom:14px;\n' +
+'  }\n' +
+'  .reason-heading{\n' +
+'    font-size:13.5px; font-weight:900; color:var(--red);\n' +
+'    margin-bottom:10px; display:flex; align-items:center; gap:6px;\n' +
+'  }\n' +
+'  .reason-card p{font-size:12.5px; line-height:1.9; color:var(--text-soft);}\n' +
+'  .lyrics-card{\n' +
+'    background:linear-gradient(160deg,#2c1216,#1a1414 65%);\n' +
+'    border:1px solid var(--border); border-radius:14px;\n' +
+'    padding:20px 20px; color:#e9dcd8; position:relative; overflow:hidden;\n' +
+'  }\n' +
+'  .lyrics-heading{\n' +
+'    font-size:13.5px; font-weight:900; margin-bottom:14px;\n' +
+'    display:flex; align-items:center; gap:6px;\n' +
+'    color:var(--gold);\n' +
+'  }\n' +
+'  .lyrics-body p{\n' +
+'    font-size:12.5px; line-height:1.9; opacity:0.92; margin-bottom:10px;\n' +
+'  }\n' +
+'  .lyrics-body p:last-child{margin-bottom:0;}\n' +
+'  .lyrics-card .heart-deco{position:absolute; right:14px; bottom:10px; opacity:0.1; width:44px; color:var(--red);}\n' +
+'  .the-end{\n' +
+'    margin-top:30px;\n' +
+'    padding:44px 24px 50px;\n' +
+'    text-align:center;\n' +
+'    background:radial-gradient(circle at 50% 0%, #241417 0%, #000 75%);\n' +
+'    border-top:1px solid var(--border);\n' +
+'  }\n' +
+'  .end-logo{\n' +
+'    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
+'    font-weight:900; font-size:20px; letter-spacing:1px;\n' +
+'    color:var(--red); margin-bottom:18px;\n' +
+'  }\n' +
+'  .end-title{font-size:19px; font-weight:900; color:var(--text); margin-bottom:10px; letter-spacing:0.5px;}\n' +
+'  .end-sub{font-size:12.5px; color:var(--text-soft); line-height:1.8; max-width:260px; margin:0 auto 24px;}\n' +
+'  .end-btn{\n' +
+'    display:inline-flex; align-items:center; gap:8px;\n' +
+'    background:#fff; color:#000; border:none; border-radius:5px;\n' +
+'    font-size:13.5px; font-weight:700; padding:11px 22px;\n' +
+'    cursor:pointer; margin-bottom:22px;\n' +
+'  }\n' +
+'  .end-btn svg{width:15px; height:15px;}\n' +
+'  .end-btn:active{opacity:0.8;}\n' +
+'  .end-meta{font-size:11px; color:var(--text-mute); letter-spacing:0.5px;}\n' +
+'  .toast{\n' +
+'    position:fixed; bottom:24px; left:50%;\n' +
+'    transform:translate(-50%, 20px);\n' +
+'    background:rgba(20,20,20,0.96); border:1px solid var(--red);\n' +
+'    color:#fff; font-size:12.5px; padding:10px 18px; border-radius:999px;\n' +
+'    opacity:0; pointer-events:none; transition:all .25s ease;\n' +
+'    z-index:100; white-space:nowrap;\n' +
+'  }\n' +
+'  .toast.show{opacity:1; transform:translate(-50%, 0);}\n' +
+'</style>\n' +
+'</head>\n' +
+'<body>\n' +
+'<div class="page">\n' +
+'\n' +
+'  <div class="topbar">\n' +
+'    <div class="brand">\n' +
+'      <span class="logo-word">' + esc(FIXED.brand) + '</span>\n' +
+'      <span class="page-label">' + esc(FIXED.categoryLabel) + '</span>\n' +
+'    </div>\n' +
+'    <div class="actions">\n' +
+'      <button class="icon-btn" onclick="showToast(\'已切換為僅限你本人瀏覽\')" aria-label="隱私模式">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>\n' +
+'      </button>\n' +
+'      <button class="icon-btn" onclick="shareMemory()" aria-label="分享">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
+'      </button>\n' +
+'      <button class="icon-btn bell" onclick="showToast(\'有 2 則甜蜜回憶提醒\')" aria-label="提醒">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>\n' +
+'        <span class="badge">2</span>\n' +
+'      </button>\n' +
+'    </div>\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="pill-row">\n' +
+'    <button class="cat-pill active" onclick="scrollToSection(\'top\', event)">首頁</button>\n' +
+'    <button class="cat-pill" onclick="scrollToSection(\'top5-section\', event)">回憶 Top5</button>\n' +
+'    <button class="cat-pill" onclick="scrollToSection(\'journey-section\', event)">我們的故事</button>\n' +
+'    <button class="cat-pill" onclick="scrollToSection(\'song-section\', event)">我們的歌</button>\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="hero" id="top">\n' +
+'    <img src="' + heroImg + '" alt="我們的合照">\n' +
+'    <div class="hero-badge">' + badgeLetter + '</div>\n' +
+'    <div class="hero-content">\n' +
+'      <div class="hero-tag">' + esc(FIXED.brand) + ' 原創</div>\n' +
+'      <div class="hero-title">' + esc(heroTitleText) + '</div>\n' +
+'      <div class="hero-meta-row">\n' +
+'        <span class="rating-badge">' + esc(FIXED.ratingBadge) + '</span>\n' +
+'        <span>' + esc(FIXED.metaYear) + '</span>\n' +
+'        <span class="dot-sep">·</span>\n' +
+'        <span>' + esc(FIXED.metaGenre1) + '</span>\n' +
+'        <span class="dot-sep">·</span>\n' +
+'        <span>' + esc(FIXED.metaGenre2) + '</span>\n' +
+'        <span class="dot-sep">·</span>\n' +
+'        <span>' + esc(FIXED.metaStatus) + '</span>\n' +
+'      </div>\n' +
+'      <div class="hero-text">' + esc(s.heroText) + '</div>\n' +
+'      <div class="hero-actions">\n' +
+'        <button class="btn-play" onclick="togglePlay()">\n' +
+'          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>\n' +
+'          播放我們的歌\n' +
+'        </button>\n' +
+'      </div>\n' +
+'    </div>\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="section" id="top5-section">\n' +
+'    <div class="section-heading-row">\n' +
+'      <div class="section-heading">🏆 我們愛情故事 TOP 5</div>\n' +
+'    </div>\n' +
+'    <div class="section-sub">本站最多重播的五個瞬間</div>\n' +
+'    <div class="top5-outer">\n' +
+'      <button class="car-arrow prev" onclick="scrollCarousel(-1)">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>\n' +
+'      </button>\n' +
+'      <div class="top5-track" id="carTrack">\n' +
+top5HTML + '\n' +
+'      </div>\n' +
+'      <button class="car-arrow next" onclick="scrollCarousel(1)">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>\n' +
+'      </button>\n' +
+'    </div>\n' +
+'    <div class="dots" id="dots"></div>\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="section" id="journey-section">\n' +
+'    <div class="section-heading-row">\n' +
+'      <div class="section-heading">' + esc(FIXED.journeyTitle) + '</div>\n' +
+'      <div class="season-pill" onclick="showToast(\'目前僅有第一季，敬請期待未來的每一季 ♡\')">' + esc(FIXED.seasonLabel) + ' ▾</div>\n' +
+'    </div>\n' +
+'    <div class="section-sub">' + esc(FIXED.episodesSub) + '</div>\n' +
+'\n' +
+episodesHTML + '\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="section" id="song-section">\n' +
+'    <div class="section-heading">🎧 本劇主題曲</div>\n' +
+'    <div class="section-sub">OST · ' + esc(s.songSubtitle) + '</div>\n' +
+'\n' +
+'    <div class="player-card">\n' +
+'      <div class="player-top">\n' +
+'        <img class="player-cover" src="' + coverImg + '" alt="專輯封面">\n' +
+'        <div class="player-meta">\n' +
+'          <div class="song">' + esc(s.songTitle) + '</div>\n' +
+'          <div class="sub">' + esc(s.songSubtitle) + '</div>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'      <div class="progress-row">\n' +
+'        <div class="progress-bar" id="progressBar" onclick="seek(event)">\n' +
+'          <div class="progress-fill" id="progressFill"></div>\n' +
+'        </div>\n' +
+'        <div class="time-row">\n' +
+'          <span id="curTime">0:00</span>\n' +
+'          <span id="durTime">1:00</span>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'      <div class="controls-row">\n' +
+'        <button class="ctrl-btn" onclick="skip(-5)">\n' +
+'          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 18V6l-8.5 6L11 18zm.5-6L20 6v12l-8.5-6z"/></svg>\n' +
+'        </button>\n' +
+'        <button class="ctrl-btn main" id="mainPlayBtn" onclick="togglePlay()">\n' +
+'          <svg id="mainPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>\n' +
+'        </button>\n' +
+'        <button class="ctrl-btn" onclick="skip(5)">\n' +
+'          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 6v12l8.5-6L13 6zM12.5 12L4 18V6l8.5 6z"/></svg>\n' +
+'        </button>\n' +
+'      </div>\n' +
+'    </div>\n' +
+'\n' +
+'    <div class="reason-card">\n' +
+'      <div class="reason-heading">🎬 幕後花絮：選曲故事</div>\n' +
+'      <p>' + esc(s.reasonText) + '</p>\n' +
+'    </div>\n' +
+'\n' +
+'    <div class="lyrics-card">\n' +
+'      <div class="lyrics-heading">\n' +
+'        <span>🎼 歌詞</span>\n' +
+'      </div>\n' +
+'      <div class="lyrics-body">\n' +
+lyricsHTML + '\n' +
+'      </div>\n' +
+'      <svg class="heart-deco" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.7-4.35-9.6-8.28C.6 10.1 1.2 6.6 4.1 5.1c2.3-1.2 4.9-.4 6.3 1.6.5.7 1.6.7 2.1 0 1.4-2 4-2.8 6.3-1.6 2.9 1.5 3.5 5 1.7 7.62C18.7 16.65 12 21 12 21z"/></svg>\n' +
+'    </div>\n' +
+'  </div>\n' +
+'\n' +
+'  <audio id="bgAudio" preload="metadata" src="' + audioSrc + '"></audio>\n' +
+'\n' +
+'  <div class="section">\n' +
+'    <div class="special-badge">特別篇 · SPECIAL</div>\n' +
+'    <div class="msg-card">\n' +
+'      <div class="msg-heading">我想對你說的話 ♡</div>\n' +
+'      <p>' + nl2br(s.msgP1) + '</p>\n' +
+'      <div class="msg-sign">' + esc(FIXED.msgSign) + '</div>\n' +
+'\n' +
+'      <svg class="flower" viewBox="0 0 100 140" fill="none" stroke="#e50914" stroke-width="1.4">\n' +
+'        <path d="M50 130 C 48 90, 55 70, 50 40"/>\n' +
+'        <path d="M50 90 C 35 85, 25 90, 20 100"/>\n' +
+'        <path d="M50 100 C 65 95, 75 100, 80 110"/>\n' +
+'        <circle cx="50" cy="30" r="8"/>\n' +
+'        <circle cx="38" cy="20" r="7"/>\n' +
+'        <circle cx="62" cy="20" r="7"/>\n' +
+'        <circle cx="34" cy="35" r="7"/>\n' +
+'        <circle cx="66" cy="35" r="7"/>\n' +
+'      </svg>\n' +
+'    </div>\n' +
+'  </div>\n' +
+'\n' +
+'  <div class="the-end">\n' +
+'    <div class="end-logo">' + esc(FIXED.brand) + '</div>\n' +
+'    <div class="end-title">' + esc(FIXED.endTitle) + '</div>\n' +
+'    <div class="end-sub">' + nl2br(FIXED.endSub) + '</div>\n' +
+'    <button class="end-btn" onclick="restartShow()">\n' +
+'      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>\n' +
+'      重新播放\n' +
+'    </button>\n' +
+'    <div class="end-meta">' + esc(FIXED.credit1) + '</div>\n' +
+'    <div class="end-meta" style="margin-top:4px;">' + esc(FIXED.credit2) + '</div>\n' +
+'  </div>\n' +
+'\n' +
+'</div>\n' +
+'\n' +
+'<div class="toast" id="toast"></div>\n' +
+'\n' +
+'<script>\n' +
+'  const audio = document.getElementById(\'bgAudio\');\n' +
+'  const mainIcon = document.getElementById(\'mainPlayIcon\');\n' +
+'  const progressFill = document.getElementById(\'progressFill\');\n' +
+'  const curTime = document.getElementById(\'curTime\');\n' +
+'  const durTime = document.getElementById(\'durTime\');\n' +
+'\n' +
+'  const pauseSvg = \'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>\';\n' +
+'  const playSvg = \'<path d="M8 5v14l11-7z"/>\';\n' +
+'\n' +
+'  function formatTime(sVal){\n' +
+'    if(!isFinite(sVal)) return \'0:00\';\n' +
+'    const m = Math.floor(sVal/60);\n' +
+'    const sec = Math.floor(sVal%60).toString().padStart(2,\'0\');\n' +
+'    return m + \':\' + sec;\n' +
+'  }\n' +
+'\n' +
+'  function togglePlay(){\n' +
+'    if(audio.paused){\n' +
+'      audio.play().catch(()=>showToast(\'請附上音樂檔案後即可播放\'));\n' +
+'    } else {\n' +
+'      audio.pause();\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  audio.addEventListener(\'play\', ()=>{\n' +
+'    mainIcon.innerHTML = pauseSvg;\n' +
+'  });\n' +
+'  audio.addEventListener(\'pause\', ()=>{\n' +
+'    mainIcon.innerHTML = playSvg;\n' +
+'  });\n' +
+'  audio.addEventListener(\'loadedmetadata\', ()=>{\n' +
+'    durTime.textContent = formatTime(audio.duration);\n' +
+'  });\n' +
+'  audio.addEventListener(\'timeupdate\', ()=>{\n' +
+'    const pct = (audio.currentTime / (audio.duration || 1)) * 100;\n' +
+'    progressFill.style.width = pct + \'%\';\n' +
+'    curTime.textContent = formatTime(audio.currentTime);\n' +
+'  });\n' +
+'\n' +
+'  function seek(e){\n' +
+'    const bar = document.getElementById(\'progressBar\');\n' +
+'    const rect = bar.getBoundingClientRect();\n' +
+'    const pct = (e.clientX - rect.left) / rect.width;\n' +
+'    if(audio.duration) audio.currentTime = pct * audio.duration;\n' +
+'  }\n' +
+'\n' +
+'  function skip(sec){\n' +
+'    audio.currentTime = Math.max(0, (audio.currentTime||0) + sec);\n' +
+'  }\n' +
+'\n' +
+'  const track = document.getElementById(\'carTrack\');\n' +
+'  const dotsWrap = document.getElementById(\'dots\');\n' +
+'  const cards = track.querySelectorAll(\'.top5-card\');\n' +
+'  cards.forEach((_, i)=>{\n' +
+'    const d = document.createElement(\'div\');\n' +
+'    d.className = \'dot\' + (i===0 ? \' active\' : \'\');\n' +
+'    dotsWrap.appendChild(d);\n' +
+'  });\n' +
+'  const dots = dotsWrap.querySelectorAll(\'.dot\');\n' +
+'\n' +
+'  function scrollCarousel(dir){\n' +
+'    const item = track.querySelector(\'.top5-item\');\n' +
+'    const itemWidth = item.offsetWidth + 10;\n' +
+'    track.scrollBy({left: dir * itemWidth, behavior:\'smooth\'});\n' +
+'  }\n' +
+'\n' +
+'  track.addEventListener(\'scroll\', ()=>{\n' +
+'    const item = track.querySelector(\'.top5-item\');\n' +
+'    const itemWidth = item.offsetWidth + 10;\n' +
+'    const scrollLeft = track.scrollLeft;\n' +
+'    let idx = Math.round(scrollLeft / itemWidth);\n' +
+'    idx = Math.max(0, Math.min(idx, cards.length-1));\n' +
+'    dots.forEach((d,i)=> d.classList.toggle(\'active\', i===idx));\n' +
+'  });\n' +
+'\n' +
+'  function scrollToSection(id, evt){\n' +
+'    document.querySelectorAll(\'.cat-pill\').forEach(p=>p.classList.remove(\'active\'));\n' +
+'    if(evt && evt.currentTarget) evt.currentTarget.classList.add(\'active\');\n' +
+'    if(id === \'top\'){\n' +
+'      window.scrollTo({top:0, behavior:\'smooth\'});\n' +
+'    } else {\n' +
+'      const el = document.getElementById(id);\n' +
+'      if(el) el.scrollIntoView({behavior:\'smooth\', block:\'start\'});\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  async function shareMemory(){\n' +
+'    const shareData = {\n' +
+'      title: \'' + escJs(FIXED.brand) + '｜' + escJs(s.songTitle) + '\',\n' +
+'      text: \'謝謝你出現在我的世界裡 ♡ 這是我們的故事，從那天開始...\',\n' +
+'      url: window.location.href\n' +
+'    };\n' +
+'    if(navigator.share){\n' +
+'      try{\n' +
+'        await navigator.share(shareData);\n' +
+'      }catch(err){\n' +
+'      }\n' +
+'    } else if(navigator.clipboard){\n' +
+'      try{\n' +
+'        await navigator.clipboard.writeText(shareData.url);\n' +
+'        showToast(\'已複製連結，貼給他分享吧！\');\n' +
+'      }catch(err){\n' +
+'        showToast(\'請手動複製網址分享給他\');\n' +
+'      }\n' +
+'    } else {\n' +
+'      showToast(\'請手動複製網址分享給他\');\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function restartShow(){\n' +
+'    window.scrollTo({top:0, behavior:\'smooth\'});\n' +
+'  }\n' +
+'\n' +
+'  let toastTimer;\n' +
+'  function showToast(msg){\n' +
+'    const t = document.getElementById(\'toast\');\n' +
+'    t.textContent = msg;\n' +
+'    t.classList.add(\'show\');\n' +
+'    clearTimeout(toastTimer);\n' +
+'    toastTimer = setTimeout(()=> t.classList.remove(\'show\'), 2200);\n' +
+'  }\n' +
+'<' + '/script>\n' +
+'</body>\n' +
+'</html>';
+}
+
+/* ============================================================
+   Render / local export / GitHub sync save
+   ============================================================ */
+let renderTimer = null;
+function scheduleRender(){
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(render, 250);
+}
+function render(){
+  document.getElementById('previewFrame').srcdoc = buildFinalHTML(state);
+}
+
+function sanitizeFilename(str){
+  return String(str).replace(/[\\/:*?"<>|]/g,'').trim() || 'lovefix-page';
+}
+
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const html = buildFinalHTML(state);
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = sanitizeFilename(FIXED.brand + '-' + state.songTitle) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast('已下載成品網頁（本機備份）');
+});
+
+document.getElementById('btnSaveJson').addEventListener('click', ()=>{
+  const json = JSON.stringify(state, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = sanitizeFilename(FIXED.brand + '-資料備份') + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast('已下載資料備份 JSON！');
+});
+
+document.getElementById('btnSyncSave').addEventListener('click', async ()=>{
+  const idVal = document.getElementById('inCustomerId').value.trim();
+  const nameVal = document.getElementById('inCustomerName').value.trim();
+  if(!idVal || !nameVal){ showToast('請填寫客戶編號與名稱'); return; }
+  const slug = idVal + '-' + nameVal;
+
+  setBusy(true, '儲存中，請稍候...（依素材大小可能需要 10～60 秒）');
+  try{
+    const jsonPath = 'customers/' + slug + '.json';
+    const pagePath = 'pages/' + slug + '/index.html';
+    await ghPutFile(jsonPath, JSON.stringify(state, null, 2), '儲存客戶資料 ' + slug);
+    setBusy(true, '產生並上傳成品網頁中...');
+    const html = buildFinalHTML(state);
+    await ghPutFile(pagePath, html, '同步成品網頁 ' + slug);
+
+    currentSlug = slug;
+    const base = pagesBaseUrl();
+    const liveUrl = base + 'pages/' + encodeURIComponent(slug) + '/';
+    const box = document.getElementById('liveUrlBox');
+    box.style.display = 'block';
+    box.innerHTML = '✅ 已同步上線：<br><a href="' + liveUrl + '" target="_blank">' + liveUrl + '</a>';
+
+    document.getElementById('inCustomerId').disabled = true;
+    document.getElementById('inCustomerName').disabled = true;
+
+    showToast('儲存成功，網頁已同步更新！');
+  }catch(e){
+    showToast('儲存失敗：' + e.message);
+  }
+  setBusy(false);
+});
+
+document.getElementById('jsonFileInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const loaded = JSON.parse(text);
+    const merged = JSON.parse(JSON.stringify(defaultState));
+    Object.assign(merged, loaded);
+    if(!Array.isArray(merged.top5) || merged.top5.length !== 5) merged.top5 = defaultState.top5;
+    if(!Array.isArray(merged.episodes) || merged.episodes.length !== 4) merged.episodes = defaultState.episodes;
+    state = merged;
+    populateForm();
+    showToast('已載入資料備份！');
+  }catch(err){
+    showToast('讀取失敗，請確認是正確的 JSON 檔案');
+  }
+  e.target.value = '';
+});
+
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+(function checkStorage(){
+  let ok = true;
+  try{
+    localStorage.setItem('lovefix_probe', '1');
+    localStorage.removeItem('lovefix_probe');
+  }catch(e){
+    ok = false;
+  }
+  if(!ok){
+    const warn = document.getElementById('storageWarning');
+    warn.style.display = 'block';
+    warn.innerHTML = '⚠️ 偵測到這個瀏覽器不允許本機儲存（常見於直接雙擊開啟 HTML 檔案的情況）。' +
+      '後台仍然可以正常使用，但「帳號 / 倉庫 / 權杖」設定不會被記住——每次重新開啟這個檔案都要重新輸入一次。' +
+      '若想避免這個問題，可以在初始化完成、把這個檔案上傳到 GitHub 後，改用網址（https://開頭）打開後台，就不會再有這個限制。';
+  }
+})();
+
+wireInputs();
+
+if(isConnected()){
+  showView('dashboard');
+  loadCustomerList();
+} else {
+  loadConnectFormDefaults();
+  showView('connect');
+}
+</script>
+</body>
+</html>
