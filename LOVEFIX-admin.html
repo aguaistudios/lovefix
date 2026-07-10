@@ -279,6 +279,17 @@
         </div>
       </div>
 
+      <h3>④ 留言板專用 Token（選填，用來開啟客戶頁面下方的訪客留言板）</h3>
+      <div class="field">
+        <input type="text" id="inGbToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx（選填）">
+        <div class="hint">
+          這組權杖會被寫進<b>公開的成品網頁原始碼裡</b>（任何人看網頁原始碼都找得到），所以請「另外」產生一組權限最小的權杖，不要跟上面③的權杖共用：<br>
+          github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。<br>
+          Repository access 選這個倉庫，Permissions 只勾 <b>Issues</b> 設為 <b>Read and write</b>，其他權限都不要開。<br>
+          留空的話，客戶頁面就不會顯示留言板功能；之後想關閉留言板，把這欄清空重新連接即可（但已產生的舊網頁要重新儲存一次才會更新）。
+        </div>
+      </div>
+
       <button class="primary" id="btnInit" style="width:100%; padding:14px; font-size:14px; border:none; border-radius:8px; background:#e50914; color:#fff; margin-top:8px; cursor:pointer;">連接並初始化</button>
 
       <h3>接下來還需要做一次（僅限第一次）</h3>
@@ -529,17 +540,19 @@ function ghConfig(){
     owner: safeGet('lovefix_gh_owner') || '',
     repo: safeGet('lovefix_gh_repo') || '',
     token: safeGet('lovefix_gh_token') || '',
-    branch: safeGet('lovefix_gh_branch') || 'main'
+    branch: safeGet('lovefix_gh_branch') || 'main',
+    guestbookToken: safeGet('lovefix_gh_gbtoken') || ''
   };
 }
-function saveGhConfig(owner, repo, token, branch){
+function saveGhConfig(owner, repo, token, branch, guestbookToken){
   safeSet('lovefix_gh_owner', owner);
   safeSet('lovefix_gh_repo', repo);
   safeSet('lovefix_gh_token', token);
   safeSet('lovefix_gh_branch', branch || 'main');
+  if(guestbookToken !== undefined) safeSet('lovefix_gh_gbtoken', guestbookToken);
 }
 function clearGhConfig(){
-  ['lovefix_gh_owner','lovefix_gh_repo','lovefix_gh_token','lovefix_gh_branch'].forEach(safeRemove);
+  ['lovefix_gh_owner','lovefix_gh_repo','lovefix_gh_token','lovefix_gh_branch','lovefix_gh_gbtoken'].forEach(safeRemove);
 }
 function isConnected(){
   const c = ghConfig();
@@ -697,15 +710,17 @@ function loadConnectFormDefaults(){
   document.getElementById('inOwner').value = c.owner;
   document.getElementById('inRepo').value = c.repo;
   document.getElementById('inToken').value = c.token;
+  document.getElementById('inGbToken').value = c.guestbookToken;
 }
 
 document.getElementById('btnInit').addEventListener('click', async ()=>{
   const owner = document.getElementById('inOwner').value.trim();
   const repo = document.getElementById('inRepo').value.trim();
   const token = document.getElementById('inToken').value.trim();
+  const gbToken = document.getElementById('inGbToken').value.trim();
   if(!owner || !repo || !token){ showToast('請完整填寫帳號、倉庫名稱與權杖'); return; }
 
-  saveGhConfig(owner, repo, token, 'main');
+  saveGhConfig(owner, repo, token, 'main', gbToken);
   setBusy(true, '檢查倉庫中...');
   try{
     let info = await ghRepoInfo();
@@ -715,7 +730,7 @@ document.getElementById('btnInit').addEventListener('click', async ()=>{
       await new Promise(r=>setTimeout(r, 1500));
     }
     const branch = info.default_branch || 'main';
-    saveGhConfig(owner, repo, token, branch);
+    saveGhConfig(owner, repo, token, branch, gbToken);
 
     setBusy(true, '啟用 GitHub Pages 中...');
     try{
@@ -996,12 +1011,16 @@ function escJs(s){
 function imgOr(v, fb){ return (v && v.length>0) ? v : fb; }
 
 /* ---- Build the final standalone HTML page (identical output to the standalone generator) ---- */
-function buildFinalHTML(s){
+function buildFinalHTML(s, slug){
   const heroImg = imgOr(s.heroImage, FALLBACK_HERO);
   const coverImg = imgOr(s.albumCover, imgOr(s.heroImage, FALLBACK_COVER));
   const audioSrc = imgOr(s.songFile, FALLBACK_AUDIO);
   const heroTitleText = '《' + s.songTitle + '》';
   const badgeLetter = esc(FIXED.brand.charAt(0).toUpperCase());
+  const pageSlug = (slug && slug.length>0) ? slug : 'preview-page';
+  const gbConf = ghConfig();
+  const gbEnabled = !!(gbConf.guestbookToken && gbConf.owner && gbConf.repo);
+  const gbLabel = 'guestbook-' + pageSlug;
 
   const top5HTML = s.top5.map((item, i)=>{
     const rank = i+1;
@@ -1045,6 +1064,90 @@ function buildFinalHTML(s){
 
   const lyricsLines = (s.lyricsText || '').split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const lyricsHTML = lyricsLines.map(line=>'        <p>' + esc(line) + '</p>').join('\n');
+
+  const gbScriptJS = !gbEnabled ? '' :
+'\n' +
+'  const GB_OWNER = \'' + escJs(gbConf.owner) + '\';\n' +
+'  const GB_REPO = \'' + escJs(gbConf.repo) + '\';\n' +
+'  const GB_TOKEN = \'' + escJs(gbConf.guestbookToken) + '\';\n' +
+'  const GB_LABEL = \'' + escJs(gbLabel) + '\';\n' +
+'\n' +
+'  function gbEscHtml(str){\n' +
+'    const d = document.createElement(\'div\');\n' +
+'    d.textContent = str;\n' +
+'    return d.innerHTML;\n' +
+'  }\n' +
+'\n' +
+'  function gbParseBody(body){\n' +
+'    const nameMatch = /NAME::(.*)/.exec(body || \'\');\n' +
+'    const msgMatch = /MSG::([\\s\\S]*)/.exec(body || \'\');\n' +
+'    return {\n' +
+'      name: nameMatch ? nameMatch[1].trim() : \'匿名\',\n' +
+'      msg: msgMatch ? msgMatch[1].trim() : (body || \'\')\n' +
+'    };\n' +
+'  }\n' +
+'\n' +
+'  function gbFormatDate(iso){\n' +
+'    const d = new Date(iso);\n' +
+'    const p = function(n){ return String(n).padStart(2, \'0\'); };\n' +
+'    return d.getFullYear() + \'/\' + p(d.getMonth()+1) + \'/\' + p(d.getDate()) + \' \' + p(d.getHours()) + \':\' + p(d.getMinutes());\n' +
+'  }\n' +
+'\n' +
+'  async function loadGuestbook(){\n' +
+'    const listEl = document.getElementById(\'guestbookList\');\n' +
+'    try{\n' +
+'      const url = \'https://api.github.com/repos/\' + GB_OWNER + \'/\' + GB_REPO + \'/issues?labels=\' + encodeURIComponent(GB_LABEL) + \'&state=all&sort=created&direction=asc&per_page=100\';\n' +
+'      const res = await fetch(url);\n' +
+'      if(!res.ok) throw new Error(\'load failed\');\n' +
+'      const issues = await res.json();\n' +
+'      if(!Array.isArray(issues) || issues.length === 0){\n' +
+'        listEl.innerHTML = \'<div class="gb-empty">還沒有留言，第一個留言的人是你 ♡</div>\';\n' +
+'        return;\n' +
+'      }\n' +
+'      listEl.innerHTML = issues.map(function(iss){\n' +
+'        const parsed = gbParseBody(iss.body);\n' +
+'        return \'<div class="gb-item"><div class="gb-item-top"><span class="gb-name">\' + gbEscHtml(parsed.name) + \'</span><span class="gb-date">\' + gbFormatDate(iss.created_at) + \'</span></div><div class="gb-msg">\' + gbEscHtml(parsed.msg).replace(/\\n/g, \'<br>\') + \'</div></div>\';\n' +
+'      }).join(\'\');\n' +
+'    }catch(e){\n' +
+'      listEl.innerHTML = \'<div class="gb-empty">留言載入失敗，請重新整理頁面看看</div>\';\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  async function submitGuestbook(){\n' +
+'    const nameEl = document.getElementById(\'gbName\');\n' +
+'    const msgEl = document.getElementById(\'gbMsg\');\n' +
+'    const name = nameEl.value.trim() || \'匿名\';\n' +
+'    const msg = msgEl.value.trim();\n' +
+'    if(!msg){ showToast(\'請先寫點什麼吧 ♡\'); return; }\n' +
+'    const btn = document.getElementById(\'gbSubmitBtn\');\n' +
+'    btn.disabled = true;\n' +
+'    btn.textContent = \'送出中...\';\n' +
+'    try{\n' +
+'      const res = await fetch(\'https://api.github.com/repos/\' + GB_OWNER + \'/\' + GB_REPO + \'/issues\', {\n' +
+'        method: \'POST\',\n' +
+'        headers: {\n' +
+'          \'Authorization\': \'Bearer \' + GB_TOKEN,\n' +
+'          \'Accept\': \'application/vnd.github+json\',\n' +
+'          \'Content-Type\': \'application/json\'\n' +
+'        },\n' +
+'        body: JSON.stringify({\n' +
+'          title: \'留言：\' + name,\n' +
+'          body: \'NAME::\' + name + \'\\nMSG::\' + msg,\n' +
+'          labels: [GB_LABEL]\n' +
+'        })\n' +
+'      });\n' +
+'      if(!res.ok) throw new Error(\'送出失敗\');\n' +
+'      msgEl.value = \'\';\n' +
+'      showToast(\'💌 留言送出成功，謝謝你！\');\n' +
+'      await loadGuestbook();\n' +
+'    }catch(e){\n' +
+'      showToast(\'留言送出失敗，請稍後再試一次\');\n' +
+'    }\n' +
+'    btn.disabled = false;\n' +
+'    btn.textContent = \'送出留言\';\n' +
+'  }\n' +
+'\n' +
+'  loadGuestbook();\n';
 
   return '<!DOCTYPE html>\n' +
 '<html lang="zh-Hant">\n' +
@@ -1357,6 +1460,33 @@ function buildFinalHTML(s){
 '  .msg-card p{font-size:15px; line-height:2; color:var(--text-soft); margin-bottom:14px;}\n' +
 '  .msg-sign{font-size:16.5px; font-weight:700; color:var(--red); display:flex; align-items:center; gap:6px;}\n' +
 '  .flower{position:absolute; right:14px; bottom:12px; width:64px; opacity:0.25;}\n' +
+'  .gb-form{\n' +
+'    display:flex; flex-direction:column; gap:10px;\n' +
+'    background:var(--bg-soft); border:1px solid var(--border);\n' +
+'    border-radius:14px; padding:16px; margin-bottom:16px;\n' +
+'  }\n' +
+'  .gb-form input, .gb-form textarea{\n' +
+'    width:100%; background:var(--bg-card); border:1px solid var(--border);\n' +
+'    border-radius:8px; padding:10px 12px; font-size:13.5px; color:var(--text);\n' +
+'    font-family:inherit; resize:vertical;\n' +
+'  }\n' +
+'  .gb-form input:focus, .gb-form textarea:focus{outline:none; border-color:var(--red);}\n' +
+'  .gb-submit{\n' +
+'    align-self:flex-end; background:var(--red); color:#fff; border:none;\n' +
+'    border-radius:999px; padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer;\n' +
+'  }\n' +
+'  .gb-submit:active{opacity:0.8;}\n' +
+'  .gb-submit:disabled{opacity:0.5; cursor:default;}\n' +
+'  .gb-list{display:flex; flex-direction:column; gap:10px;}\n' +
+'  .gb-item{\n' +
+'    background:var(--bg-card); border:1px solid var(--border);\n' +
+'    border-radius:12px; padding:13px 15px;\n' +
+'  }\n' +
+'  .gb-item-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;}\n' +
+'  .gb-name{font-size:13px; font-weight:700; color:var(--gold);}\n' +
+'  .gb-date{font-size:11px; color:var(--text-mute); white-space:nowrap;}\n' +
+'  .gb-msg{font-size:13.5px; line-height:1.75; color:var(--text-soft);}\n' +
+'  .gb-empty{font-size:12.5px; color:var(--text-mute); text-align:center; padding:14px 0;}\n' +
 '  .player-card{\n' +
 '    background:linear-gradient(160deg,#3a1418,#1c1010 65%);\n' +
 '    border:1px solid rgba(229,9,20,0.4);\n' +
@@ -1444,8 +1574,12 @@ function buildFinalHTML(s){
 '  .end-links a{color:var(--gold); text-decoration:none; font-weight:700;}\n' +
 '  .end-links a:active{opacity:0.7;}\n' +
 '  .end-links-sep{color:var(--text-mute); margin:0 8px;}\n' +
+'  .share-btn-row{\n' +
+'    display:flex; flex-wrap:wrap; align-items:center; justify-content:center;\n' +
+'    gap:10px; margin-top:26px;\n' +
+'  }\n' +
 '  .share-btn{\n' +
-'    display:inline-flex; align-items:center; gap:8px; margin-top:26px;\n' +
+'    display:inline-flex; align-items:center; gap:8px;\n' +
 '    background:transparent; color:var(--text); border:1px solid #555; border-radius:999px;\n' +
 '    font-size:13.5px; font-weight:700; padding:10px 22px; cursor:pointer;\n' +
 '  }\n' +
@@ -1475,6 +1609,19 @@ function buildFinalHTML(s){
 '    z-index:100; white-space:nowrap;\n' +
 '  }\n' +
 '  .toast.show{opacity:1; transform:translate(-50%, 0);}\n' +
+'  .watermark{\n' +
+'    position:fixed; left:50%; bottom:12px;\n' +
+'    transform:translateX(-50%);\n' +
+'    display:inline-flex; align-items:center; gap:5px;\n' +
+'    background:rgba(0,0,0,0.4); backdrop-filter:blur(3px);\n' +
+'    border:1px solid rgba(255,255,255,0.14);\n' +
+'    color:rgba(255,255,255,0.6);\n' +
+'    font-size:10.5px; font-weight:700; letter-spacing:0.4px;\n' +
+'    padding:5px 12px 5px 8px; border-radius:999px;\n' +
+'    pointer-events:none; z-index:150; white-space:nowrap;\n' +
+'    padding-bottom:calc(5px + env(safe-area-inset-bottom, 0px));\n' +
+'  }\n' +
+'  .watermark .wm-dot{width:5px; height:5px; border-radius:50%; background:var(--red); flex-shrink:0;}\n' +
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
@@ -1633,6 +1780,20 @@ lyricsHTML + '\n' +
 '    </div>\n' +
 '  </div>\n' +
 '\n' +
+(gbEnabled ?
+'  <div class="section" id="guestbook-section">\n' +
+'    <div class="section-heading">💌 留言板</div>\n' +
+'    <div class="section-sub">想對他們說句話嗎？留言會永遠留在這個頁面上</div>\n' +
+'    <div class="gb-form">\n' +
+'      <input type="text" id="gbName" maxlength="20" placeholder="你的稱呼（例如：好友小美）">\n' +
+'      <textarea id="gbMsg" rows="3" maxlength="300" placeholder="留下你的祝福...♡"></textarea>\n' +
+'      <button class="gb-submit" id="gbSubmitBtn" onclick="submitGuestbook()">送出留言</button>\n' +
+'    </div>\n' +
+'    <div class="gb-list" id="guestbookList">\n' +
+'      <div class="gb-empty">載入留言中...</div>\n' +
+'    </div>\n' +
+'  </div>\n' +
+'\n' : '') +
 '  <div class="the-end">\n' +
 '    <div class="end-logo">' + esc(FIXED.brand) + '</div>\n' +
 '    <div class="end-title">' + esc(FIXED.endTitle) + '</div>\n' +
@@ -1648,10 +1809,16 @@ lyricsHTML + '\n' +
 '      <span class="end-links-sep">·</span>\n' +
 '      <a href="' + esc(FIXED.instagram) + '" target="_blank" rel="noopener">' + esc(FIXED.instagramLabel) + '</a>\n' +
 '    </div>\n' +
-'    <button class="share-btn" onclick="copyPageLink()">\n' +
-'      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
-'      分享這個頁面\n' +
-'    </button>\n' +
+'    <div class="share-btn-row">\n' +
+'      <button class="share-btn" onclick="shareMemory()">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>\n' +
+'        分享這個頁面\n' +
+'      </button>\n' +
+'      <button class="share-btn" onclick="copyPageLink()">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>\n' +
+'        複製分享連結\n' +
+'      </button>\n' +
+'    </div>\n' +
 '  </div>\n' +
 '\n' +
 '</div>\n' +
@@ -1663,6 +1830,8 @@ lyricsHTML + '\n' +
 '</div>\n' +
 '\n' +
 '<div class="toast" id="toast"></div>\n' +
+'\n' +
+'<div class="watermark"><span class="wm-dot"></span>' + esc(FIXED.brand) + ' · ' + esc(FIXED.credit2) + '</div>\n' +
 '\n' +
 '<script>\n' +
 '  const audio = document.getElementById(\'bgAudio\');\n' +
@@ -1819,6 +1988,7 @@ lyricsHTML + '\n' +
 '    clearTimeout(toastTimer);\n' +
 '    toastTimer = setTimeout(()=> t.classList.remove(\'show\'), 2200);\n' +
 '  }\n' +
+gbScriptJS +
 '<' + '/script>\n' +
 '</body>\n' +
 '</html>';
@@ -1832,8 +2002,17 @@ function scheduleRender(){
   clearTimeout(renderTimer);
   renderTimer = setTimeout(render, 250);
 }
+function computeSlug(){
+  const idVal = (document.getElementById('inCustomerId') || {}).value;
+  const nameVal = (document.getElementById('inCustomerName') || {}).value;
+  const id = idVal ? idVal.trim() : '';
+  const name = nameVal ? nameVal.trim() : '';
+  if(id && name) return id + '-' + name;
+  return currentSlug || null;
+}
+
 function render(){
-  document.getElementById('previewFrame').srcdoc = buildFinalHTML(state);
+  document.getElementById('previewFrame').srcdoc = buildFinalHTML(state, computeSlug());
 }
 
 function sanitizeFilename(str){
@@ -1841,7 +2020,7 @@ function sanitizeFilename(str){
 }
 
 document.getElementById('btnExport').addEventListener('click', ()=>{
-  const html = buildFinalHTML(state);
+  const html = buildFinalHTML(state, computeSlug());
   const blob = new Blob([html], {type:'text/html'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1880,7 +2059,7 @@ document.getElementById('btnSyncSave').addEventListener('click', async ()=>{
     const pagePath = 'pages/' + slug + '/index.html';
     await ghPutFile(jsonPath, JSON.stringify(state, null, 2), '儲存客戶資料 ' + slug);
     setBusy(true, '產生並上傳成品網頁中...');
-    const html = buildFinalHTML(state);
+    const html = buildFinalHTML(state, slug);
     await ghPutFile(pagePath, html, '同步成品網頁 ' + slug);
 
     currentSlug = slug;
