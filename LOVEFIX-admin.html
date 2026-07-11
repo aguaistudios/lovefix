@@ -408,6 +408,26 @@
           </div>
         </details>
 
+        <!-- Entrance / gate settings -->
+        <details>
+          <summary>⑥ 進場設定</summary>
+          <div class="details-body">
+            <div class="section-note">這三項都是選填。填了才會在網頁開場加上對應的關卡效果，留空則不啟用。</div>
+            <div class="field">
+              <label>收禮人姓名（開場會顯示「選擇個人檔案」畫面，需輸入這個名字才能解鎖；留空則不啟用）</label>
+              <input type="text" data-path="recipientName" placeholder="例如：翁玟萱">
+            </div>
+            <div class="field">
+              <label>在一起的起始日期（首頁會顯示即時的相戀天數計時器；留空則不顯示）</label>
+              <input type="date" data-path="startDate">
+            </div>
+            <div class="field">
+              <label>通關密語（進場密碼，預設 0000，也可以改成你們的專屬密語）</label>
+              <input type="text" data-path="passcode" placeholder="0000">
+            </div>
+          </div>
+        </details>
+
       </div>
 
       <div class="preview-panel">
@@ -487,7 +507,10 @@ const defaultState = {
   albumCover: '',
   songFile: '',
   reasonText: '這是我們第一次約會時，計程車廣播裡剛好放的歌。後來每次聽到前奏，都會想起那天你笑著說「這首歌好好聽」的樣子。希望這首歌能一直陪著我們，就像我想一直陪著你一樣。',
-  lyricsText: '因為有你 我的世界變得不一樣\n每一天 都有了新的光芒\n因為有你 生命有了新的意義\n未來的每一刻 都想和你一起\n你的笑容 是我最大的力量\n你的溫柔 讓我不再迷惘\n謝謝你一直在我身旁\n讓我學會愛 學會成長\n牽著你的手 走向幸福的方向\n不管未來有多少風浪\n我都會在你身邊\n永遠不放開你的手'
+  lyricsText: '因為有你 我的世界變得不一樣\n每一天 都有了新的光芒\n因為有你 生命有了新的意義\n未來的每一刻 都想和你一起\n你的笑容 是我最大的力量\n你的溫柔 讓我不再迷惘\n謝謝你一直在我身旁\n讓我學會愛 學會成長\n牽著你的手 走向幸福的方向\n不管未來有多少風浪\n我都會在你身邊\n永遠不放開你的手',
+  recipientName: '',
+  startDate: '',
+  passcode: '0000'
 };
 
 let state = JSON.parse(JSON.stringify(defaultState));
@@ -1046,6 +1069,59 @@ function buildFinalHTML(s, slug){
   const lyricsLines = (s.lyricsText || '').split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const lyricsHTML = lyricsLines.map(line=>'        <p>' + esc(line) + '</p>').join('\n');
 
+  const hasNameGate = !!(s.recipientName && s.recipientName.trim().length > 0);
+  const hasPassGate = !!(s.passcode && s.passcode.trim().length > 0);
+  const hasCounter = !!(s.startDate && s.startDate.trim().length > 0);
+  const recipientNameJs = escJs(s.recipientName || '');
+  const passcodeJs = escJs(s.passcode || '');
+  const startDateJs = escJs(s.startDate || '');
+
+  let gateHTML = '';
+  if(hasNameGate || hasPassGate){
+    gateHTML =
+      '<div class="gate-layer" id="gateLayer">\n' +
+      (hasNameGate ?
+        '  <div class="gate-screen" id="gateName">\n' +
+        '    <div class="gate-box">\n' +
+        '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
+        '      <div class="gate-avatar">' + badgeLetter + '</div>\n' +
+        '      <div class="gate-title">這是誰的專屬回憶？</div>\n' +
+        '      <div class="gate-sub">輸入你的名字，解鎖屬於你的故事</div>\n' +
+        '      <input type="text" class="gate-input" id="gateNameInput" placeholder="輸入你的名字" autocomplete="off">\n' +
+        '      <button class="gate-btn" onclick="checkNameGate()">進入我們的故事</button>\n' +
+        '      <div class="gate-error" id="gateNameError"></div>\n' +
+        '    </div>\n' +
+        '  </div>\n'
+        : '') +
+      (hasPassGate ?
+        '  <div class="gate-screen" id="gatePass" style="display:none;">\n' +
+        '    <div class="gate-box">\n' +
+        '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
+        '      <div class="gate-lock">🔒</div>\n' +
+        '      <div class="gate-title">請輸入通關密語</div>\n' +
+        '      <div class="gate-sub">只有你們兩個知道的秘密</div>\n' +
+        '      <input type="text" class="gate-input gate-input-pass" id="gatePassInput" placeholder="＊＊＊＊" autocomplete="off">\n' +
+        '      <button class="gate-btn" onclick="checkPassGate()">解鎖</button>\n' +
+        '      <div class="gate-error" id="gatePassError"></div>\n' +
+        '    </div>\n' +
+        '  </div>\n'
+        : '') +
+      '</div>\n';
+  }
+
+  const loveCounterHTML = hasCounter ?
+    '      <div class="love-counter-wrap">\n' +
+    '        <div class="love-counter-caption">💕 我們已經相戀</div>\n' +
+    '        <div class="love-counter">\n' +
+    '          <div class="love-counter-item"><div class="love-counter-num" id="loveDays">0</div><div class="love-counter-label">天</div></div>\n' +
+    '          <div class="love-counter-sep">:</div>\n' +
+    '          <div class="love-counter-item"><div class="love-counter-num" id="loveHours">00</div><div class="love-counter-label">小時</div></div>\n' +
+    '          <div class="love-counter-sep">:</div>\n' +
+    '          <div class="love-counter-item"><div class="love-counter-num" id="loveMins">00</div><div class="love-counter-label">分鐘</div></div>\n' +
+    '        </div>\n' +
+    '      </div>\n'
+    : '';
+
   return '<!DOCTYPE html>\n' +
 '<html lang="zh-Hant">\n' +
 '<head>\n' +
@@ -1514,9 +1590,76 @@ function buildFinalHTML(s, slug){
 '    padding-bottom:calc(5px + env(safe-area-inset-bottom, 0px));\n' +
 '  }\n' +
 '  .watermark .wm-dot{width:5px; height:5px; border-radius:50%; background:var(--red); flex-shrink:0;}\n' +
+'  .gate-layer{\n' +
+'    position:fixed; inset:0; left:50%; transform:translateX(-50%);\n' +
+'    width:100%; max-width:480px; z-index:500;\n' +
+'    background:var(--black);\n' +
+'    transition:opacity 0.5s ease;\n' +
+'  }\n' +
+'  .gate-layer.unlocked{opacity:0; pointer-events:none;}\n' +
+'  .gate-screen{\n' +
+'    position:absolute; inset:0;\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    background:radial-gradient(circle at 50% 30%, #1c1c1c 0%, #000 75%);\n' +
+'    padding:32px 24px;\n' +
+'    transition:opacity 0.4s ease, transform 0.4s ease;\n' +
+'    opacity:1;\n' +
+'  }\n' +
+'  .gate-screen.hide{opacity:0; transform:scale(0.96); pointer-events:none;}\n' +
+'  .gate-box{\n' +
+'    width:100%; max-width:320px; text-align:center;\n' +
+'    display:flex; flex-direction:column; align-items:center; gap:14px;\n' +
+'  }\n' +
+'  .gate-box.shake{animation:gateShake 0.4s;}\n' +
+'  @keyframes gateShake{\n' +
+'    0%,100%{transform:translateX(0);}\n' +
+'    20%{transform:translateX(-8px);}\n' +
+'    40%{transform:translateX(8px);}\n' +
+'    60%{transform:translateX(-6px);}\n' +
+'    80%{transform:translateX(6px);}\n' +
+'  }\n' +
+'  .gate-logo{\n' +
+'    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
+'    font-weight:900; font-size:24px; letter-spacing:1px; color:var(--red);\n' +
+'  }\n' +
+'  .gate-avatar{\n' +
+'    width:72px; height:72px; border-radius:12px;\n' +
+'    background:linear-gradient(135deg, #3a3a3a, #1a1a1a);\n' +
+'    border:2px solid #444;\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    font-size:28px; font-weight:900; color:var(--text-soft);\n' +
+'  }\n' +
+'  .gate-lock{font-size:36px;}\n' +
+'  .gate-title{font-size:18px; font-weight:800; color:var(--text);}\n' +
+'  .gate-sub{font-size:12.5px; color:var(--text-mute); margin-top:-8px;}\n' +
+'  .gate-input{\n' +
+'    width:100%; background:#1a1a1a; border:1.5px solid #3a3a3a; border-radius:8px;\n' +
+'    color:var(--text); font-size:16px; text-align:center; padding:13px 16px;\n' +
+'    outline:none;\n' +
+'  }\n' +
+'  .gate-input:focus{border-color:var(--red);}\n' +
+'  .gate-input-pass{letter-spacing:6px; font-weight:700;}\n' +
+'  .gate-btn{\n' +
+'    width:100%; background:var(--red); color:#fff; border:none; border-radius:8px;\n' +
+'    padding:13px 16px; font-size:14.5px; font-weight:800; cursor:pointer;\n' +
+'  }\n' +
+'  .gate-btn:active{opacity:0.85;}\n' +
+'  .gate-error{font-size:12px; color:#ff6b6b; min-height:16px;}\n' +
+'  .love-counter-wrap{margin-top:16px;}\n' +
+'  .love-counter-caption{font-size:12.5px; color:var(--text-soft); margin-bottom:8px; font-weight:600;}\n' +
+'  .love-counter{\n' +
+'    display:flex; align-items:center; justify-content:center; gap:14px;\n' +
+'    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);\n' +
+'    border-radius:12px; padding:12px 10px;\n' +
+'  }\n' +
+'  .love-counter-item{text-align:center;}\n' +
+'  .love-counter-num{font-size:20px; font-weight:900; color:var(--gold); line-height:1.1;}\n' +
+'  .love-counter-label{font-size:10.5px; color:var(--text-mute); margin-top:2px;}\n' +
+'  .love-counter-sep{font-size:16px; color:var(--text-mute); font-weight:700;}\n' +
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
+gateHTML +
 '<div class="page">\n' +
 '\n' +
 '  <div class="topbar">\n' +
@@ -1550,6 +1693,7 @@ function buildFinalHTML(s, slug){
 '        <span>' + esc(FIXED.metaStatus) + '</span>\n' +
 '      </div>\n' +
 '      <div class="hero-text">' + esc(s.heroText) + '</div>\n' +
+loveCounterHTML +
 '    </div>\n' +
 '  </div>\n' +
 '\n' +
@@ -1702,6 +1846,129 @@ lyricsHTML + '\n' +
 '<div class="watermark"><span class="wm-dot"></span>' + esc(FIXED.brand) + ' · ' + esc(FIXED.credit2) + '</div>\n' +
 '\n' +
 '<script>\n' +
+'  var GATE_NAME = \'' + recipientNameJs + '\';\n' +
+'  var GATE_PASS = \'' + passcodeJs + '\';\n' +
+'  var HAS_NAME_GATE = ' + (hasNameGate ? 'true' : 'false') + ';\n' +
+'  var HAS_PASS_GATE = ' + (hasPassGate ? 'true' : 'false') + ';\n' +
+'  var START_DATE = \'' + startDateJs + '\';\n' +
+'  var HAS_COUNTER = ' + (hasCounter ? 'true' : 'false') + ';\n' +
+'\n' +
+'  function normalizeGateStr(v){\n' +
+'    return (v || \'\').toString().trim().toLowerCase().replace(/\\s+/g, \'\');\n' +
+'  }\n' +
+'\n' +
+'  function shakeGate(boxEl){\n' +
+'    if(!boxEl) return;\n' +
+'    boxEl.classList.remove(\'shake\');\n' +
+'    void boxEl.offsetWidth;\n' +
+'    boxEl.classList.add(\'shake\');\n' +
+'  }\n' +
+'\n' +
+'  function goToPassGateOrUnlock(){\n' +
+'    if(HAS_PASS_GATE){\n' +
+'      var pg = document.getElementById(\'gatePass\');\n' +
+'      if(pg){\n' +
+'        pg.style.display = \'flex\';\n' +
+'        setTimeout(function(){\n' +
+'          var inp = document.getElementById(\'gatePassInput\');\n' +
+'          if(inp) inp.focus();\n' +
+'        }, 200);\n' +
+'      } else {\n' +
+'        unlockGate();\n' +
+'      }\n' +
+'    } else {\n' +
+'      unlockGate();\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function checkNameGate(){\n' +
+'    var input = document.getElementById(\'gateNameInput\');\n' +
+'    var val = input ? input.value : \'\';\n' +
+'    if(normalizeGateStr(val) === normalizeGateStr(GATE_NAME)){\n' +
+'      var ng = document.getElementById(\'gateName\');\n' +
+'      if(ng){\n' +
+'        ng.classList.add(\'hide\');\n' +
+'        setTimeout(function(){ ng.style.display = \'none\'; goToPassGateOrUnlock(); }, 420);\n' +
+'      } else {\n' +
+'        goToPassGateOrUnlock();\n' +
+'      }\n' +
+'    } else {\n' +
+'      var errEl = document.getElementById(\'gateNameError\');\n' +
+'      if(errEl) errEl.textContent = \'名字好像不太對，再想想看～\';\n' +
+'      shakeGate(input ? input.closest(\'.gate-box\') : null);\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function checkPassGate(){\n' +
+'    var input = document.getElementById(\'gatePassInput\');\n' +
+'    var val = input ? input.value : \'\';\n' +
+'    if(normalizeGateStr(val) === normalizeGateStr(GATE_PASS)){\n' +
+'      var pg = document.getElementById(\'gatePass\');\n' +
+'      if(pg){\n' +
+'        pg.classList.add(\'hide\');\n' +
+'        setTimeout(function(){ pg.style.display = \'none\'; unlockGate(); }, 420);\n' +
+'      } else {\n' +
+'        unlockGate();\n' +
+'      }\n' +
+'    } else {\n' +
+'      var errEl = document.getElementById(\'gatePassError\');\n' +
+'      if(errEl) errEl.textContent = \'通關密語不對，再輸入一次看看～\';\n' +
+'      shakeGate(input ? input.closest(\'.gate-box\') : null);\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function unlockGate(){\n' +
+'    var layer = document.getElementById(\'gateLayer\');\n' +
+'    if(layer){\n' +
+'      layer.classList.add(\'unlocked\');\n' +
+'      setTimeout(function(){ layer.style.display = \'none\'; }, 500);\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function initGate(){\n' +
+'    var layer = document.getElementById(\'gateLayer\');\n' +
+'    if(!layer) return;\n' +
+'    if(HAS_NAME_GATE){\n' +
+'      var ni = document.getElementById(\'gateNameInput\');\n' +
+'      if(ni){\n' +
+'        ni.addEventListener(\'keydown\', function(e){ if(e.key === \'Enter\') checkNameGate(); });\n' +
+'        setTimeout(function(){ ni.focus(); }, 300);\n' +
+'      }\n' +
+'    } else {\n' +
+'      goToPassGateOrUnlock();\n' +
+'    }\n' +
+'    if(HAS_PASS_GATE){\n' +
+'      var pi = document.getElementById(\'gatePassInput\');\n' +
+'      if(pi){\n' +
+'        pi.addEventListener(\'keydown\', function(e){ if(e.key === \'Enter\') checkPassGate(); });\n' +
+'      }\n' +
+'    }\n' +
+'  }\n' +
+'  initGate();\n' +
+'\n' +
+'  function updateLoveCounter(){\n' +
+'    if(!HAS_COUNTER) return;\n' +
+'    var start = new Date(START_DATE + \'T00:00:00\');\n' +
+'    if(isNaN(start.getTime())) return;\n' +
+'    var now = new Date();\n' +
+'    var diffMs = now.getTime() - start.getTime();\n' +
+'    if(diffMs < 0) diffMs = 0;\n' +
+'    var totalSec = Math.floor(diffMs / 1000);\n' +
+'    var days = Math.floor(totalSec / 86400);\n' +
+'    var hours = Math.floor((totalSec % 86400) / 3600);\n' +
+'    var mins = Math.floor((totalSec % 3600) / 60);\n' +
+'    var dEl = document.getElementById(\'loveDays\');\n' +
+'    var hEl = document.getElementById(\'loveHours\');\n' +
+'    var mEl = document.getElementById(\'loveMins\');\n' +
+'    if(dEl) dEl.textContent = days;\n' +
+'    if(hEl) hEl.textContent = String(hours).padStart(2, \'0\');\n' +
+'    if(mEl) mEl.textContent = String(mins).padStart(2, \'0\');\n' +
+'  }\n' +
+'  if(HAS_COUNTER){\n' +
+'    updateLoveCounter();\n' +
+'    setInterval(updateLoveCounter, 1000 * 30);\n' +
+'  }\n' +
+'\n' +
 '  const audio = document.getElementById(\'bgAudio\');\n' +
 '  const mainIcon = document.getElementById(\'mainPlayIcon\');\n' +
 '  const progressFill = document.getElementById(\'progressFill\');\n' +
