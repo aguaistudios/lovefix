@@ -1041,12 +1041,15 @@ function buildFinalHTML(s, slug){
     const timeTagHTML = hasTimeLabel
       ? '            <div class="top5-time-tag">🗓 ' + esc(item.timeLabel) + '</div>\n'
       : '            <div class="top5-time-tag" style="visibility:hidden;">🗓</div>\n';
+    const isLongCaption = !!(item.caption && item.caption.trim().length > 42);
+    const moreHTML = '            <div class="top5-more"' + (isLongCaption ? '' : ' style="visibility:hidden;"') + '>閱讀更多 <span class="top5-more-arrow">›</span></div>\n';
     return '        <div class="top5-item' + rankClass + '">\n' +
       '          <div class="rank-number">' + rank + '</div>\n' +
       '          <div class="top5-card" onclick="openLightbox(this)">\n' +
       '            <div class="rank-tag">TOP ' + rank + '</div>\n' +
       '            <img src="' + img + '" alt="回憶照片' + rank + '">\n' +
       '            <div class="top5-caption">' + esc(item.caption) + '</div>\n' +
+      moreHTML +
       timeTagHTML +
       '          </div>\n' +
       '        </div>';
@@ -1219,13 +1222,12 @@ function buildFinalHTML(s, slug){
 '  .audio-btn svg{width:17px; height:17px;}\n' +
 '  #topPlayBtn svg{width:15px; height:15px;}\n' +
 '  .vol-panel{\n' +
+'    display:none;\n' +
 '    position:absolute; top:42px; right:0; z-index:50;\n' +
 '    background:#1c1c1c; border:1px solid var(--border); border-radius:10px;\n' +
 '    padding:14px 10px; box-shadow:0 8px 24px rgba(0,0,0,0.5);\n' +
-'    opacity:0; transform:translateY(-6px); pointer-events:none;\n' +
-'    transition:opacity 0.2s ease, transform 0.2s ease;\n' +
 '  }\n' +
-'  .vol-panel.show{opacity:1; transform:translateY(0); pointer-events:auto;}\n' +
+'  .vol-panel.show{display:block;}\n' +
 '  .vol-panel input[type=range]{\n' +
 '    width:90px; accent-color:var(--red); cursor:pointer;\n' +
 '  }\n' +
@@ -1430,6 +1432,12 @@ function buildFinalHTML(s, slug){
 '    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;\n' +
 '    text-overflow:ellipsis; flex-shrink:0;\n' +
 '  }\n' +
+'  .top5-more{\n' +
+'    display:flex; align-items:center; gap:2px; height:16px; overflow:hidden;\n' +
+'    padding:0 10px 6px; font-size:11px; color:var(--red); font-weight:700;\n' +
+'    flex-shrink:0;\n' +
+'  }\n' +
+'  .top5-more-arrow{font-size:13px; line-height:1;}\n' +
 '  .top5-time-tag{\n' +
 '    display:flex; align-items:center; gap:4px; height:22px; overflow:hidden;\n' +
 '    padding:0 10px 11px; font-size:11px; color:var(--text-mute); font-weight:700;\n' +
@@ -2044,9 +2052,11 @@ lyricsHTML + '\n' +
 '          if(inp) inp.focus();\n' +
 '        }, 200);\n' +
 '      } else {\n' +
+'        attemptAutoplay();\n' +
 '        unlockGate();\n' +
 '      }\n' +
 '    } else {\n' +
+'      attemptAutoplay();\n' +
 '      unlockGate();\n' +
 '    }\n' +
 '  }\n' +
@@ -2082,7 +2092,6 @@ lyricsHTML + '\n' +
 '  }\n' +
 '\n' +
 '  function selectRealProfile(){\n' +
-'    attemptAutoplay();\n' +
 '    var pg = document.getElementById(\'gateProfile\');\n' +
 '    if(pg){\n' +
 '      pg.classList.add(\'hide\');\n' +
