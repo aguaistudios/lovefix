@@ -1059,7 +1059,7 @@ function buildFinalHTML(s, slug){
       '          <div class="qa-a">' + esc(answer) + '</div>\n' +
       '        </div>'
     ).join('\n');
-    return '    <div class="episode-block">\n' +
+    return '    <div class="episode-block reveal-on-scroll">\n' +
       '      <div class="episode-row">\n' +
       '        <div class="episode-info">\n' +
       '          <div class="episode-title-row">\n' +
@@ -1125,7 +1125,7 @@ function buildFinalHTML(s, slug){
     '</div>\n';
 
   const loveCounterHTML = hasCounter ?
-    '      <div class="love-counter-wrap">\n' +
+    '      <div class="love-counter-wrap reveal-on-scroll">\n' +
     '        <div class="love-counter-caption">💕 我們已經相戀</div>\n' +
     '        <div class="love-counter">\n' +
     '          <div class="love-counter-item" id="loveYearBlock"><div class="love-counter-num" id="loveYears">0</div><div class="love-counter-label">年</div></div>\n' +
@@ -1733,6 +1733,18 @@ function buildFinalHTML(s, slug){
 '  .certify-badge-text{font-size:12px; font-weight:700; color:var(--gold); letter-spacing:0.3px; white-space:nowrap;}\n' +
 '  .certify-badge-text b{letter-spacing:1px;}\n' +
 '  .fw-canvas{position:fixed; inset:0; z-index:600; pointer-events:none;}\n' +
+'  .reveal-on-scroll{\n' +
+'    opacity:0; transform:translateY(34px);\n' +
+'    transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);\n' +
+'    will-change:opacity, transform;\n' +
+'  }\n' +
+'  .reveal-on-scroll.revealed{opacity:1; transform:translateY(0);}\n' +
+'  .end-intro{text-align:center;}\n' +
+'  .post-certify-reveal{\n' +
+'    display:none; opacity:0; transform:translateY(14px);\n' +
+'    transition:opacity 0.6s ease, transform 0.6s ease;\n' +
+'  }\n' +
+'  .post-certify-reveal.show{opacity:1; transform:translateY(0);}\n' +
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
@@ -1774,7 +1786,7 @@ gateHTML +
 '  </div>\n' +
 '\n' +
 loveCounterHTML +
-'  <div class="section" id="top5-section">\n' +
+'  <div class="section reveal-on-scroll" id="top5-section">\n' +
 '    <div class="section-heading-row">\n' +
 '      <div class="section-heading">🏆 我們愛情故事 TOP 5</div>\n' +
 '    </div>\n' +
@@ -1800,7 +1812,7 @@ top5HTML + '\n' +
 '    </div>\n' +
 '    <div class="section-sub">' + esc(FIXED.episodesSub) + '</div>\n' +
 '\n' +
-'    <div class="season-cover" onclick="scrollToSection(\'song-section\', event)">\n' +
+'    <div class="season-cover reveal-on-scroll" onclick="scrollToSection(\'song-section\', event)">\n' +
 '      <img src="' + heroImg + '" alt="' + esc(FIXED.journeyTitle) + ' 封面">\n' +
 '      <div class="season-cover-overlay">\n' +
 '        <div class="season-cover-badge">' + esc(FIXED.seasonLabel).toUpperCase() + '</div>\n' +
@@ -1815,7 +1827,7 @@ episodesHTML + '\n' +
 '    <div class="section-heading">🎧 本劇主題曲</div>\n' +
 '    <div class="section-sub">OST · ' + esc(s.songSubtitle) + '</div>\n' +
 '\n' +
-'    <div class="player-card">\n' +
+'    <div class="player-card reveal-on-scroll">\n' +
 '      <div class="player-top">\n' +
 '        <img class="player-cover" src="' + coverImg + '" alt="專輯封面">\n' +
 '        <div class="player-meta">\n' +
@@ -1845,7 +1857,7 @@ episodesHTML + '\n' +
 '      </div>\n' +
 '    </div>\n' +
 '\n' +
-'    <div class="lyrics-card">\n' +
+'    <div class="lyrics-card reveal-on-scroll">\n' +
 '      <div class="lyrics-heading">\n' +
 '        <span>🎼 歌詞</span>\n' +
 '      </div>\n' +
@@ -1855,7 +1867,7 @@ lyricsHTML + '\n' +
 '      <svg class="heart-deco" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.7-4.35-9.6-8.28C.6 10.1 1.2 6.6 4.1 5.1c2.3-1.2 4.9-.4 6.3 1.6.5.7 1.6.7 2.1 0 1.4-2 4-2.8 6.3-1.6 2.9 1.5 3.5 5 1.7 7.62C18.7 16.65 12 21 12 21z"/></svg>\n' +
 '    </div>\n' +
 '\n' +
-'    <div class="reason-card">\n' +
+'    <div class="reason-card reveal-on-scroll">\n' +
 '      <div class="reason-heading">🎬 幕後花絮：選曲故事</div>\n' +
 '      <p>' + esc(s.reasonText) + '</p>\n' +
 '    </div>\n' +
@@ -1864,8 +1876,8 @@ lyricsHTML + '\n' +
 '  <audio id="bgAudio" preload="metadata" src="' + audioSrc + '"></audio>\n' +
 '\n' +
 '  <div class="section">\n' +
-'    <div class="special-badge">特別篇 · SPECIAL</div>\n' +
-'    <div class="msg-card">\n' +
+'    <div class="special-badge reveal-on-scroll">特別篇 · SPECIAL</div>\n' +
+'    <div class="msg-card reveal-on-scroll">\n' +
 '      <div class="msg-heading">我想對你說的話 ♡</div>\n' +
 '      <p>' + nl2br(s.msgP1) + '</p>\n' +
 '\n' +
@@ -1883,13 +1895,15 @@ lyricsHTML + '\n' +
 '  </div>\n' +
 '\n' +
 '  <div class="the-end">\n' +
-'    <div class="end-logo">' + esc(FIXED.brand) + '</div>\n' +
-'    <div class="end-title">' + esc(FIXED.endTitle) + '</div>\n' +
-'    <div class="end-sub">' + nl2br(FIXED.endSub) + '</div>\n' +
+'    <div class="end-intro reveal-on-scroll">\n' +
+'      <div class="end-logo">' + esc(FIXED.brand) + '</div>\n' +
+'      <div class="end-title">' + esc(FIXED.endTitle) + '</div>\n' +
+'      <div class="end-sub">' + nl2br(FIXED.endSub) + '</div>\n' +
+'    </div>\n' +
 '\n' +
 '    <div class="certify-prompt" id="certifyPrompt">\n' +
 '      <div class="certify-question" id="certifyQuestion">\n' +
-'        <div class="certify-q-text">你是否願意繼續觀看？</div>\n' +
+'        <div class="certify-q-text">你是否願意和我繼續演完？</div>\n' +
 '        <div class="certify-q-btns">\n' +
 '          <button class="certify-btn yes" onclick="handleCertifyYes()">是</button>\n' +
 '          <button class="certify-btn no" onclick="handleCertifyNo()">否</button>\n' +
@@ -1910,27 +1924,29 @@ lyricsHTML + '\n' +
 '      </div>\n' +
 '    </div>\n' +
 '\n' +
-'    <button class="end-btn" onclick="restartShow()">\n' +
-'      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>\n' +
-'      再看一次\n' +
-'    </button>\n' +
-'    <div class="end-meta">' + esc(FIXED.credit1) + '</div>\n' +
-'    <div class="end-meta" style="margin-top:4px;">' + esc(FIXED.credit2) + '</div>\n' +
-'    <div class="end-links">\n' +
-'      <a class="end-link-btn" href="' + esc(FIXED.website) + '" target="_blank" rel="noopener">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>\n' +
-'        <span>' + esc(FIXED.websiteLabel) + '</span>\n' +
-'      </a>\n' +
-'      <a class="end-link-btn" href="' + esc(FIXED.instagram) + '" target="_blank" rel="noopener">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>\n' +
-'        <span>' + esc(FIXED.instagramLabel) + '</span>\n' +
-'      </a>\n' +
-'    </div>\n' +
-'    <div class="share-btn-row">\n' +
-'      <button class="share-btn" onclick="copyPageLink()">\n' +
-'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>\n' +
-'        複製分享連結\n' +
+'    <div class="post-certify-reveal" id="postCertifyReveal">\n' +
+'      <button class="end-btn" onclick="restartShow()">\n' +
+'        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>\n' +
+'        再看一次\n' +
 '      </button>\n' +
+'      <div class="end-meta">' + esc(FIXED.credit1) + '</div>\n' +
+'      <div class="end-meta" style="margin-top:4px;">' + esc(FIXED.credit2) + '</div>\n' +
+'      <div class="end-links">\n' +
+'        <a class="end-link-btn" href="' + esc(FIXED.website) + '" target="_blank" rel="noopener">\n' +
+'          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>\n' +
+'          <span>' + esc(FIXED.websiteLabel) + '</span>\n' +
+'        </a>\n' +
+'        <a class="end-link-btn" href="' + esc(FIXED.instagram) + '" target="_blank" rel="noopener">\n' +
+'          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>\n' +
+'          <span>' + esc(FIXED.instagramLabel) + '</span>\n' +
+'        </a>\n' +
+'      </div>\n' +
+'      <div class="share-btn-row">\n' +
+'        <button class="share-btn" onclick="copyPageLink()">\n' +
+'          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>\n' +
+'          複製分享連結\n' +
+'        </button>\n' +
+'      </div>\n' +
 '    </div>\n' +
 '  </div>\n' +
 '\n' +
@@ -2127,11 +2143,21 @@ lyricsHTML + '\n' +
 '    });\n' +
 '  }\n' +
 '\n' +
+'  function revealPostCertify(){\n' +
+'    var el = document.getElementById(\'postCertifyReveal\');\n' +
+'    if(!el) return;\n' +
+'    el.style.display = \'block\';\n' +
+'    requestAnimationFrame(function(){\n' +
+'      requestAnimationFrame(function(){ el.classList.add(\'show\'); });\n' +
+'    });\n' +
+'  }\n' +
+'\n' +
 '  function handleCertifyYes(){\n' +
 '    showCertifyResult();\n' +
 '    launchFireworks();\n' +
 '    markCertified();\n' +
 '    revealForeverBadge();\n' +
+'    revealPostCertify();\n' +
 '  }\n' +
 '\n' +
 '  function handleCertifyNo(){\n' +
@@ -2146,6 +2172,7 @@ lyricsHTML + '\n' +
 '    launchFireworks();\n' +
 '    markCertified();\n' +
 '    revealForeverBadge();\n' +
+'    revealPostCertify();\n' +
 '  }\n' +
 '\n' +
 '  function initCertifyPrompt(){\n' +
@@ -2155,6 +2182,8 @@ lyricsHTML + '\n' +
 '      block.classList.add(\'in-view\');\n' +
 '      showCertifyResult();\n' +
 '      revealForeverBadge();\n' +
+'      var pc = document.getElementById(\'postCertifyReveal\');\n' +
+'      if(pc){ pc.style.display = \'block\'; pc.classList.add(\'show\'); }\n' +
 '      return;\n' +
 '    }\n' +
 '    if(\'IntersectionObserver\' in window){\n' +
@@ -2172,6 +2201,25 @@ lyricsHTML + '\n' +
 '    }\n' +
 '  }\n' +
 '  initCertifyPrompt();\n' +
+'\n' +
+'  function initScrollReveal(){\n' +
+'    var els = document.querySelectorAll(\'.reveal-on-scroll\');\n' +
+'    if(!els.length) return;\n' +
+'    if(!(\'IntersectionObserver\' in window)){\n' +
+'      els.forEach(function(el){ el.classList.add(\'revealed\'); });\n' +
+'      return;\n' +
+'    }\n' +
+'    var obs = new IntersectionObserver(function(entries){\n' +
+'      entries.forEach(function(entry){\n' +
+'        if(entry.isIntersecting){\n' +
+'          entry.target.classList.add(\'revealed\');\n' +
+'          obs.unobserve(entry.target);\n' +
+'        }\n' +
+'      });\n' +
+'    }, {threshold: 0.15, rootMargin: \'0px 0px -60px 0px\'});\n' +
+'    els.forEach(function(el){ obs.observe(el); });\n' +
+'  }\n' +
+'  initScrollReveal();\n' +
 '\n' +
 '  function launchFireworks(){\n' +
 '    var canvas = document.createElement(\'canvas\');\n' +
