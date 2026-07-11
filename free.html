@@ -141,10 +141,14 @@
     position:relative; width:100%; aspect-ratio:3/4; overflow:hidden;
     background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);
   }
-  .hero img{width:100%; height:100%; object-fit:cover; display:block;}
+  .hero img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.08) contrast(1.05) brightness(0.93);}
+  .hero::before{
+    content:""; position:absolute; inset:0; z-index:1;
+    background:radial-gradient(120% 70% at 50% 0%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.38) 100%);
+  }
   .hero::after{
-    content:""; position:absolute; inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.94) 100%);
+    content:""; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.08) 16%, rgba(0,0,0,0.1) 38%, rgba(0,0,0,0.62) 66%, rgba(0,0,0,0.97) 100%);
   }
   .hero-badge{
     position:absolute; top:14px; left:14px; width:26px; height:26px;
@@ -198,11 +202,30 @@
   .cta-block{margin:20px 18px; padding:18px; border-radius:14px; background:linear-gradient(160deg,#1c1c1c,#141414 65%); border:1px solid var(--border); text-align:center;}
   .cta-text{font-size:13px; color:var(--text-soft); line-height:1.7; margin-bottom:13px;}
 
+  /* Zodiac compatibility bonus card */
+  .zodiac-card{background:linear-gradient(160deg,#241417,#1a1a1a 60%); border:1px solid rgba(230,182,79,0.35); border-radius:14px; padding:18px 20px; margin:0 18px 6px;}
+  .zodiac-signs-row{display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; font-size:13.5px; font-weight:800; color:var(--gold);}
+  .zodiac-vs{color:var(--text-mute); font-weight:700; font-size:12px;}
+  .zodiac-text{font-size:13px; color:var(--text-soft); line-height:1.85;}
+
+  /* Final unlock CTA card */
+  .final-cta-card{margin:22px 18px; padding:22px 20px; border-radius:16px; background:linear-gradient(160deg,#241a05,#1c1c1c 65%); border:1px solid rgba(230,182,79,0.4); box-shadow:0 14px 32px rgba(230,182,79,0.1);}
+  .final-cta-title{font-size:16.5px; font-weight:900; margin-bottom:12px; color:#fff;}
+  .final-cta-list{display:flex; flex-direction:column; gap:8px; margin-bottom:16px;}
+  .final-cta-item{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--text-soft);}
+  .final-cta-item svg{width:15px; height:15px; color:var(--gold); flex-shrink:0;}
+
+  /* Compact soundtrack teaser */
+  .sound-teaser{display:flex; align-items:center; gap:14px; background:linear-gradient(160deg,#1c1416,#161414 65%); border:1px solid var(--border); border-radius:14px; padding:15px 16px; margin:0 18px;}
+  .sound-teaser-cover{width:52px; height:52px; border-radius:10px; flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.08);}
+  .sound-teaser-meta .song{font-size:14.5px; font-weight:800; color:var(--text); margin-bottom:3px;}
+  .sound-teaser-meta .sub{font-size:11.5px; color:var(--text-mute); font-weight:600;}
+
   /* Season cover (identical to real .season-cover) */
   .season-cover{position:relative; width:100%; aspect-ratio:16/8; border-radius:12px; overflow:hidden; margin-bottom:8px; box-shadow:0 10px 26px rgba(0,0,0,0.5);}
-  .season-cover img{width:100%; height:100%; object-fit:cover; display:block;}
+  .season-cover img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.08) contrast(1.05) brightness(0.93);}
   .season-cover-noimg{width:100%; height:100%; background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);}
-  .season-cover::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.92) 100%);}
+  .season-cover::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.94) 100%);}
   .season-cover-overlay{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; z-index:2;}
   .season-cover-badge{display:inline-block; background:var(--red); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:1px; padding:3px 8px; border-radius:3px; margin-bottom:7px;}
   .season-cover-title{color:#fff; font-size:17px; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
@@ -334,9 +357,9 @@
 
   <!-- ===== SCREEN 1 ===== -->
   <div class="tw-screen" id="screenStep1">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 1 / 5</div>
+      <div class="tw-eyebrow">步驟 1 / 6</div>
       <div class="tw-title">你們是誰？</div>
       <div class="tw-sub">先告訴我們兩位的稱呼。</div>
 
@@ -365,9 +388,9 @@
 
   <!-- ===== SCREEN 2 ===== -->
   <div class="tw-screen" id="screenStep2">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 2 / 5</div>
+      <div class="tw-eyebrow">步驟 2 / 6</div>
       <div class="tw-title">上傳一張代表照片</div>
       <div class="tw-sub">拖曳照片可以調整位置，選一張你們最喜歡的合照。</div>
 
@@ -394,32 +417,23 @@
 
   <!-- ===== SCREEN 3 ===== -->
   <div class="tw-screen" id="screenStep3">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 3 / 5</div>
+      <div class="tw-eyebrow">步驟 3 / 6</div>
       <div class="tw-title">重要的日子</div>
-      <div class="tw-sub">至少填寫「在一起日期」，其餘都可以先跳過。</div>
+      <div class="tw-sub">至少填寫「在一起日期」。填上兩人生日，還能解鎖 AI 星座默契分析 ✨</div>
 
       <div class="tw-field">
         <label class="tw-label">在一起日期</label>
         <input type="date" class="tw-input" id="inTogetherDate">
       </div>
       <div class="tw-field">
-        <label class="tw-label">結婚日期 <span class="opt">（選填）</span></label>
-        <input type="date" class="tw-input" id="inMarriedDate">
-      </div>
-      <div class="tw-field">
-        <label class="tw-label">我的生日 <span class="opt">（選填）</span></label>
+        <label class="tw-label">我的生日 <span class="opt">（選填，用於星座分析）</span></label>
         <input type="date" class="tw-input" id="inMyBirthday">
       </div>
       <div class="tw-field">
-        <label class="tw-label">對方生日 <span class="opt">（選填）</span></label>
+        <label class="tw-label">對方生日 <span class="opt">（選填，用於星座分析）</span></label>
         <input type="date" class="tw-input" id="inPartnerBirthday">
-      </div>
-      <div class="tw-field">
-        <label class="tw-label">自訂紀念日 <span class="opt">（選填，例如：告白紀念日）</span></label>
-        <input class="tw-input" id="inCustomAnnivLabel" placeholder="紀念日名稱" style="margin-bottom:8px;">
-        <input type="date" class="tw-input" id="inCustomAnnivDate">
       </div>
 
       <div class="tw-nav-row">
@@ -429,11 +443,36 @@
     </div>
   </div>
 
-  <!-- ===== SCREEN 4 ===== -->
+  <!-- ===== SCREEN 4 (genre) ===== -->
   <div class="tw-screen" id="screenStep4">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 4 / 5</div>
+      <div class="tw-eyebrow">步驟 4 / 6</div>
+      <div class="tw-title">你們的故事，是什麼類型？</div>
+      <div class="tw-sub">選一個最像你們的戲劇類型，AI 會用這個調性重新呈現你們的故事。</div>
+
+      <div class="tw-choice-list" id="genreChoices">
+        <button type="button" class="cat-pill" data-genre="戀愛" onclick="selectGenre(this)">💕 戀愛</button>
+        <button type="button" class="cat-pill" data-genre="青春校園" onclick="selectGenre(this)">🎒 青春校園</button>
+        <button type="button" class="cat-pill" data-genre="動作片" onclick="selectGenre(this)">🔥 動作片</button>
+        <button type="button" class="cat-pill" data-genre="文藝片" onclick="selectGenre(this)">🎬 文藝片</button>
+        <button type="button" class="cat-pill" data-genre="驚悚片" onclick="selectGenre(this)">⚡ 驚悚片</button>
+        <button type="button" class="cat-pill" data-genre="紀錄片" onclick="selectGenre(this)">📽 紀錄片</button>
+        <button type="button" class="cat-pill" data-genre="實境秀" onclick="selectGenre(this)">🎥 實境秀</button>
+      </div>
+
+      <div class="tw-nav-row">
+        <button class="share-btn-outline" onclick="goTo('screenStep3')">上一步</button>
+        <button class="gate-btn" onclick="goTo('screenStep5')">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5 ===== -->
+  <div class="tw-screen" id="screenStep5">
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div></div>
+    <div style="padding-top:20px;">
+      <div class="tw-eyebrow">步驟 5 / 6</div>
       <div class="tw-title">哪一句話最像你們？</div>
       <div class="tw-sub">選一個最貼近你們關係的描述。</div>
 
@@ -448,17 +487,17 @@
       </div>
 
       <div class="tw-nav-row">
-        <button class="share-btn-outline" onclick="goTo('screenStep3')">上一步</button>
-        <button class="gate-btn" onclick="goTo('screenStep5')">下一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep4')">上一步</button>
+        <button class="gate-btn" onclick="goTo('screenStep6')">下一步</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== SCREEN 5 ===== -->
-  <div class="tw-screen" id="screenStep5">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
+  <!-- ===== SCREEN 6 ===== -->
+  <div class="tw-screen" id="screenStep6">
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 5 / 5</div>
+      <div class="tw-eyebrow">步驟 6 / 6</div>
       <div class="tw-title">最後一句話</div>
       <div class="tw-sub">如果明天就再也見不到對方，只能留下最後一句話，你想對對方說什麼？<span class="opt">（選填）</span></div>
 
@@ -468,7 +507,7 @@
       </div>
 
       <div class="tw-nav-row">
-        <button class="share-btn-outline" onclick="goTo('screenStep4')">上一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep5')">上一步</button>
         <button class="add-season-btn" onclick="startReveal()">建立我們的 LOVEFIX</button>
       </div>
     </div>
@@ -525,10 +564,20 @@
       <div class="hero-meta-row" id="rsMetaRow"></div>
       <div class="hero-text" id="rsHeroText"></div>
       <div class="hero-actions">
-        <button class="btn-play" onclick="notReadyToast()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>繼續故事</button>
-        <button class="btn-list" onclick="scrollToLockGrid()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>解鎖項目</button>
+        <button class="btn-play" onclick="document.getElementById('shareSection').scrollIntoView({behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>分享這個頁面</button>
+        <button class="btn-list" onclick="scrollToUnlock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>解鎖完整版</button>
       </div>
     </div>
+  </div>
+
+  <!-- Zodiac compatibility bonus -->
+  <div class="section reveal-on-scroll" id="zodiacSection" style="display:none; padding-bottom:0;">
+    <div class="section-heading-row"><div class="section-heading">💫 AI 星座默契分析</div></div>
+    <div class="section-sub">根據雙方生日自動生成的專屬默契分析</div>
+  </div>
+  <div class="zodiac-card reveal-on-scroll" id="zodiacCard" style="display:none;">
+    <div class="zodiac-signs-row" id="zodiacSignsRow"></div>
+    <div class="zodiac-text" id="zodiacText"></div>
   </div>
 
   <!-- Achievement -->
@@ -544,21 +593,16 @@
     </div>
   </div>
 
-  <div class="cta-block reveal-on-scroll">
-    <div class="cta-text">這只是你們故事的第一章節，還有更多回憶等著被收藏。</div>
-    <button class="gate-btn" onclick="scrollToLockGrid()">查看可以解鎖的內容</button>
-  </div>
-
-  <!-- Season 1 -->
+  <!-- Season 1 (compact, no locked-episode clutter) -->
   <div class="section reveal-on-scroll">
     <div class="section-heading-row">
-      <div class="section-heading">🎬 第一季：我們的故事</div>
+      <div class="section-heading" id="rsSeasonHeading">🎬 第一季：我們的故事</div>
     </div>
-    <div class="section-sub">5 集 · 愛情劇 · 體驗版開放第 1 集</div>
+    <div class="section-sub" id="rsGenreFrame"></div>
     <div class="season-cover" id="rsSeasonCover">
       <div class="season-cover-overlay">
-        <div class="season-cover-badge">第 1 季</div>
-        <div class="season-cover-title">第一季：我們的故事</div>
+        <div class="season-cover-badge" id="rsSeasonBadge">第 1 季</div>
+        <div class="season-cover-title" id="rsSeasonCoverTitle">第一季：我們的故事</div>
       </div>
     </div>
 
@@ -567,111 +611,27 @@
         <div class="episode-title">EP1 · 相遇</div>
         <div class="episode-num-tag">已開放</div>
       </div>
-      <div class="episode-desc">你們故事的起點。</div>
       <div class="chapter-cards">
         <div class="qa-card ep-red" id="rsEp1Card"></div>
       </div>
-    </div>
-
-    <div class="episode-block" id="lockGridSection">
-      <div class="episode-title-row">
-        <div class="episode-title locked">🔒 EP2 · 相處</div>
-        <div class="episode-num-tag">尚未解鎖</div>
-      </div>
-      <div class="episode-desc">完成第一季即可解鎖。</div>
-      <div class="chapter-cards">
-        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
-      </div>
-    </div>
-    <div class="episode-block">
-      <div class="episode-title-row">
-        <div class="episode-title locked">🔒 EP3 · 磨合</div>
-        <div class="episode-num-tag">尚未解鎖</div>
-      </div>
-      <div class="chapter-cards">
-        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
-      </div>
-    </div>
-    <div class="episode-block">
-      <div class="episode-title-row">
-        <div class="episode-title locked">🔒 EP4 · 現在</div>
-        <div class="episode-num-tag">尚未解鎖</div>
-      </div>
-      <div class="chapter-cards">
-        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
-      </div>
-    </div>
-    <div class="episode-block">
-      <div class="episode-title-row">
-        <div class="episode-title locked">🔒 EP5 · 未來</div>
-        <div class="episode-num-tag">尚未解鎖</div>
-      </div>
-      <div class="chapter-cards">
-        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
-      </div>
+      <div class="episode-desc" style="margin-top:12px;">完整第一季共 5 集，解鎖後即可看完整段故事。</div>
     </div>
   </div>
 
-  <!-- Top5-style photos row -->
-  <div class="section reveal-on-scroll" style="padding-bottom:0;">
-    <div class="section-heading-row"><div class="section-heading">🖼️ 我們的回憶 TOP 5</div></div>
-    <div class="section-sub">體驗版先解鎖第 1 張，其餘完成第一季後開放</div>
-  </div>
-  <div class="top5-outer reveal-on-scroll">
-    <div class="top5-track" id="top5Track"></div>
-  </div>
-
-  <!-- More locked content grid -->
-  <div class="section reveal-on-scroll" style="margin-top:6px;">
-    <div class="section-heading-row"><div class="section-heading">更多內容</div></div>
-    <div class="section-sub">完成第一季後即可全部解鎖</div>
-    <div class="season-teaser-row">
-      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">更多照片</div></div>
-      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">更多成就</div></div>
-      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">密碼保護</div></div>
-      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">影片收藏</div></div>
-    </div>
-    <div class="season-teaser-hint">✨ 更多回憶，等待被解鎖...</div>
-  </div>
-
-  <!-- Soundtrack -->
+  <!-- Soundtrack (compact teaser, single touchpoint) -->
   <div class="section reveal-on-scroll">
     <div class="section-heading-row"><div class="section-heading">🎧 我們的原聲帶</div></div>
   </div>
-  <div style="padding:0 18px;">
-    <div class="player-card reveal-on-scroll">
-      <div class="player-top">
-        <div class="player-cover" id="rsPlayerCover">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
-        </div>
-        <div class="player-meta">
-          <div class="song">我們的故事主題曲</div>
-          <div class="sub">🔒 尚未解鎖</div>
-        </div>
-      </div>
-      <div class="progress-row">
-        <div class="progress-bar"><div class="progress-fill" style="width:0%;"></div></div>
-        <div class="time-row"><span>0:00</span><span>0:30</span></div>
-      </div>
-      <div class="controls-row">
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L4 12l7 7V5zM13 5l7 7-7 7V5z"/></svg></button>
-        <button class="ctrl-btn main"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg></button>
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 5l7 7-7 7V5zM11 5l-7 7 7 7V5z"/></svg></button>
-      </div>
+  <div class="sound-teaser reveal-on-scroll">
+    <div class="sound-teaser-cover"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="sound-teaser-meta">
+      <div class="song">我們的故事主題曲</div>
+      <div class="sub">🔒 尚未解鎖 · 專屬 30 秒創作曲</div>
     </div>
-    <div class="lyrics-card reveal-on-scroll">
-      <div class="lyrics-heading">🔒 歌詞</div>
-      <div class="lyrics-locked-body">完成第一季後，即可解鎖根據你們故事製作的<br>30 秒專屬歌曲與完整歌詞。</div>
-    </div>
-  </div>
-
-  <div class="cta-block reveal-on-scroll">
-    <div class="cta-text">完成第一季，即可獲得一首 30 秒專屬歌曲。</div>
-    <button class="add-season-btn" onclick="notReadyToast()">解鎖我們的故事主題曲</button>
   </div>
 
   <!-- Share -->
-  <div class="section reveal-on-scroll">
+  <div class="section reveal-on-scroll" id="shareSection">
     <div class="section-heading-row"><div class="section-heading">分享這個頁面</div></div>
   </div>
   <div class="share-grid reveal-on-scroll">
@@ -696,6 +656,19 @@
     <img id="qrImg" width="140" height="140" alt="QR Code">
   </div>
 
+  <!-- Final consolidated unlock CTA (the one real conversion moment) -->
+  <div class="final-cta-card reveal-on-scroll" id="finalCtaCard">
+    <div class="final-cta-title">解鎖完整版，你將獲得：</div>
+    <div class="final-cta-list">
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>完整第一季（5 集故事）</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>全部回憶照片與 TOP 5 排行</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>專屬 30 秒主題曲與完整歌詞</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>更多成就收藏與紀念日提醒</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>密碼保護，只有你們能看</div>
+    </div>
+    <button class="add-season-btn" onclick="notReadyToast()">解鎖完整版</button>
+  </div>
+
   <div class="bottom-cta reveal-on-scroll">
     <div class="bottom-cta-title">也想建立屬於你們的 LOVEFIX？</div>
     <button class="share-btn-outline" onclick="restartTrial()">免費建立我的 LOVEFIX</button>
@@ -714,11 +687,87 @@
 var trial = {
   myName:'', partnerName:'', relType:'情侶',
   photoDataUrl:'', photoThumb:'', photoPosX:50, photoPosY:50,
-  togetherDate:'', marriedDate:'', myBirthday:'', partnerBirthday:'',
-  customAnnivLabel:'', customAnnivDate:'',
+  togetherDate:'', myBirthday:'', partnerBirthday:'',
+  genre:'戀愛',
   description:'我們的故事才正要開始', message:''
 };
 var hasPhoto = false;
+
+/* ============ Genre engine ============ */
+var GENRES = {
+  '戀愛':     {tag:'戀愛體驗', rating:'💕 甜蜜升溫', badge:'第 1 季', frame:function(n1,n2){ return '這是一部關於 ' + n1 + ' 與 ' + n2 + ' 的甜蜜愛情故事。'; }},
+  '青春校園': {tag:'校園青春', rating:'🎒 青春回憶', badge:'第 1 季', frame:function(n1,n2){ return '回到最青澀的時光，這是 ' + n1 + ' 與 ' + n2 + ' 獨有的校園記憶。'; }},
+  '動作片':   {tag:'熱血動作', rating:'🔥 熱血滿點', badge:'第 1 季', frame:function(n1,n2){ return '在充滿挑戰的日子裡，' + n1 + ' 與 ' + n2 + ' 始終並肩作戰。'; }},
+  '文藝片':   {tag:'文藝愛情', rating:'🎬 細膩動人', badge:'第 1 季', frame:function(n1,n2){ return '細膩、真實，這是 ' + n1 + ' 與 ' + n2 + ' 緩緩流動的生活切片。'; }},
+  '驚悚片':   {tag:'驚悚愛情', rating:'⚡ 心跳加速', badge:'第 1 季', frame:function(n1,n2){ return '心跳、悸動、意外的驚喜——這是 ' + n1 + ' 與 ' + n2 + ' 充滿張力的故事。'; }},
+  '紀錄片':   {tag:'真實紀錄', rating:'📽 真實記錄', badge:'第 1 季', frame:function(n1,n2){ return '真實紀錄 ' + n1 + ' 與 ' + n2 + ' 最真切的日常片刻。'; }},
+  '實境秀':   {tag:'真人實境', rating:'🎥 真人實境', badge:'第 1 季', frame:function(n1,n2){ return '鏡頭之下，' + n1 + ' 與 ' + n2 + ' 的真實互動比劇本更精彩。'; }}
+};
+function selectGenre(el){
+  document.querySelectorAll('#genreChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  trial.genre = el.dataset.genre;
+}
+function selectGenreDefault(){
+  var first = document.querySelector('#genreChoices .cat-pill');
+  if(first){ first.classList.add('active'); trial.genre = first.dataset.genre; }
+}
+
+/* ============ Zodiac compatibility engine ============ */
+var ZODIAC = [
+  {name:'水瓶座', emoji:'♒', el:'風', from:[1,20], to:[2,18], traits:['獨立','有想法']},
+  {name:'雙魚座', emoji:'♓', el:'水', from:[2,19], to:[3,20], traits:['浪漫','有同理心']},
+  {name:'牡羊座', emoji:'♈', el:'火', from:[3,21], to:[4,19], traits:['熱情','直率']},
+  {name:'金牛座', emoji:'♉', el:'土', from:[4,20], to:[5,20], traits:['踏實','專一']},
+  {name:'雙子座', emoji:'♊', el:'風', from:[5,21], to:[6,21], traits:['靈活','風趣']},
+  {name:'巨蟹座', emoji:'♋', el:'水', from:[6,22], to:[7,22], traits:['體貼','重感情']},
+  {name:'獅子座', emoji:'♌', el:'火', from:[7,23], to:[8,22], traits:['大方','有魅力']},
+  {name:'處女座', emoji:'♍', el:'土', from:[8,23], to:[9,22], traits:['細心','可靠']},
+  {name:'天秤座', emoji:'♎', el:'風', from:[9,23], to:[10,23], traits:['浪漫','懂得經營關係']},
+  {name:'天蠍座', emoji:'♏', el:'水', from:[10,24], to:[11,21], traits:['專注','忠誠']},
+  {name:'射手座', emoji:'♐', el:'火', from:[11,22], to:[12,21], traits:['自由','樂觀']},
+  {name:'摩羯座', emoji:'♑', el:'土', from:[12,22], to:[1,19], traits:['務實','有責任感']}
+];
+var ELEMENT_ORDER = ['火','土','風','水'];
+var ELEMENT_FLAVOR = {
+  '火,火':'兩個人一樣熱情直接，在一起總是充滿能量，一個眼神就懂彼此在想什麼。',
+  '火,土':'一個衝勁十足，一個穩紮穩打，你們剛好互補，一起把日子過得踏實又精彩。',
+  '火,風':'一個帶來熱情，一個帶來靈感，你們在一起總能激盪出新的火花。',
+  '火,水':'一個熱情主動，一個細膩深情，你們用不同的方式愛著彼此，卻同樣真心。',
+  '土,土':'兩人都務實又重承諾，你們的感情像慢慢累積的存款，越來越扎實。',
+  '土,風':'一個帶來新鮮的想法，一個負責把想法落地，你們是很好的生活拍檔。',
+  '土,水':'一個給安全感，一個給溫柔，你們的關係穩定又充滿情感的溫度。',
+  '風,風':'溝通從來不是問題，你們總能聊不完，也總能給彼此剛剛好的自由。',
+  '風,水':'一個理性中帶著浪漫，一個感性中帶著深情，你們總能在對話裡越走越近。',
+  '水,水':'情感細膩的兩個人，總能讀懂彼此沒說出口的心情，很懂得溫柔以待。'
+};
+function getZodiac(dateStr){
+  if(!dateStr) return null;
+  var d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d.getTime())) return null;
+  var m = d.getMonth()+1, day = d.getDate();
+  for(var i=0;i<ZODIAC.length;i++){
+    var z = ZODIAC[i];
+    if(z.from[0] === z.to[0]){
+      if(m===z.from[0] && day>=z.from[1] && day<=z.to[1]) return z;
+    } else {
+      if((m===z.from[0] && day>=z.from[1]) || (m===z.to[0] && day<=z.to[1])) return z;
+    }
+  }
+  return null;
+}
+function elementFlavorKey(el1, el2){
+  var arr = [el1, el2].sort(function(a,b){ return ELEMENT_ORDER.indexOf(a) - ELEMENT_ORDER.indexOf(b); });
+  return arr.join(',');
+}
+function zodiacCompat(name1, date1, name2, date2){
+  var z1 = getZodiac(date1), z2 = getZodiac(date2);
+  if(!z1 || !z2) return null;
+  var flavor = ELEMENT_FLAVOR[elementFlavorKey(z1.el, z2.el)] || '你們用各自的方式，為彼此的生活增添色彩。';
+  var text = flavor + name1 + '的' + z1.traits[0] + '，遇上' + name2 + '的' + z2.traits[0] + '，是很有默契的組合，值得好好珍惜。';
+  return {z1:z1, z2:z2, text:text};
+}
+selectGenreDefault();
 
 /* ============ Navigation ============ */
 function goTo(id){
@@ -852,11 +901,8 @@ function pickAchievement(days){
 /* ============ Sync form fields into state ============ */
 function syncFormToTrial(){
   trial.togetherDate = document.getElementById('inTogetherDate').value || '';
-  trial.marriedDate = document.getElementById('inMarriedDate').value || '';
   trial.myBirthday = document.getElementById('inMyBirthday').value || '';
   trial.partnerBirthday = document.getElementById('inPartnerBirthday').value || '';
-  trial.customAnnivLabel = document.getElementById('inCustomAnnivLabel').value.trim();
-  trial.customAnnivDate = document.getElementById('inCustomAnnivDate').value || '';
   trial.message = document.getElementById('inMessage').value.trim();
 }
 
@@ -900,6 +946,7 @@ function startReveal(){
 /* ============ Render result page ============ */
 function renderResult(){
   var ymd = diffYMD(trial.togetherDate);
+  var genre = GENRES[trial.genre] || GENRES['戀愛'];
 
   // Hero
   var hero = document.getElementById('rsHero');
@@ -914,6 +961,7 @@ function renderResult(){
     existingImg.alt = '我們的合照';
   }
   document.getElementById('rsNames').textContent = trial.myName + ' 與 ' + trial.partnerName;
+  document.querySelector('#rsHero .hero-tag').textContent = genre.tag + ' · 免費體驗';
 
   var metaParts = ['<span class="rating-badge">' + esc(trial.relType) + '</span>'];
   if(trial.togetherDate){
@@ -923,8 +971,22 @@ function renderResult(){
     var durTxt = (ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天';
     metaParts.push('<span class="dot-sep">·</span><span>' + durTxt + '</span>');
   }
+  metaParts.push('<span class="dot-sep">·</span><span>' + genre.rating + '</span>');
   document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
   document.getElementById('rsHeroText').textContent = trial.message || trial.description;
+
+  // Zodiac compatibility bonus
+  var compat = zodiacCompat(trial.myName, trial.myBirthday, trial.partnerName, trial.partnerBirthday);
+  if(compat){
+    document.getElementById('zodiacSection').style.display = 'block';
+    document.getElementById('zodiacCard').style.display = 'block';
+    document.getElementById('zodiacSignsRow').textContent =
+      compat.z1.emoji + ' ' + trial.myName + '（' + compat.z1.name + '）  ✕  ' + compat.z2.emoji + ' ' + trial.partnerName + '（' + compat.z2.name + '）';
+    document.getElementById('zodiacText').textContent = compat.text;
+  } else {
+    document.getElementById('zodiacSection').style.display = 'none';
+    document.getElementById('zodiacCard').style.display = 'none';
+  }
 
   // season cover uses same photo
   var seasonCover = document.getElementById('rsSeasonCover');
@@ -933,8 +995,9 @@ function renderResult(){
   } else {
     seasonCover.innerHTML = '<div class="season-cover-noimg"></div>' + seasonCover.innerHTML;
   }
+  document.getElementById('rsGenreFrame').textContent = genre.frame(trial.myName, trial.partnerName);
 
-  // EP1 card (unlocked, real content)
+  // EP1 card (unlocked, real content, genre-styled framing wraps the original message unchanged)
   document.getElementById('rsEp1Card').innerHTML =
     '<div class="qa-tag">初次相遇</div>' +
     '<div class="qa-a">' + esc(trial.message || trial.description) + '</div>';
@@ -944,43 +1007,11 @@ function renderResult(){
   document.getElementById('achMeta').textContent = todayStr() + ' 解鎖 · 免費體驗版';
   document.getElementById('achDesc').textContent = ach.desc;
 
-  renderTop5();
   renderQr();
 }
 
-function renderTop5(){
-  var track = document.getElementById('top5Track');
-  var html = '';
-  for(var i=0; i<5; i++){
-    var rank = i+1;
-    var isRank1 = rank===1;
-    var locked = !isRank1;
-    var rankClass = isRank1 ? ' rank1' : '';
-    var lockedClass = locked ? ' locked' : '';
-    var imgHtml;
-    if(isRank1 && hasPhoto){
-      imgHtml = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">';
-    } else if(isRank1){
-      imgHtml = '<div class="top5-card-noimg"></div>';
-    } else {
-      imgHtml = '<div class="top5-card-noimg"></div>';
-    }
-    var lockOverlay = locked ? '<div class="top5-lock-overlay">🔒</div>' : '';
-    var caption = isRank1 ? esc(trial.message || trial.description) : '尚未解鎖';
-    html += '<div class="top5-item' + rankClass + '">' +
-      '<div class="rank-number">' + rank + '</div>' +
-      '<div class="top5-card' + lockedClass + '">' +
-        '<div class="rank-tag">TOP ' + rank + '</div>' +
-        imgHtml + lockOverlay +
-        '<div class="top5-caption">' + caption + '</div>' +
-      '</div>' +
-    '</div>';
-  }
-  track.innerHTML = html;
-}
-
-function scrollToLockGrid(){
-  document.getElementById('lockGridSection').scrollIntoView({behavior:'smooth', block:'start'});
+function scrollToUnlock(){
+  document.getElementById('finalCtaCard').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function esc(s){
@@ -997,7 +1028,8 @@ function encodeStateToUrl(){
   try{
     var payload = {
       n1:trial.myName, n2:trial.partnerName, rt:trial.relType,
-      td:trial.togetherDate, ds:trial.description, ms:trial.message,
+      td:trial.togetherDate, bd1:trial.myBirthday, bd2:trial.partnerBirthday,
+      gr:trial.genre, ds:trial.description, ms:trial.message,
       th:trial.photoThumb || '', px:trial.photoPosX, py:trial.photoPosY
     };
     var json = JSON.stringify(payload);
@@ -1018,6 +1050,8 @@ function decodeStateFromUrl(){
     var payload = JSON.parse(json);
     trial.myName = payload.n1 || ''; trial.partnerName = payload.n2 || ''; trial.relType = payload.rt || '情侶';
     trial.togetherDate = payload.td || ''; trial.description = payload.ds || ''; trial.message = payload.ms || '';
+    trial.myBirthday = payload.bd1 || ''; trial.partnerBirthday = payload.bd2 || '';
+    trial.genre = payload.gr || '戀愛';
     trial.photoPosX = payload.px != null ? payload.px : 50; trial.photoPosY = payload.py != null ? payload.py : 50;
     var fullPhoto = null;
     try{ fullPhoto = localStorage.getItem('lovefix_trial_full_' + b64.slice(0,24)); }catch(e){}
