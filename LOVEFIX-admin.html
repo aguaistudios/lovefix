@@ -459,7 +459,8 @@
 /* ============ Fixed, pre-designed copy (not user-editable) ============ */
 const FIXED = {
   brand: 'LOVEFIX',
-  categoryLabel: '回憶',
+  categoryLabel: '想你的頁',
+  poweredByLabel: '見怪不怪 x 客製化歌曲',
   ratingBadge: '🔥 閃光注意',
   metaYear: '2026',
   metaGenre1: '愛情',
@@ -1037,7 +1038,9 @@ function buildFinalHTML(s, slug){
     const rankClass = rank===1 ? ' rank1' : '';
     const img = imgOr(item.image, FALLBACK_TOP5[i] || FALLBACK_HERO);
     const hasTimeLabel = !!(item.timeLabel && item.timeLabel.trim().length > 0);
-    const timeTagHTML = hasTimeLabel ? '            <div class="top5-time-tag">🗓 ' + esc(item.timeLabel) + '</div>\n' : '';
+    const timeTagHTML = hasTimeLabel
+      ? '            <div class="top5-time-tag">🗓 ' + esc(item.timeLabel) + '</div>\n'
+      : '            <div class="top5-time-tag" style="visibility:hidden;">🗓</div>\n';
     return '        <div class="top5-item' + rankClass + '">\n' +
       '          <div class="rank-number">' + rank + '</div>\n' +
       '          <div class="top5-card" onclick="openLightbox(this)">\n' +
@@ -1191,7 +1194,8 @@ function buildFinalHTML(s, slug){
 '    top:0;\n' +
 '    z-index:40;\n' +
 '  }\n' +
-'  .brand{display:flex; align-items:baseline; gap:8px;}\n' +
+'  .brand{display:flex; flex-direction:column; gap:2px;}\n' +
+'  .brand-top{display:flex; align-items:baseline; gap:8px;}\n' +
 '  .logo-word{\n' +
 '    font-family:"Arial Black","Noto Sans TC",sans-serif;\n' +
 '    font-weight:900;\n' +
@@ -1200,6 +1204,31 @@ function buildFinalHTML(s, slug){
 '    color:var(--red);\n' +
 '  }\n' +
 '  .page-label{font-size:18.5px; font-weight:700; color:var(--text);}\n' +
+'  .brand-powered{\n' +
+'    font-size:9.5px; font-weight:600; letter-spacing:0.3px;\n' +
+'    color:var(--text-mute); opacity:0.85; white-space:nowrap;\n' +
+'  }\n' +
+'  .brand-powered-name{color:var(--text-soft); font-weight:700;}\n' +
+'  .audio-ctrl{position:relative; display:flex; align-items:center; gap:2px; flex-shrink:0;}\n' +
+'  .audio-btn{\n' +
+'    background:rgba(255,255,255,0.06); border:none; border-radius:50%;\n' +
+'    width:34px; height:34px; display:flex; align-items:center; justify-content:center;\n' +
+'    color:var(--text-soft); cursor:pointer; flex-shrink:0;\n' +
+'  }\n' +
+'  .audio-btn:active{background:rgba(255,255,255,0.14);}\n' +
+'  .audio-btn svg{width:17px; height:17px;}\n' +
+'  #topPlayBtn svg{width:15px; height:15px;}\n' +
+'  .vol-panel{\n' +
+'    position:absolute; top:42px; right:0; z-index:50;\n' +
+'    background:#1c1c1c; border:1px solid var(--border); border-radius:10px;\n' +
+'    padding:14px 10px; box-shadow:0 8px 24px rgba(0,0,0,0.5);\n' +
+'    opacity:0; transform:translateY(-6px); pointer-events:none;\n' +
+'    transition:opacity 0.2s ease, transform 0.2s ease;\n' +
+'  }\n' +
+'  .vol-panel.show{opacity:1; transform:translateY(0); pointer-events:auto;}\n' +
+'  .vol-panel input[type=range]{\n' +
+'    width:90px; accent-color:var(--red); cursor:pointer;\n' +
+'  }\n' +
 '  .icon-btn{\n' +
 '    position:relative;\n' +
 '    background:none;\n' +
@@ -1376,7 +1405,8 @@ function buildFinalHTML(s, slug){
 '    text-shadow:3px 4px 14px rgba(230,182,79,0.45);\n' +
 '  }\n' +
 '  .top5-card{\n' +
-'    position:relative; z-index:2; width:130px; flex-shrink:0;\n' +
+'    position:relative; z-index:2; width:158px; flex-shrink:0;\n' +
+'    display:flex; flex-direction:column;\n' +
 '    background:var(--bg-soft); border:1px solid var(--border);\n' +
 '    border-radius:8px; overflow:hidden; cursor:pointer;\n' +
 '    box-shadow:0 10px 24px rgba(0,0,0,0.6);\n' +
@@ -1385,7 +1415,7 @@ function buildFinalHTML(s, slug){
 '    border:2px solid var(--gold);\n' +
 '    box-shadow:0 10px 26px rgba(230,182,79,0.3);\n' +
 '  }\n' +
-'  .top5-card img{width:100%; height:166px; object-fit:cover; display:block; background:#333;}\n' +
+'  .top5-card img{width:100%; height:212px; object-fit:cover; display:block; background:#333; flex-shrink:0;}\n' +
 '  .rank-tag{\n' +
 '    position:absolute; top:8px; left:8px;\n' +
 '    background:var(--red); color:#fff;\n' +
@@ -1395,12 +1425,15 @@ function buildFinalHTML(s, slug){
 '  }\n' +
 '  .top5-item.rank1 .rank-tag{background:var(--gold); color:#241a05;}\n' +
 '  .top5-caption{\n' +
-'    padding:9px 10px 11px; font-size:12.5px; line-height:1.6;\n' +
-'    color:var(--text-soft); min-height:58px;\n' +
+'    padding:9px 10px 8px; font-size:12.5px; line-height:1.55;\n' +
+'    color:var(--text-soft); height:60px; overflow:hidden;\n' +
+'    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;\n' +
+'    text-overflow:ellipsis; flex-shrink:0;\n' +
 '  }\n' +
 '  .top5-time-tag{\n' +
-'    display:flex; align-items:center; gap:4px;\n' +
+'    display:flex; align-items:center; gap:4px; height:22px; overflow:hidden;\n' +
 '    padding:0 10px 11px; font-size:11px; color:var(--text-mute); font-weight:700;\n' +
+'    flex-shrink:0;\n' +
 '  }\n' +
 '  .car-arrow{\n' +
 '    position:absolute; top:110px;\n' +
@@ -1753,8 +1786,22 @@ gateHTML +
 '\n' +
 '  <div class="topbar">\n' +
 '    <div class="brand">\n' +
-'      <span class="logo-word">' + esc(FIXED.brand) + '</span>\n' +
-'      <span class="page-label">' + esc(FIXED.categoryLabel) + '</span>\n' +
+'      <div class="brand-top">\n' +
+'        <span class="logo-word">' + esc(FIXED.brand) + '</span>\n' +
+'        <span class="page-label">' + esc(FIXED.categoryLabel) + '</span>\n' +
+'      </div>\n' +
+'      <div class="brand-powered">Powered by <span class="brand-powered-name">' + esc(FIXED.poweredByLabel) + '</span></div>\n' +
+'    </div>\n' +
+'    <div class="audio-ctrl" id="audioCtrl">\n' +
+'      <button class="audio-btn" id="topPlayBtn" onclick="togglePlay()" aria-label="播放/暫停">\n' +
+'        <svg id="topPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>\n' +
+'      </button>\n' +
+'      <button class="audio-btn" id="volBtn" onclick="toggleVolPanel(event)" aria-label="音量">\n' +
+'        <svg id="volIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16.5 12c0-1.77-1-3.29-2.5-4.03v8.06c1.5-.74 2.5-2.26 2.5-4.03z"/></svg>\n' +
+'      </button>\n' +
+'      <div class="vol-panel" id="volPanel" onclick="event.stopPropagation()">\n' +
+'        <input type="range" id="volSlider" min="0" max="100" value="70" oninput="setVolumeFromSlider(this.value)">\n' +
+'      </div>\n' +
 '    </div>\n' +
 '  </div>\n' +
 '\n' +
@@ -2027,7 +2074,15 @@ lyricsHTML + '\n' +
 '  }\n' +
 '  renderProfileGrid();\n' +
 '\n' +
+'  function attemptAutoplay(){\n' +
+'    var a = document.getElementById(\'bgAudio\');\n' +
+'    if(!a) return;\n' +
+'    var p = a.play();\n' +
+'    if(p && p.catch){ p.catch(function(){ /* autoplay 被瀏覽器擋下，使用者可自行點播放鍵 */ }); }\n' +
+'  }\n' +
+'\n' +
 '  function selectRealProfile(){\n' +
+'    attemptAutoplay();\n' +
 '    var pg = document.getElementById(\'gateProfile\');\n' +
 '    if(pg){\n' +
 '      pg.classList.add(\'hide\');\n' +
@@ -2047,6 +2102,7 @@ lyricsHTML + '\n' +
 '    var input = document.getElementById(\'gatePassInput\');\n' +
 '    var val = input ? input.value : \'\';\n' +
 '    if(normalizeGateStr(val) === normalizeGateStr(GATE_PASS)){\n' +
+'      attemptAutoplay();\n' +
 '      var pg = document.getElementById(\'gatePass\');\n' +
 '      if(pg){\n' +
 '        pg.classList.add(\'hide\');\n' +
@@ -2203,23 +2259,35 @@ lyricsHTML + '\n' +
 '  initCertifyPrompt();\n' +
 '\n' +
 '  function initScrollReveal(){\n' +
-'    var els = document.querySelectorAll(\'.reveal-on-scroll\');\n' +
-'    if(!els.length) return;\n' +
-'    if(!(\'IntersectionObserver\' in window)){\n' +
-'      els.forEach(function(el){ el.classList.add(\'revealed\'); });\n' +
-'      return;\n' +
-'    }\n' +
-'    var obs = new IntersectionObserver(function(entries){\n' +
-'      entries.forEach(function(entry){\n' +
-'        if(entry.isIntersecting){\n' +
-'          entry.target.classList.add(\'revealed\');\n' +
-'          obs.unobserve(entry.target);\n' +
+'    try{\n' +
+'      var els = document.querySelectorAll(\'.reveal-on-scroll\');\n' +
+'      if(!els.length) return;\n' +
+'      if(!(\'IntersectionObserver\' in window)){\n' +
+'        els.forEach(function(el){ el.classList.add(\'revealed\'); });\n' +
+'        return;\n' +
+'      }\n' +
+'      var obs = new IntersectionObserver(function(entries){\n' +
+'        entries.forEach(function(entry){\n' +
+'          if(entry.isIntersecting){\n' +
+'            entry.target.classList.add(\'revealed\');\n' +
+'            obs.unobserve(entry.target);\n' +
+'          }\n' +
+'        });\n' +
+'      }, {threshold: 0.08, rootMargin: \'0px 0px -8% 0px\'});\n' +
+'      els.forEach(function(el){\n' +
+'        var rect = el.getBoundingClientRect();\n' +
+'        if(rect.top < window.innerHeight && rect.bottom > 0){\n' +
+'          el.classList.add(\'revealed\');\n' +
+'        } else {\n' +
+'          obs.observe(el);\n' +
 '        }\n' +
 '      });\n' +
-'    }, {threshold: 0.15, rootMargin: \'0px 0px -60px 0px\'});\n' +
-'    els.forEach(function(el){ obs.observe(el); });\n' +
+'    } catch(err){\n' +
+'      document.querySelectorAll(\'.reveal-on-scroll\').forEach(function(el){ el.classList.add(\'revealed\'); });\n' +
+'    }\n' +
 '  }\n' +
 '  initScrollReveal();\n' +
+'  window.addEventListener(\'load\', initScrollReveal);\n' +
 '\n' +
 '  function launchFireworks(){\n' +
 '    var canvas = document.createElement(\'canvas\');\n' +
@@ -2293,12 +2361,20 @@ lyricsHTML + '\n' +
 '\n' +
 '  const audio = document.getElementById(\'bgAudio\');\n' +
 '  const mainIcon = document.getElementById(\'mainPlayIcon\');\n' +
+'  const topIcon = document.getElementById(\'topPlayIcon\');\n' +
 '  const progressFill = document.getElementById(\'progressFill\');\n' +
 '  const curTime = document.getElementById(\'curTime\');\n' +
 '  const durTime = document.getElementById(\'durTime\');\n' +
+'  const volSlider = document.getElementById(\'volSlider\');\n' +
+'  const volIcon = document.getElementById(\'volIcon\');\n' +
+'  const volPanel = document.getElementById(\'volPanel\');\n' +
 '\n' +
 '  const pauseSvg = \'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>\';\n' +
 '  const playSvg = \'<path d="M8 5v14l11-7z"/>\';\n' +
+'  const volSvg = \'<path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16.5 12c0-1.77-1-3.29-2.5-4.03v8.06c1.5-.74 2.5-2.26 2.5-4.03z"/>\';\n' +
+'  const muteSvg = \'<path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M19.8 8.2l-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4z"/>\';\n' +
+'\n' +
+'  audio.volume = 0.7;\n' +
 '\n' +
 '  function formatTime(sVal){\n' +
 '    if(!isFinite(sVal)) return \'0:00\';\n' +
@@ -2315,11 +2391,33 @@ lyricsHTML + '\n' +
 '    }\n' +
 '  }\n' +
 '\n' +
+'  function toggleVolPanel(e){\n' +
+'    if(e) e.stopPropagation();\n' +
+'    if(volPanel) volPanel.classList.toggle(\'show\');\n' +
+'  }\n' +
+'  document.addEventListener(\'click\', function(){\n' +
+'    if(volPanel) volPanel.classList.remove(\'show\');\n' +
+'  });\n' +
+'\n' +
+'  function updateVolIcon(){\n' +
+'    if(!volIcon) return;\n' +
+'    volIcon.innerHTML = (audio.muted || audio.volume === 0) ? muteSvg : volSvg;\n' +
+'  }\n' +
+'  function setVolumeFromSlider(v){\n' +
+'    const vol = Math.max(0, Math.min(100, Number(v))) / 100;\n' +
+'    audio.muted = false;\n' +
+'    audio.volume = vol;\n' +
+'    updateVolIcon();\n' +
+'  }\n' +
+'  updateVolIcon();\n' +
+'\n' +
 '  audio.addEventListener(\'play\', ()=>{\n' +
 '    mainIcon.innerHTML = pauseSvg;\n' +
+'    if(topIcon) topIcon.innerHTML = pauseSvg;\n' +
 '  });\n' +
 '  audio.addEventListener(\'pause\', ()=>{\n' +
 '    mainIcon.innerHTML = playSvg;\n' +
+'    if(topIcon) topIcon.innerHTML = playSvg;\n' +
 '  });\n' +
 '  audio.addEventListener(\'loadedmetadata\', ()=>{\n' +
 '    durTime.textContent = formatTime(audio.duration);\n' +
