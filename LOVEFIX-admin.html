@@ -412,9 +412,9 @@
         <details>
           <summary>⑥ 進場設定</summary>
           <div class="details-body">
-            <div class="section-note">這三項都是選填。填了才會在網頁開場加上對應的關卡效果，留空則不啟用。</div>
+            <div class="section-note">開場一律會顯示「誰在觀看？」的選人頭像畫面（本人大頭貼＋幾個搞笑陌生人），選對本人才能進入下一關密碼。以下欄位都是選填。</div>
             <div class="field">
-              <label>收禮人姓名（開場會顯示「選擇個人檔案」畫面，需輸入這個名字才能解鎖；留空則不啟用）</label>
+              <label>收禮人姓名（會顯示在「誰在觀看？」畫面中，本人頭像下方的名稱；留空則顯示預設文字「我的專屬回憶」）</label>
               <input type="text" data-path="recipientName" placeholder="例如：翁玟萱">
             </div>
             <div class="field">
@@ -422,7 +422,7 @@
               <input type="date" data-path="startDate">
             </div>
             <div class="field">
-              <label>通關密語（進場密碼，預設 0000，也可以改成你們的專屬密語）</label>
+              <label>愛的驗證碼（進場密碼，預設 0000，也可以改成你們的專屬密語）</label>
               <input type="text" data-path="passcode" placeholder="0000">
             </div>
           </div>
@@ -489,11 +489,11 @@ const defaultState = {
   heroImage: '',
   heroText: '從陌生到熟悉，從路人到唯一。這是我們的故事，也是我最想和你一起看到最後的一部影集——而你，是唯一的主角。',
   top5: [
-    {image:'', caption:'我們的第一次告白，海邊的夕陽下，你點頭的那一刻，是我人生最重要的瞬間。'},
-    {image:'', caption:'你生日那年，我偷偷準備的驚喜派對，看到你感動的表情我也紅了眼眶。'},
-    {image:'', caption:'我們一起搬進新家的那一天，雖然累到癱在地上，但很踏實很幸福。'},
-    {image:'', caption:'第一次見到你的家人，緊張到說話都結巴，還好最後大家都很喜歡我。'},
-    {image:'', caption:'我們第一次一起出遠門旅行，緊張又期待的心情到現在都還記得。'}
+    {image:'', caption:'我們的第一次告白，海邊的夕陽下，你點頭的那一刻，是我人生最重要的瞬間。', timeLabel:''},
+    {image:'', caption:'你生日那年，我偷偷準備的驚喜派對，看到你感動的表情我也紅了眼眶。', timeLabel:''},
+    {image:'', caption:'我們一起搬進新家的那一天，雖然累到癱在地上，但很踏實很幸福。', timeLabel:''},
+    {image:'', caption:'第一次見到你的家人，緊張到說話都結巴，還好最後大家都很喜歡我。', timeLabel:''},
+    {image:'', caption:'我們第一次一起出遠門旅行，緊張又期待的心情到現在都還記得。', timeLabel:''}
   ],
   episodes: [
     {qa:['在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。','笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。']},
@@ -923,7 +923,8 @@ defaultState.top5.forEach((item, i)=>{
       '<div class="file-preview" data-preview="top5.' + i + '.image"></div>' +
       '<input type="file" accept="image/*" data-path="top5.' + i + '.image">' +
     '</div></div>' +
-    '<div class="field"><label>情境敘述</label><textarea rows="2" data-path="top5.' + i + '.caption"></textarea></div>';
+    '<div class="field"><label>情境敘述</label><textarea rows="2" data-path="top5.' + i + '.caption"></textarea></div>' +
+    '<div class="field"><label>時間點（非必填，例如：2026年）</label><input type="text" data-path="top5.' + i + '.timeLabel" placeholder="例如：2026年"></div>';
   top5Container.appendChild(card);
 });
 
@@ -1030,12 +1031,15 @@ function buildFinalHTML(s, slug){
     const rank = i+1;
     const rankClass = rank===1 ? ' rank1' : '';
     const img = imgOr(item.image, FALLBACK_TOP5[i] || FALLBACK_HERO);
+    const hasTimeLabel = !!(item.timeLabel && item.timeLabel.trim().length > 0);
+    const timeTagHTML = hasTimeLabel ? '            <div class="top5-time-tag">🗓 ' + esc(item.timeLabel) + '</div>\n' : '';
     return '        <div class="top5-item' + rankClass + '">\n' +
       '          <div class="rank-number">' + rank + '</div>\n' +
       '          <div class="top5-card" onclick="openLightbox(this)">\n' +
       '            <div class="rank-tag">TOP ' + rank + '</div>\n' +
       '            <img src="' + img + '" alt="回憶照片' + rank + '">\n' +
       '            <div class="top5-caption">' + esc(item.caption) + '</div>\n' +
+      timeTagHTML +
       '          </div>\n' +
       '        </div>';
   }).join('\n');
@@ -1069,55 +1073,47 @@ function buildFinalHTML(s, slug){
   const lyricsLines = (s.lyricsText || '').split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const lyricsHTML = lyricsLines.map(line=>'        <p>' + esc(line) + '</p>').join('\n');
 
-  const hasNameGate = !!(s.recipientName && s.recipientName.trim().length > 0);
   const hasPassGate = !!(s.passcode && s.passcode.trim().length > 0);
   const hasCounter = !!(s.startDate && s.startDate.trim().length > 0);
-  const recipientNameJs = escJs(s.recipientName || '');
+  const realProfileNameJs = escJs((s.recipientName && s.recipientName.trim()) ? s.recipientName.trim() : '我的專屬回憶');
+  const realProfileImgJs = escJs(heroImg);
   const passcodeJs = escJs(s.passcode || '');
   const startDateJs = escJs(s.startDate || '');
 
-  let gateHTML = '';
-  if(hasNameGate || hasPassGate){
-    gateHTML =
-      '<div class="gate-layer" id="gateLayer">\n' +
-      (hasNameGate ?
-        '  <div class="gate-screen" id="gateName">\n' +
-        '    <div class="gate-box">\n' +
-        '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
-        '      <div class="gate-avatar">' + badgeLetter + '</div>\n' +
-        '      <div class="gate-title">這是誰的專屬回憶？</div>\n' +
-        '      <div class="gate-sub">輸入你的名字，解鎖屬於你的故事</div>\n' +
-        '      <input type="text" class="gate-input" id="gateNameInput" placeholder="輸入你的名字" autocomplete="off">\n' +
-        '      <button class="gate-btn" onclick="checkNameGate()">進入我們的故事</button>\n' +
-        '      <div class="gate-error" id="gateNameError"></div>\n' +
-        '    </div>\n' +
-        '  </div>\n'
-        : '') +
-      (hasPassGate ?
-        '  <div class="gate-screen" id="gatePass" style="display:none;">\n' +
-        '    <div class="gate-box">\n' +
-        '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
-        '      <div class="gate-lock">🔒</div>\n' +
-        '      <div class="gate-title">請輸入通關密語</div>\n' +
-        '      <div class="gate-sub">只有你們兩個知道的秘密</div>\n' +
-        '      <input type="text" class="gate-input gate-input-pass" id="gatePassInput" placeholder="＊＊＊＊" autocomplete="off">\n' +
-        '      <button class="gate-btn" onclick="checkPassGate()">解鎖</button>\n' +
-        '      <div class="gate-error" id="gatePassError"></div>\n' +
-        '    </div>\n' +
-        '  </div>\n'
-        : '') +
-      '</div>\n';
-  }
+  const gateHTML =
+    '<div class="gate-layer" id="gateLayer">\n' +
+    '  <div class="gate-screen" id="gateProfile">\n' +
+    '    <div class="profile-select-box">\n' +
+    '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
+    '      <div class="profile-select-title">誰在觀看？</div>\n' +
+    '      <div class="profile-grid" id="profileGrid"></div>\n' +
+    '      <div class="gate-error" id="profileError"></div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    (hasPassGate ?
+      '  <div class="gate-screen" id="gatePass" style="display:none;">\n' +
+      '    <div class="gate-box">\n' +
+      '      <div class="gate-logo">' + esc(FIXED.brand) + '</div>\n' +
+      '      <div class="gate-lock">🔒</div>\n' +
+      '      <div class="gate-title">請輸入愛的驗證碼</div>\n' +
+      '      <div class="gate-sub">只有你們兩個知道的秘密</div>\n' +
+      '      <input type="text" class="gate-input gate-input-pass" id="gatePassInput" placeholder="＊＊＊＊" autocomplete="off">\n' +
+      '      <button class="gate-btn" onclick="checkPassGate()">解鎖</button>\n' +
+      '      <div class="gate-error" id="gatePassError"></div>\n' +
+      '    </div>\n' +
+      '  </div>\n'
+      : '') +
+    '</div>\n';
 
   const loveCounterHTML = hasCounter ?
     '      <div class="love-counter-wrap">\n' +
     '        <div class="love-counter-caption">💕 我們已經相戀</div>\n' +
     '        <div class="love-counter">\n' +
+    '          <div class="love-counter-item" id="loveYearBlock"><div class="love-counter-num" id="loveYears">0</div><div class="love-counter-label">年</div></div>\n' +
+    '          <div class="love-counter-sep" id="loveSep1">·</div>\n' +
+    '          <div class="love-counter-item"><div class="love-counter-num" id="loveMonths">0</div><div class="love-counter-label">月</div></div>\n' +
+    '          <div class="love-counter-sep">·</div>\n' +
     '          <div class="love-counter-item"><div class="love-counter-num" id="loveDays">0</div><div class="love-counter-label">天</div></div>\n' +
-    '          <div class="love-counter-sep">:</div>\n' +
-    '          <div class="love-counter-item"><div class="love-counter-num" id="loveHours">00</div><div class="love-counter-label">小時</div></div>\n' +
-    '          <div class="love-counter-sep">:</div>\n' +
-    '          <div class="love-counter-item"><div class="love-counter-num" id="loveMins">00</div><div class="love-counter-label">分鐘</div></div>\n' +
     '        </div>\n' +
     '      </div>\n'
     : '';
@@ -1383,6 +1379,10 @@ function buildFinalHTML(s, slug){
 '    padding:9px 10px 11px; font-size:12.5px; line-height:1.6;\n' +
 '    color:var(--text-soft); min-height:58px;\n' +
 '  }\n' +
+'  .top5-time-tag{\n' +
+'    display:flex; align-items:center; gap:4px;\n' +
+'    padding:0 10px 11px; font-size:11px; color:var(--text-mute); font-weight:700;\n' +
+'  }\n' +
 '  .car-arrow{\n' +
 '    position:absolute; top:110px;\n' +
 '    width:30px; height:30px; border-radius:50%;\n' +
@@ -1610,7 +1610,7 @@ function buildFinalHTML(s, slug){
 '    width:100%; max-width:320px; text-align:center;\n' +
 '    display:flex; flex-direction:column; align-items:center; gap:14px;\n' +
 '  }\n' +
-'  .gate-box.shake{animation:gateShake 0.4s;}\n' +
+'  .gate-box.shake, .profile-item.shake{animation:gateShake 0.4s;}\n' +
 '  @keyframes gateShake{\n' +
 '    0%,100%{transform:translateX(0);}\n' +
 '    20%{transform:translateX(-8px);}\n' +
@@ -1645,6 +1645,19 @@ function buildFinalHTML(s, slug){
 '  }\n' +
 '  .gate-btn:active{opacity:0.85;}\n' +
 '  .gate-error{font-size:12px; color:#ff6b6b; min-height:16px;}\n' +
+'  .profile-select-box{width:100%; max-width:320px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:18px;}\n' +
+'  .profile-select-title{font-size:19px; font-weight:800; color:var(--text);}\n' +
+'  .profile-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:22px 18px; width:100%;}\n' +
+'  .profile-item{display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;}\n' +
+'  .profile-avatar{\n' +
+'    width:78px; height:78px; border-radius:10px; overflow:hidden;\n' +
+'    background:#2a2a2a; border:2px solid transparent;\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    font-size:34px; transition:transform 0.15s, border-color 0.15s;\n' +
+'  }\n' +
+'  .profile-avatar img{width:100%; height:100%; object-fit:cover; display:block;}\n' +
+'  .profile-item:active .profile-avatar{transform:scale(0.93); border-color:var(--red);}\n' +
+'  .profile-name{font-size:12px; color:var(--text-soft); text-align:center; line-height:1.4;}\n' +
 '  .love-counter-wrap{padding:22px 18px 4px;}\n' +
 '  .love-counter-caption{font-size:12.5px; color:var(--text-soft); margin-bottom:8px; font-weight:600;}\n' +
 '  .love-counter{\n' +
@@ -1656,6 +1669,54 @@ function buildFinalHTML(s, slug){
 '  .love-counter-num{font-size:20px; font-weight:900; color:var(--gold); line-height:1.1;}\n' +
 '  .love-counter-label{font-size:10.5px; color:var(--text-mute); margin-top:2px;}\n' +
 '  .love-counter-sep{font-size:16px; color:var(--text-mute); font-weight:700;}\n' +
+'  .certify-prompt{\n' +
+'    margin:24px auto 0; max-width:320px;\n' +
+'    opacity:0; transform:translateY(16px);\n' +
+'    transition:opacity 0.6s ease, transform 0.6s ease;\n' +
+'  }\n' +
+'  .certify-prompt.in-view{opacity:1; transform:translateY(0);}\n' +
+'  .certify-question{\n' +
+'    display:flex; flex-direction:column; align-items:center; gap:14px;\n' +
+'    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);\n' +
+'    border-radius:14px; padding:20px 18px;\n' +
+'  }\n' +
+'  .certify-q-text{font-size:14px; font-weight:700; color:var(--text); text-align:center; line-height:1.55;}\n' +
+'  .certify-q-btns{display:flex; gap:12px;}\n' +
+'  .certify-btn{\n' +
+'    border:none; border-radius:999px; padding:10px 26px;\n' +
+'    font-size:13.5px; font-weight:800; cursor:pointer;\n' +
+'  }\n' +
+'  .certify-btn.yes{background:var(--red); color:#fff;}\n' +
+'  .certify-btn.no{background:transparent; color:var(--text-soft); border:1.5px solid #555;}\n' +
+'  .certify-btn:active{opacity:0.8;}\n' +
+'  .certify-result{\n' +
+'    display:flex; align-items:center; justify-content:center;\n' +
+'    background:rgba(230,182,79,0.12); border:1px solid rgba(230,182,79,0.35);\n' +
+'    border-radius:14px; padding:18px;\n' +
+'    animation:certifyPop 0.5s ease;\n' +
+'  }\n' +
+'  .certify-result-text{font-size:14.5px; font-weight:800; color:var(--gold); text-align:center; line-height:1.5;}\n' +
+'  @keyframes certifyPop{\n' +
+'    0%{transform:scale(0.8); opacity:0;}\n' +
+'    60%{transform:scale(1.05); opacity:1;}\n' +
+'    100%{transform:scale(1); opacity:1;}\n' +
+'  }\n' +
+'  .certify-badge{\n' +
+'    display:none; justify-content:center; margin:30px 0 6px;\n' +
+'    opacity:0; transform:scale(0.85);\n' +
+'    transition:opacity 0.5s ease, transform 0.5s ease;\n' +
+'  }\n' +
+'  .certify-badge.show{opacity:1; transform:scale(1);}\n' +
+'  .certify-badge-inner{\n' +
+'    display:flex; align-items:center; gap:12px;\n' +
+'    background:linear-gradient(135deg, rgba(230,182,79,0.16), rgba(229,9,20,0.1));\n' +
+'    border:1.5px solid var(--gold);\n' +
+'    border-radius:16px; padding:14px 22px;\n' +
+'  }\n' +
+'  .certify-badge-icon{font-size:26px;}\n' +
+'  .certify-badge-title{font-size:12px; color:var(--text-soft); font-weight:700;}\n' +
+'  .certify-badge-forever{font-size:19px; font-weight:900; letter-spacing:2px; color:var(--gold);}\n' +
+'  .fw-canvas{position:fixed; inset:0; z-index:600; pointer-events:none;}\n' +
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
@@ -1809,9 +1870,29 @@ lyricsHTML + '\n' +
 '    <div class="end-logo">' + esc(FIXED.brand) + '</div>\n' +
 '    <div class="end-title">' + esc(FIXED.endTitle) + '</div>\n' +
 '    <div class="end-sub">' + nl2br(FIXED.endSub) + '</div>\n' +
+'\n' +
+'    <div class="certify-prompt" id="certifyPrompt">\n' +
+'      <div class="certify-question" id="certifyQuestion">\n' +
+'        <div class="certify-q-text">你是否願意繼續觀看？</div>\n' +
+'        <div class="certify-q-btns">\n' +
+'          <button class="certify-btn yes" onclick="handleCertifyYes()">是</button>\n' +
+'          <button class="certify-btn no" onclick="handleCertifyNo()">否</button>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'      <div class="certify-question" id="certifyPenalty" style="display:none;">\n' +
+'        <div class="certify-q-text">解約需支付愛情資遣費公道價 8 千 8 百萬，你確定要繼續？</div>\n' +
+'        <div class="certify-q-btns">\n' +
+'          <button class="certify-btn yes" onclick="handleCertifyConfirm()">我會好好繼續的</button>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'      <div class="certify-result" id="certifyResult" style="display:none;">\n' +
+'        <div class="certify-result-text">LOVEFIX 認證！期待你們未來的日子！</div>\n' +
+'      </div>\n' +
+'    </div>\n' +
+'\n' +
 '    <button class="end-btn" onclick="restartShow()">\n' +
 '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>\n' +
-'      重新播放\n' +
+'      再看一次\n' +
 '    </button>\n' +
 '    <div class="end-meta">' + esc(FIXED.credit1) + '</div>\n' +
 '    <div class="end-meta" style="margin-top:4px;">' + esc(FIXED.credit2) + '</div>\n' +
@@ -1831,6 +1912,16 @@ lyricsHTML + '\n' +
 '        複製分享連結\n' +
 '      </button>\n' +
 '    </div>\n' +
+'\n' +
+'    <div class="certify-badge" id="certifyBadge">\n' +
+'      <div class="certify-badge-inner">\n' +
+'        <div class="certify-badge-icon">💍</div>\n' +
+'        <div class="certify-badge-text">\n' +
+'          <div class="certify-badge-title">本頁面已認證</div>\n' +
+'          <div class="certify-badge-forever">FOREVER</div>\n' +
+'        </div>\n' +
+'      </div>\n' +
+'    </div>\n' +
 '  </div>\n' +
 '\n' +
 '</div>\n' +
@@ -1846,15 +1937,25 @@ lyricsHTML + '\n' +
 '<div class="watermark"><span class="wm-dot"></span>' + esc(FIXED.brand) + ' · ' + esc(FIXED.credit2) + '</div>\n' +
 '\n' +
 '<script>\n' +
-'  var GATE_NAME = \'' + recipientNameJs + '\';\n' +
+'  var REAL_PROFILE_NAME = \'' + realProfileNameJs + '\';\n' +
+'  var REAL_PROFILE_IMG = \'' + realProfileImgJs + '\';\n' +
+'  var DECOY_PROFILES = [\n' +
+'    {emoji: \'🕵️\', name: \'神秘訪客\'},\n' +
+'    {emoji: \'🐻\', name: \'隔壁老王\'},\n' +
+'    {emoji: \'👻\', name: \'路過的幽靈\'}\n' +
+'  ];\n' +
 '  var GATE_PASS = \'' + passcodeJs + '\';\n' +
-'  var HAS_NAME_GATE = ' + (hasNameGate ? 'true' : 'false') + ';\n' +
 '  var HAS_PASS_GATE = ' + (hasPassGate ? 'true' : 'false') + ';\n' +
 '  var START_DATE = \'' + startDateJs + '\';\n' +
 '  var HAS_COUNTER = ' + (hasCounter ? 'true' : 'false') + ';\n' +
 '\n' +
 '  function normalizeGateStr(v){\n' +
 '    return (v || \'\').toString().trim().toLowerCase().replace(/\\s+/g, \'\');\n' +
+'  }\n' +
+'\n' +
+'  function escHtmlRuntime(v){\n' +
+'    return String(v == null ? \'\' : v)\n' +
+'      .replace(/&/g, \'&amp;\').replace(/</g, \'&lt;\').replace(/>/g, \'&gt;\').replace(/"/g, \'&quot;\');\n' +
 '  }\n' +
 '\n' +
 '  function shakeGate(boxEl){\n' +
@@ -1881,22 +1982,43 @@ lyricsHTML + '\n' +
 '    }\n' +
 '  }\n' +
 '\n' +
-'  function checkNameGate(){\n' +
-'    var input = document.getElementById(\'gateNameInput\');\n' +
-'    var val = input ? input.value : \'\';\n' +
-'    if(normalizeGateStr(val) === normalizeGateStr(GATE_NAME)){\n' +
-'      var ng = document.getElementById(\'gateName\');\n' +
-'      if(ng){\n' +
-'        ng.classList.add(\'hide\');\n' +
-'        setTimeout(function(){ ng.style.display = \'none\'; goToPassGateOrUnlock(); }, 420);\n' +
-'      } else {\n' +
-'        goToPassGateOrUnlock();\n' +
-'      }\n' +
-'    } else {\n' +
-'      var errEl = document.getElementById(\'gateNameError\');\n' +
-'      if(errEl) errEl.textContent = \'名字好像不太對，再想想看～\';\n' +
-'      shakeGate(input ? input.closest(\'.gate-box\') : null);\n' +
+'  function renderProfileGrid(){\n' +
+'    var grid = document.getElementById(\'profileGrid\');\n' +
+'    if(!grid) return;\n' +
+'    var items = [{real: true, img: REAL_PROFILE_IMG, name: REAL_PROFILE_NAME}].concat(\n' +
+'      DECOY_PROFILES.map(function(d){ return {real: false, emoji: d.emoji, name: d.name}; })\n' +
+'    );\n' +
+'    for(var i = items.length - 1; i > 0; i--){\n' +
+'      var j = Math.floor(Math.random() * (i + 1));\n' +
+'      var tmp = items[i]; items[i] = items[j]; items[j] = tmp;\n' +
 '    }\n' +
+'    grid.innerHTML = items.map(function(it){\n' +
+'      if(it.real){\n' +
+'        return \'<div class="profile-item" onclick="selectRealProfile()">\' +\n' +
+'          \'<div class="profile-avatar"><img src="\' + escHtmlRuntime(it.img) + \'" alt="頭像"></div>\' +\n' +
+'          \'<div class="profile-name">\' + escHtmlRuntime(it.name) + \'</div></div>\';\n' +
+'      }\n' +
+'      return \'<div class="profile-item" onclick="selectDecoyProfile(this)">\' +\n' +
+'        \'<div class="profile-avatar emoji">\' + escHtmlRuntime(it.emoji) + \'</div>\' +\n' +
+'        \'<div class="profile-name">\' + escHtmlRuntime(it.name) + \'</div></div>\';\n' +
+'    }).join(\'\');\n' +
+'  }\n' +
+'  renderProfileGrid();\n' +
+'\n' +
+'  function selectRealProfile(){\n' +
+'    var pg = document.getElementById(\'gateProfile\');\n' +
+'    if(pg){\n' +
+'      pg.classList.add(\'hide\');\n' +
+'      setTimeout(function(){ pg.style.display = \'none\'; goToPassGateOrUnlock(); }, 420);\n' +
+'    } else {\n' +
+'      goToPassGateOrUnlock();\n' +
+'    }\n' +
+'  }\n' +
+'\n' +
+'  function selectDecoyProfile(el){\n' +
+'    var errEl = document.getElementById(\'profileError\');\n' +
+'    if(errEl) errEl.textContent = \'你不是本人唷 😅\';\n' +
+'    shakeGate(el);\n' +
 '  }\n' +
 '\n' +
 '  function checkPassGate(){\n' +
@@ -1912,7 +2034,7 @@ lyricsHTML + '\n' +
 '      }\n' +
 '    } else {\n' +
 '      var errEl = document.getElementById(\'gatePassError\');\n' +
-'      if(errEl) errEl.textContent = \'通關密語不對，再輸入一次看看～\';\n' +
+'      if(errEl) errEl.textContent = \'驗證碼不對，再輸入一次看看～\';\n' +
 '      shakeGate(input ? input.closest(\'.gate-box\') : null);\n' +
 '    }\n' +
 '  }\n' +
@@ -1928,15 +2050,6 @@ lyricsHTML + '\n' +
 '  function initGate(){\n' +
 '    var layer = document.getElementById(\'gateLayer\');\n' +
 '    if(!layer) return;\n' +
-'    if(HAS_NAME_GATE){\n' +
-'      var ni = document.getElementById(\'gateNameInput\');\n' +
-'      if(ni){\n' +
-'        ni.addEventListener(\'keydown\', function(e){ if(e.key === \'Enter\') checkNameGate(); });\n' +
-'        setTimeout(function(){ ni.focus(); }, 300);\n' +
-'      }\n' +
-'    } else {\n' +
-'      goToPassGateOrUnlock();\n' +
-'    }\n' +
 '    if(HAS_PASS_GATE){\n' +
 '      var pi = document.getElementById(\'gatePassInput\');\n' +
 '      if(pi){\n' +
@@ -1951,22 +2064,177 @@ lyricsHTML + '\n' +
 '    var start = new Date(START_DATE + \'T00:00:00\');\n' +
 '    if(isNaN(start.getTime())) return;\n' +
 '    var now = new Date();\n' +
-'    var diffMs = now.getTime() - start.getTime();\n' +
-'    if(diffMs < 0) diffMs = 0;\n' +
-'    var totalSec = Math.floor(diffMs / 1000);\n' +
-'    var days = Math.floor(totalSec / 86400);\n' +
-'    var hours = Math.floor((totalSec % 86400) / 3600);\n' +
-'    var mins = Math.floor((totalSec % 3600) / 60);\n' +
+'    var y = now.getFullYear() - start.getFullYear();\n' +
+'    var m = now.getMonth() - start.getMonth();\n' +
+'    var d = now.getDate() - start.getDate();\n' +
+'    if(d < 0){\n' +
+'      m -= 1;\n' +
+'      d += new Date(now.getFullYear(), now.getMonth(), 0).getDate();\n' +
+'    }\n' +
+'    if(m < 0){\n' +
+'      y -= 1;\n' +
+'      m += 12;\n' +
+'    }\n' +
+'    if(y < 0 || (y === 0 && m < 0)){ y = 0; m = 0; d = 0; }\n' +
+'    var yEl = document.getElementById(\'loveYears\');\n' +
+'    var mEl = document.getElementById(\'loveMonths\');\n' +
 '    var dEl = document.getElementById(\'loveDays\');\n' +
-'    var hEl = document.getElementById(\'loveHours\');\n' +
-'    var mEl = document.getElementById(\'loveMins\');\n' +
-'    if(dEl) dEl.textContent = days;\n' +
-'    if(hEl) hEl.textContent = String(hours).padStart(2, \'0\');\n' +
-'    if(mEl) mEl.textContent = String(mins).padStart(2, \'0\');\n' +
+'    var yBlock = document.getElementById(\'loveYearBlock\');\n' +
+'    var sep1 = document.getElementById(\'loveSep1\');\n' +
+'    if(yEl) yEl.textContent = y;\n' +
+'    if(mEl) mEl.textContent = m;\n' +
+'    if(dEl) dEl.textContent = d;\n' +
+'    var showYear = y > 0;\n' +
+'    if(yBlock) yBlock.style.display = showYear ? \'\' : \'none\';\n' +
+'    if(sep1) sep1.style.display = showYear ? \'\' : \'none\';\n' +
 '  }\n' +
 '  if(HAS_COUNTER){\n' +
 '    updateLoveCounter();\n' +
-'    setInterval(updateLoveCounter, 1000 * 30);\n' +
+'    setInterval(updateLoveCounter, 1000 * 60);\n' +
+'  }\n' +
+'\n' +
+'  var CERTIFY_KEY = \'lovefix_certified_\' + (typeof location !== \'undefined\' ? location.pathname : \'x\');\n' +
+'  function certifySafeGet(key){\n' +
+'    try{ return localStorage.getItem(key); }catch(e){ return null; }\n' +
+'  }\n' +
+'  function certifySafeSet(key, val){\n' +
+'    try{ localStorage.setItem(key, val); }catch(e){}\n' +
+'  }\n' +
+'  function isCertified(){ return certifySafeGet(CERTIFY_KEY) === \'yes\'; }\n' +
+'  function markCertified(){ certifySafeSet(CERTIFY_KEY, \'yes\'); }\n' +
+'\n' +
+'  function showCertifyResult(){\n' +
+'    var q = document.getElementById(\'certifyQuestion\');\n' +
+'    var p = document.getElementById(\'certifyPenalty\');\n' +
+'    var r = document.getElementById(\'certifyResult\');\n' +
+'    if(q) q.style.display = \'none\';\n' +
+'    if(p) p.style.display = \'none\';\n' +
+'    if(r) r.style.display = \'flex\';\n' +
+'  }\n' +
+'\n' +
+'  function revealForeverBadge(){\n' +
+'    var badge = document.getElementById(\'certifyBadge\');\n' +
+'    if(!badge) return;\n' +
+'    badge.style.display = \'flex\';\n' +
+'    requestAnimationFrame(function(){\n' +
+'      requestAnimationFrame(function(){ badge.classList.add(\'show\'); });\n' +
+'    });\n' +
+'  }\n' +
+'\n' +
+'  function handleCertifyYes(){\n' +
+'    showCertifyResult();\n' +
+'    launchFireworks();\n' +
+'    markCertified();\n' +
+'    revealForeverBadge();\n' +
+'  }\n' +
+'\n' +
+'  function handleCertifyNo(){\n' +
+'    var q = document.getElementById(\'certifyQuestion\');\n' +
+'    var p = document.getElementById(\'certifyPenalty\');\n' +
+'    if(q) q.style.display = \'none\';\n' +
+'    if(p) p.style.display = \'flex\';\n' +
+'  }\n' +
+'\n' +
+'  function handleCertifyConfirm(){\n' +
+'    showCertifyResult();\n' +
+'    launchFireworks();\n' +
+'    markCertified();\n' +
+'    revealForeverBadge();\n' +
+'  }\n' +
+'\n' +
+'  function initCertifyPrompt(){\n' +
+'    var block = document.getElementById(\'certifyPrompt\');\n' +
+'    if(!block) return;\n' +
+'    if(isCertified()){\n' +
+'      block.classList.add(\'in-view\');\n' +
+'      showCertifyResult();\n' +
+'      revealForeverBadge();\n' +
+'      return;\n' +
+'    }\n' +
+'    if(\'IntersectionObserver\' in window){\n' +
+'      var obs = new IntersectionObserver(function(entries){\n' +
+'        entries.forEach(function(entry){\n' +
+'          if(entry.isIntersecting){\n' +
+'            block.classList.add(\'in-view\');\n' +
+'            obs.unobserve(block);\n' +
+'          }\n' +
+'        });\n' +
+'      }, {threshold:0.4});\n' +
+'      obs.observe(block);\n' +
+'    } else {\n' +
+'      block.classList.add(\'in-view\');\n' +
+'    }\n' +
+'  }\n' +
+'  initCertifyPrompt();\n' +
+'\n' +
+'  function launchFireworks(){\n' +
+'    var canvas = document.createElement(\'canvas\');\n' +
+'    canvas.className = \'fw-canvas\';\n' +
+'    document.body.appendChild(canvas);\n' +
+'    var ctx = canvas.getContext(\'2d\');\n' +
+'    function resize(){\n' +
+'      canvas.width = window.innerWidth;\n' +
+'      canvas.height = window.innerHeight;\n' +
+'    }\n' +
+'    resize();\n' +
+'    window.addEventListener(\'resize\', resize);\n' +
+'\n' +
+'    var colors = [\'#e50914\', \'#e6b64f\', \'#ff6b9d\', \'#9b8cff\', \'#5fd6a8\', \'#ffffff\'];\n' +
+'    var particles = [];\n' +
+'\n' +
+'    function spawnBurst(x, y){\n' +
+'      var count = 40;\n' +
+'      for(var i = 0; i < count; i++){\n' +
+'        var angle = (Math.PI * 2 * i) / count;\n' +
+'        var speed = 2 + Math.random() * 3;\n' +
+'        particles.push({\n' +
+'          x: x, y: y,\n' +
+'          vx: Math.cos(angle) * speed,\n' +
+'          vy: Math.sin(angle) * speed,\n' +
+'          life: 1,\n' +
+'          color: colors[Math.floor(Math.random() * colors.length)]\n' +
+'        });\n' +
+'      }\n' +
+'    }\n' +
+'\n' +
+'    var bursts = 5;\n' +
+'    for(var b = 0; b < bursts; b++){\n' +
+'      setTimeout((function(idx){\n' +
+'        return function(){\n' +
+'          spawnBurst(\n' +
+'            canvas.width * (0.25 + Math.random() * 0.5),\n' +
+'            canvas.height * (0.2 + Math.random() * 0.35)\n' +
+'          );\n' +
+'        };\n' +
+'      })(b), b * 300);\n' +
+'    }\n' +
+'\n' +
+'    var startTime = Date.now();\n' +
+'    function tick(){\n' +
+'      ctx.clearRect(0, 0, canvas.width, canvas.height);\n' +
+'      particles.forEach(function(p){\n' +
+'        p.x += p.vx;\n' +
+'        p.y += p.vy;\n' +
+'        p.vy += 0.05;\n' +
+'        p.life -= 0.012;\n' +
+'        if(p.life > 0){\n' +
+'          ctx.globalAlpha = Math.max(p.life, 0);\n' +
+'          ctx.fillStyle = p.color;\n' +
+'          ctx.beginPath();\n' +
+'          ctx.arc(p.x, p.y, 2.6, 0, Math.PI * 2);\n' +
+'          ctx.fill();\n' +
+'        }\n' +
+'      });\n' +
+'      particles = particles.filter(function(p){ return p.life > 0; });\n' +
+'      ctx.globalAlpha = 1;\n' +
+'      if(Date.now() - startTime < 3200){\n' +
+'        requestAnimationFrame(tick);\n' +
+'      } else {\n' +
+'        canvas.remove();\n' +
+'        window.removeEventListener(\'resize\', resize);\n' +
+'      }\n' +
+'    }\n' +
+'    requestAnimationFrame(tick);\n' +
 '  }\n' +
 '\n' +
 '  const audio = document.getElementById(\'bgAudio\');\n' +
