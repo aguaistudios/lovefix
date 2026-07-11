@@ -4,19 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LOVEFIX — 免費建立我的專屬頁面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --black:#0a0a0a; --bg-soft:#161616; --border:#2a2a2a;
-    --red:#e50914; --gold:#e6b64f;
-    --text:#f2f2f2; --text-soft:#c9c9c9; --text-mute:#8a8a8a;
+    --black:#000000; --bg:#141414; --bg-soft:#1c1c1c; --bg-card:#232323;
+    --red:#e50914; --red-dim:rgba(229,9,20,0.15);
+    --gold:#e6b64f; --gold-dim:rgba(230,182,79,0.15);
+    --purple:#9b8cff; --purple-dim:rgba(155,140,255,0.14);
+    --teal:#5fd6a8; --teal-dim:rgba(95,214,168,0.14);
+    --text:#f2f2f2; --text-soft:#b8b8b8; --text-mute:#7a7a7a;
+    --border:#333333;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{background:var(--black); color:var(--text);}
+  html,body{background:var(--black);}
   body{
     font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",-apple-system,sans-serif;
+    color:var(--text);
+    display:flex; justify-content:center;
     -webkit-font-smoothing:antialiased;
   }
-  .page{max-width:480px; margin:0 auto; position:relative; min-height:100vh; overflow-x:hidden;}
+  .page{width:100%; max-width:480px; min-height:100vh; background:var(--bg); position:relative; overflow-x:hidden; box-shadow:0 0 50px rgba(0,0,0,0.7);}
 
   /* ---------- Topbar ---------- */
   .topbar{
@@ -26,41 +34,46 @@
     width:100%; max-width:480px; z-index:200;
     box-shadow:0 4px 16px rgba(0,0,0,0.35);
   }
+  .topbar-spacer{width:100%; height:58px;}
   .brand{display:flex; flex-direction:column; gap:2px;}
   .brand-top{display:flex; align-items:baseline; gap:8px;}
   .logo-word{font-family:"Arial Black","Noto Sans TC",sans-serif; font-weight:900; font-size:22px; letter-spacing:0.5px; color:var(--red);}
-  .page-label{font-size:16.5px; font-weight:700; color:var(--text);}
+  .page-label{font-size:18.5px; font-weight:700; color:var(--text);}
   .brand-powered{font-size:9.5px; font-weight:600; letter-spacing:0.3px; color:var(--text-mute); opacity:0.85; white-space:nowrap;}
-  .brand-powered b{color:var(--text-soft); font-weight:700;}
-  .topbar-spacer{height:64px;}
+  .brand-powered-name{color:var(--text-soft); font-weight:700;}
 
-  /* ---------- Buttons ---------- */
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:6px;
-    border:none; border-radius:10px; cursor:pointer;
-    font-family:inherit; font-weight:800; font-size:14.5px;
-    padding:14px 22px; width:100%;
+  /* ---------- Buttons (matching real page language) ---------- */
+  .gate-btn{
+    width:100%; background:var(--red); color:#fff; border:none; border-radius:8px;
+    padding:13px 16px; font-size:14.5px; font-weight:800; cursor:pointer; text-align:center;
   }
-  .btn-primary{background:var(--red); color:#fff;}
-  .btn-primary:active{opacity:0.85;}
-  .btn-gold{background:var(--gold); color:#241a05;}
-  .btn-gold:active{opacity:0.85;}
-  .btn-ghost{background:rgba(255,255,255,0.06); color:var(--text-soft); border:1px solid var(--border);}
-  .btn-ghost:active{background:rgba(255,255,255,0.1);}
-  .btn-sm{width:auto; padding:9px 16px; font-size:12.5px;}
-  .btn[disabled]{opacity:0.4; pointer-events:none;}
+  .gate-btn:active{opacity:0.85;}
+  .share-btn-outline{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    background:transparent; color:var(--text); border:1px solid #555; border-radius:999px;
+    font-size:13.5px; font-weight:700; padding:12px 22px; cursor:pointer;
+  }
+  .share-btn-outline:active{opacity:0.7; background:rgba(255,255,255,0.06);}
+  .add-season-btn{
+    display:block; width:100%; text-align:center; padding:13px 26px; border-radius:8px;
+    background:var(--gold); color:#241a05; font-size:14.5px; font-weight:800;
+    text-decoration:none; border:none; cursor:pointer;
+  }
+  .add-season-btn:active{opacity:0.8;}
+  .btn-row{display:flex; gap:10px;}
+  .btn-row .gate-btn, .btn-row .share-btn-outline{flex:1;}
 
   /* ---------- Wizard shell ---------- */
   .tw-screen{display:none; padding:24px 20px 60px;}
   .tw-screen.active{display:block;}
-  .tw-eyebrow{font-size:11.5px; font-weight:800; color:var(--red); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;}
+  .tw-eyebrow{font-size:11px; font-weight:800; color:var(--red); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;}
   .tw-title{font-size:21px; font-weight:900; line-height:1.4; margin-bottom:6px;}
   .tw-sub{font-size:13px; color:var(--text-mute); line-height:1.7; margin-bottom:24px;}
   .tw-field{margin-bottom:18px;}
   .tw-label{display:block; font-size:12.5px; font-weight:700; color:var(--text-soft); margin-bottom:8px;}
   .tw-label .opt{color:var(--text-mute); font-weight:500;}
   .tw-input, .tw-textarea{
-    width:100%; background:var(--bg-soft); border:1px solid var(--border); border-radius:10px;
+    width:100%; background:var(--bg-soft); border:1px solid var(--border); border-radius:8px;
     color:var(--text); font-family:inherit; font-size:15px; padding:13px 14px;
   }
   .tw-input:focus, .tw-textarea:focus{outline:none; border-color:var(--red);}
@@ -70,21 +83,23 @@
   .tw-progress-dot{flex:1; height:3px; border-radius:3px; background:var(--border);}
   .tw-progress-dot.done{background:var(--red);}
   .tw-nav-row{display:flex; gap:10px; margin-top:28px;}
-  .tw-nav-row .btn{width:auto; flex:1;}
+  .tw-nav-row > *{flex:1;}
 
-  .tw-choice-list{display:flex; flex-direction:column; gap:10px;}
-  .tw-choice{
-    background:var(--bg-soft); border:1.5px solid var(--border); border-radius:12px;
-    padding:14px 16px; font-size:14px; color:var(--text-soft); cursor:pointer; font-weight:600;
-    line-height:1.5;
+  /* cat-pill choice chips, exactly like real genre filter chips */
+  .tw-choice-list{display:flex; flex-direction:column; gap:8px;}
+  .cat-pill{
+    flex-shrink:0; font-size:14.5px; font-weight:700; color:var(--text);
+    background:#2a2a2a; border:none; border-radius:6px; padding:12px 14px;
+    cursor:pointer; text-align:left; line-height:1.5;
   }
-  .tw-choice.sel{border-color:var(--red); background:rgba(229,9,20,0.08); color:var(--text);}
+  .cat-pill.active{background:#fff; color:#000;}
   .tw-choice-pair{display:flex; gap:10px;}
-  .tw-choice-pair .tw-choice{flex:1; text-align:center;}
+  .tw-choice-pair .cat-pill{flex:1; text-align:center;}
 
   .tw-photo-drop{
-    width:100%; aspect-ratio:4/5; border-radius:14px; overflow:hidden; position:relative;
-    background:var(--bg-soft); border:1.5px dashed var(--border);
+    width:100%; aspect-ratio:3/4; border-radius:8px; overflow:hidden; position:relative;
+    background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);
+    border:1.5px dashed var(--border);
     display:flex; align-items:center; justify-content:center; cursor:pointer;
   }
   .tw-photo-drop.has-img{border-style:solid;}
@@ -110,7 +125,7 @@
   .tw-reveal-photo img{width:100%; height:100%; object-fit:cover;}
   .tw-reveal-names{font-size:22px; font-weight:900;}
   .tw-reveal-ach{
-    background:rgba(230,182,79,0.1); border:1px solid rgba(230,182,79,0.35); border-radius:14px;
+    background:var(--gold-dim); border:1px solid rgba(230,182,79,0.4); border-radius:14px;
     padding:18px 22px; display:flex; flex-direction:column; align-items:center; gap:8px;
   }
   .tw-reveal-ach-badge{width:46px; height:46px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center;}
@@ -119,101 +134,154 @@
   .tw-reveal-ach-name{font-size:15px; font-weight:800;}
   .tw-reveal-final{font-size:17px; font-weight:800; line-height:1.6;}
 
-  /* ---------- Result page ---------- */
-  .rs-hero{padding:26px 20px 20px; text-align:center;}
-  .rs-photo{width:100%; aspect-ratio:4/5; border-radius:16px; overflow:hidden; position:relative; margin-bottom:18px; box-shadow:0 16px 40px rgba(0,0,0,0.55);}
-  .rs-photo img{width:100%; height:100%; object-fit:cover;}
-  .rs-photo-fallback{width:100%; height:100%; background:linear-gradient(160deg,#3a0a0d,#151515); display:flex; align-items:center; justify-content:center;}
-  .rs-photo-fallback svg{width:52px; height:52px; color:rgba(255,255,255,0.25);}
-  .rs-rel-badge{
-    position:absolute; top:14px; left:14px; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);
-    border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:11px; font-weight:700;
-    padding:5px 12px; border-radius:999px;
-  }
-  .rs-names{font-size:23px; font-weight:900; margin-bottom:6px;}
-  .rs-days{
-    display:inline-flex; gap:14px; background:var(--bg-soft); border:1px solid var(--border);
-    border-radius:12px; padding:14px 20px; margin:6px 0 16px;
-  }
-  .rs-days-item{display:flex; flex-direction:column; align-items:center; gap:2px;}
-  .rs-days-num{font-size:19px; font-weight:900; color:var(--gold);}
-  .rs-days-label{font-size:10.5px; color:var(--text-mute); font-weight:700;}
-  .rs-desc{font-size:13.5px; color:var(--text-soft); line-height:1.8; margin-bottom:14px; padding:0 6px;}
-  .rs-message{
-    font-size:14px; font-style:italic; color:var(--text); line-height:1.8;
-    border-left:2px solid var(--red); padding:4px 0 4px 14px; text-align:left; margin:0 6px;
-  }
+  /* ================= RESULT PAGE — matches real customer template ================= */
 
-  .cta-block{
-    margin:22px 20px; padding:22px 18px; border-radius:14px; text-align:center;
-    background:linear-gradient(160deg, rgba(229,9,20,0.1), rgba(20,20,20,0.4)); border:1px solid rgba(229,9,20,0.25);
+  /* Hero (poster-style, identical structure to real .hero) */
+  .hero{
+    position:relative; width:100%; aspect-ratio:3/4; overflow:hidden;
+    background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);
   }
-  .cta-block.gold{background:linear-gradient(160deg, rgba(230,182,79,0.12), rgba(20,20,20,0.4)); border-color:rgba(230,182,79,0.3);}
-  .cta-text{font-size:13.5px; color:var(--text-soft); line-height:1.7; margin-bottom:14px;}
-
-  .rs-section{padding:8px 20px 4px;}
-  .rs-section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;}
-  .rs-section-title{font-size:16.5px; font-weight:900;}
-  .rs-section-tag{font-size:10.5px; font-weight:800; color:var(--gold); background:rgba(230,182,79,0.12); padding:3px 9px; border-radius:999px;}
-  .rs-section-sub{font-size:12px; color:var(--text-mute); margin-bottom:14px;}
-
-  .ach-card{
-    display:flex; align-items:center; gap:14px; background:var(--bg-soft); border:1px solid rgba(230,182,79,0.3);
-    border-radius:14px; padding:16px; margin:0 20px 6px;
+  .hero img{width:100%; height:100%; object-fit:cover; display:block;}
+  .hero::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.94) 100%);
   }
-  .ach-icon{width:46px; height:46px; border-radius:50%; background:rgba(230,182,79,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-  .ach-icon svg{width:22px; height:22px; color:var(--gold);}
+  .hero-badge{
+    position:absolute; top:14px; left:14px; width:26px; height:26px;
+    background:var(--red); color:#fff; font-weight:900; font-size:16px;
+    display:flex; align-items:center; justify-content:center; border-radius:4px; z-index:3;
+    font-family:"Arial Black","Noto Sans TC",sans-serif;
+  }
+  .hero-content{position:absolute; left:0; right:0; bottom:0; padding:0 20px 22px; z-index:2; color:#fff;}
+  .hero-tag{
+    display:inline-block; background:var(--red); color:#fff; font-size:12.5px; font-weight:700;
+    padding:4px 9px; border-radius:3px; margin-bottom:12px;
+  }
+  .hero-title{font-size:30px; line-height:1.3; font-weight:900; letter-spacing:0.3px; text-shadow:0 2px 10px rgba(0,0,0,0.5); margin-bottom:10px;}
+  .hero-meta-row{display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:13.5px; color:var(--text-soft); margin-bottom:12px;}
+  .rating-badge{border:1px solid #666; border-radius:3px; padding:1px 6px; font-size:12px; color:var(--text-soft);}
+  .dot-sep{color:var(--text-mute);}
+  .hero-text{font-size:14.5px; line-height:1.85; color:var(--text-soft); text-shadow:0 1px 6px rgba(0,0,0,0.5); max-width:320px; margin-bottom:16px;}
+  .hero-actions{display:flex; gap:10px;}
+  .btn-play{
+    display:flex; align-items:center; gap:7px; border:none; border-radius:5px;
+    font-size:15px; font-weight:700; padding:10px 17px; cursor:pointer; background:#fff; color:#000;
+  }
+  .btn-play svg{width:14px; height:14px;}
+  .btn-play:active{opacity:0.8;}
+  .btn-list{
+    display:flex; align-items:center; gap:7px; border:none; border-radius:5px;
+    font-size:15px; font-weight:700; padding:10px 17px; cursor:pointer;
+    background:rgba(120,120,120,0.4); color:#fff; backdrop-filter:blur(4px);
+  }
+  .btn-list svg{width:15px; height:15px;}
+  .btn-list:active{opacity:0.8;}
+
+  /* Section shell (matches real .section) */
+  .section{padding:26px 18px 6px;}
+  .section-heading-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;}
+  .section-heading{font-size:19.5px; font-weight:900; color:var(--text); display:flex; align-items:center; gap:6px;}
+  .section-sub{font-size:13px; color:var(--text-mute); margin-bottom:16px;}
+
+  /* Achievement card (reason-card gradient language + gold accent) */
+  .reason-card{
+    background:linear-gradient(160deg,#241417,#1a1a1a 60%); border:1px solid var(--border);
+    border-radius:14px; padding:16px; margin-bottom:6px; display:flex; align-items:center; gap:14px;
+  }
+  .ach-badge-circle{width:46px; height:46px; border-radius:50%; background:var(--gold-dim); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .ach-badge-circle svg{width:22px; height:22px; color:var(--gold);}
   .ach-name{font-size:14.5px; font-weight:800; margin-bottom:2px;}
-  .ach-meta{font-size:11px; color:var(--text-mute); margin-bottom:4px;}
-  .ach-desc{font-size:12px; color:var(--text-soft); line-height:1.5;}
+  .ach-meta{font-size:11px; color:var(--text-mute); margin-bottom:4px; font-weight:600;}
+  .ach-desc{font-size:12px; color:var(--text-soft); line-height:1.55;}
 
-  .s1-card{
-    background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin:0 20px;
-  }
-  .s1-card-photo{width:100%; aspect-ratio:16/10; position:relative;}
-  .s1-card-photo img{width:100%; height:100%; object-fit:cover;}
-  .s1-card-body{padding:14px 16px;}
-  .s1-card-date{font-size:11px; color:var(--gold); font-weight:700; margin-bottom:5px;}
-  .s1-card-msg{font-size:13px; color:var(--text-soft); line-height:1.6;}
+  /* CTA blocks between sections */
+  .cta-block{margin:20px 18px; padding:18px; border-radius:14px; background:linear-gradient(160deg,#1c1c1c,#141414 65%); border:1px solid var(--border); text-align:center;}
+  .cta-text{font-size:13px; color:var(--text-soft); line-height:1.7; margin-bottom:13px;}
 
-  .lock-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 20px;}
-  .lock-card{
-    background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:14px 12px;
-    display:flex; flex-direction:column; gap:8px;
-  }
-  .lock-card-icon{width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center;}
-  .lock-card-icon svg{width:16px; height:16px; color:var(--text-mute);}
-  .lock-card-name{font-size:12.5px; font-weight:800; color:var(--text-soft);}
-  .lock-card-desc{font-size:10.5px; color:var(--text-mute); line-height:1.5; flex:1;}
-  .lock-card-cond{font-size:9.5px; color:var(--gold); font-weight:700;}
-  .lock-card-btn{
-    margin-top:2px; font-size:10.5px; font-weight:800; color:var(--red); background:none; border:none;
-    padding:0; text-align:left; cursor:pointer;
-  }
+  /* Season cover (identical to real .season-cover) */
+  .season-cover{position:relative; width:100%; aspect-ratio:16/8; border-radius:12px; overflow:hidden; margin-bottom:8px; box-shadow:0 10px 26px rgba(0,0,0,0.5);}
+  .season-cover img{width:100%; height:100%; object-fit:cover; display:block;}
+  .season-cover-noimg{width:100%; height:100%; background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);}
+  .season-cover::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.92) 100%);}
+  .season-cover-overlay{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; z-index:2;}
+  .season-cover-badge{display:inline-block; background:var(--red); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:1px; padding:3px 8px; border-radius:3px; margin-bottom:7px;}
+  .season-cover-title{color:#fff; font-size:17px; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,0.5);}
 
-  .ost-lock{
-    display:flex; gap:14px; align-items:center; background:var(--bg-soft); border:1px solid var(--border);
-    border-radius:14px; padding:16px; margin:0 20px;
-  }
-  .ost-cover{width:64px; height:64px; border-radius:10px; background:linear-gradient(145deg,#2a2a2a,#151515); flex-shrink:0; display:flex; align-items:center; justify-content:center; position:relative;}
-  .ost-cover svg{width:24px; height:24px; color:var(--text-mute);}
-  .ost-cover .lock-badge{position:absolute; bottom:-4px; right:-4px; width:20px; height:20px; border-radius:50%; background:var(--black); border:2px solid var(--bg-soft); display:flex; align-items:center; justify-content:center;}
-  .ost-cover .lock-badge svg{width:10px; height:10px; color:var(--text-mute);}
-  .ost-name{font-size:14px; font-weight:800; margin-bottom:3px;}
-  .ost-status{font-size:11px; color:var(--text-mute); font-weight:700; margin-bottom:4px;}
-  .ost-desc{font-size:11.5px; color:var(--text-soft); line-height:1.5;}
+  /* Episode blocks (identical structure to real episode-block/qa-card) */
+  .episode-block{margin-bottom:18px;}
+  .episode-block:last-child{margin-bottom:0;}
+  .episode-title-row{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .episode-title{font-size:16.5px; font-weight:900; color:var(--text); letter-spacing:0.2px;}
+  .episode-title.locked{color:var(--text-mute); font-weight:800;}
+  .episode-num-tag{font-size:12px; color:var(--text-soft); white-space:nowrap; flex-shrink:0; font-weight:700;}
+  .episode-desc{font-size:12.5px; color:var(--text-soft); line-height:1.7; margin-top:3px;}
+  .chapter-cards{padding-left:14px; margin-left:11px; margin-top:10px; border-left:2px dashed #4a4a4a; display:flex; flex-direction:column; gap:10px;}
+  .qa-card{position:relative; background:var(--bg-card); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:12px; padding:13px 15px; box-shadow:0 4px 14px rgba(0,0,0,0.25);}
+  .qa-tag{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; margin-bottom:8px;}
+  .qa-card.ep-red{border-left-color:#ff6b6b;} .qa-card.ep-red .qa-tag{background:var(--red-dim); color:#ff6b6b;}
+  .qa-a{font-size:13.5px; line-height:1.8; color:var(--text);}
+  .qa-card.locked{opacity:0.55;}
+  .qa-card.locked .qa-tag{background:rgba(255,255,255,0.06); color:var(--text-mute);}
+  .qa-card.locked .qa-a{color:var(--text-mute); display:flex; align-items:center; gap:6px;}
 
-  .share-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px 20px 4px;}
+  /* Top5-style row for "更多照片" */
+  .top5-outer{position:relative;}
+  .top5-track{display:flex; align-items:flex-end; overflow-x:auto; scroll-snap-type:x mandatory; padding:26px 18px 6px 30px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  .top5-track::-webkit-scrollbar{display:none;}
+  .top5-item{display:flex; align-items:flex-end; flex-shrink:0; scroll-snap-align:start; margin-right:10px;}
+  .rank-number{font-family:"Arial Black","Noto Sans TC",sans-serif; font-weight:900; font-size:110px; line-height:0.68; color:transparent; -webkit-text-stroke:2px #fff; text-shadow:3px 4px 10px rgba(0,0,0,0.8); margin-right:-20px; position:relative; z-index:1; user-select:none;}
+  .top5-item.rank1 .rank-number{-webkit-text-stroke:2.4px var(--gold); text-shadow:3px 4px 14px rgba(230,182,79,0.45);}
+  .top5-card{position:relative; z-index:2; width:128px; flex-shrink:0; display:flex; flex-direction:column; background:var(--bg-soft); border:1px solid var(--border); border-radius:8px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.6);}
+  .top5-item.rank1 .top5-card{border:2px solid var(--gold); box-shadow:0 10px 26px rgba(230,182,79,0.3);}
+  .top5-card img{width:100%; height:170px; object-fit:cover; display:block; background:#333; flex-shrink:0;}
+  .top5-card-noimg{width:100%; height:170px; background:linear-gradient(160deg,#2a2a2a,#151515); display:flex; align-items:center; justify-content:center;}
+  .top5-card.locked img, .top5-card.locked .top5-card-noimg{filter:blur(3px) grayscale(0.4); opacity:0.5;}
+  .rank-tag{position:absolute; top:7px; left:7px; background:var(--red); color:#fff; font-size:10.5px; font-weight:700; padding:3px 6px; border-radius:3px; letter-spacing:0.3px; z-index:3;}
+  .top5-item.rank1 .rank-tag{background:var(--gold); color:#241a05;}
+  .top5-lock-overlay{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:22px; z-index:3; pointer-events:none;}
+  .top5-caption{padding:8px 9px 9px; font-size:11px; line-height:1.5; color:var(--text-soft); flex-shrink:0;}
+  .top5-card.locked .top5-caption{color:var(--text-mute);}
+
+  /* Season-lock-card grid (identical to real component) */
+  .season-teaser-row{display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;}
+  .season-lock-card{background:var(--bg-soft); border:1px solid var(--border); border-radius:10px; padding:13px 4px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:5px;}
+  .season-lock-card:active{background:rgba(255,255,255,0.06);}
+  .season-lock-icon{font-size:19px; opacity:0.85;}
+  .season-lock-label{font-size:10px; font-weight:700; color:var(--text-mute); line-height:1.3;}
+  .season-teaser-hint{margin-top:11px; text-align:center; font-size:11.5px; color:var(--text-mute); font-weight:600;}
+
+  /* Player card (soundtrack — locked state) */
+  .player-card{background:linear-gradient(160deg,#3a1418,#1c1010 65%); border:1px solid rgba(229,9,20,0.4); box-shadow:0 12px 30px rgba(229,9,20,0.18), inset 0 1px 0 rgba(255,255,255,0.04); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:15px; margin-bottom:12px;}
+  .player-top{display:flex; gap:14px; align-items:center;}
+  .player-cover{width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a); box-shadow:0 6px 18px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;}
+  .player-meta{flex:1; min-width:0;}
+  .player-meta .song{font-size:17px; font-weight:900; color:var(--text); margin-bottom:4px;}
+  .player-meta .sub{font-size:12.5px; color:var(--text-mute); font-weight:700;}
+  .progress-row{display:flex; flex-direction:column; gap:6px;}
+  .progress-bar{position:relative; height:5px; background:#3a2426; border-radius:999px;}
+  .progress-fill{position:absolute; left:0; top:0; bottom:0; width:0%; background:linear-gradient(90deg,var(--gold),var(--red)); border-radius:999px;}
+  .time-row{display:flex; justify-content:space-between; font-size:12px; color:var(--text-soft); font-weight:700;}
+  .controls-row{display:flex; align-items:center; justify-content:center; gap:26px;}
+  .ctrl-btn{background:none; border:none; color:var(--text-mute); display:flex; padding:4px; opacity:0.4;}
+  .ctrl-btn svg{width:18px; height:18px;}
+  .ctrl-btn.main{width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,0.08); color:var(--text-mute); display:flex; align-items:center; justify-content:center; opacity:1;}
+  .ctrl-btn.main svg{width:19px; height:19px;}
+  .lyrics-card{background:linear-gradient(160deg,#2c1216,#1a1414 65%); border:1px solid var(--border); border-radius:14px; padding:18px 18px; color:#e9dcd8; position:relative; overflow:hidden;}
+  .lyrics-heading{font-size:14.5px; font-weight:900; margin-bottom:10px; display:flex; align-items:center; gap:6px; color:var(--gold);}
+  .lyrics-locked-body{font-size:13px; line-height:1.9; color:var(--text-mute); text-align:center; padding:8px 0;}
+
+  /* Share section */
+  .share-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px 18px 4px;}
   .share-item{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer;}
-  .share-icon{width:48px; height:48px; border-radius:50%; background:var(--bg-soft); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
-  .share-icon svg{width:20px; height:20px; color:var(--text-soft);}
+  .share-icon{width:46px; height:46px; border-radius:50%; background:var(--bg-soft); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
+  .share-icon svg{width:19px; height:19px; color:var(--text-soft);}
   .share-item span{font-size:10.5px; color:var(--text-mute); font-weight:600;}
   .share-item:active .share-icon{background:rgba(255,255,255,0.1);}
-  .qr-box{display:flex; justify-content:center; padding:16px 20px 4px;}
+  .qr-box{display:flex; justify-content:center; padding:16px 18px 4px;}
   .qr-box img{border-radius:10px; background:#fff; padding:8px;}
 
-  .bottom-cta{text-align:center; padding:34px 24px 50px;}
-  .bottom-cta-title{font-size:16px; font-weight:800; margin-bottom:16px;}
+  .bottom-cta{text-align:center; padding:30px 22px 46px;}
+  .bottom-cta-title{font-size:15.5px; font-weight:800; margin-bottom:15px;}
 
   .toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
@@ -223,7 +291,7 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  .reveal-on-scroll{opacity:0; transform:translateY(28px); transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);}
+  .reveal-on-scroll{opacity:0; transform:translateY(24px); transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);}
   .reveal-on-scroll.revealed{opacity:1; transform:translateY(0);}
 </style>
 </head>
@@ -236,31 +304,31 @@
         <span class="logo-word">LOVEFIX</span>
         <span class="page-label">想你的頁</span>
       </div>
-      <div class="brand-powered">Powered by <b>見怪不怪 x 客製化歌曲</b></div>
+      <div class="brand-powered">Powered by <span class="brand-powered-name">見怪不怪 x 客製化歌曲</span></div>
     </div>
   </div>
   <div class="topbar-spacer"></div>
 
-  <!-- ===== SCREEN 0: Intro / Example ===== -->
+  <!-- ===== SCREEN 0: Intro / Example (styled as real hero) ===== -->
   <div class="tw-screen active" id="screenIntro">
-    <div class="tw-eyebrow">免費體驗</div>
-    <div class="tw-title">你們的故事，值得一個專屬頁面</div>
-    <div class="tw-sub">先看看別人的 LOVEFIX 長什麼樣子，1～3 分鐘後，換你們自己的登場。</div>
-
-    <div class="s1-card" style="margin:0 0 22px;">
-      <div class="s1-card-photo">
-        <div class="rs-photo-fallback" style="position:absolute; inset:0;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8L12 19l8.8-8.8c1.6-1.6 1.6-4.1 0-5.6z"/></svg>
+    <div class="hero" style="margin:0 -20px 20px; width:calc(100% + 40px);">
+      <div class="hero-badge">L</div>
+      <div class="hero-content">
+        <div class="hero-tag">LOVEFIX 範例</div>
+        <div class="hero-title">小明 與 小美</div>
+        <div class="hero-meta-row">
+          <span class="rating-badge">情侶</span>
+          <span>2020.05.20 在一起</span>
+          <span class="dot-sep">·</span>
+          <span>6 年 1 個月</span>
         </div>
-        <div class="rs-rel-badge">情侶</div>
-      </div>
-      <div class="s1-card-body">
-        <div class="s1-card-date">2020.05.20 在一起</div>
-        <div class="s1-card-msg">小明 與 小美 的故事——已經一起走過 6 年 1 個月。平凡的日子，因為你變得特別。</div>
+        <div class="hero-text">平凡的日子，因為你變得特別。</div>
       </div>
     </div>
-
-    <button class="btn btn-primary" onclick="goTo('screenStep1')">建立我的 LOVEFIX</button>
+    <div class="tw-eyebrow">免費體驗</div>
+    <div class="tw-title">你們的故事，值得一個專屬頁面</div>
+    <div class="tw-sub">1～3 分鐘完成，馬上看到你們自己的 LOVEFIX。</div>
+    <button class="gate-btn" onclick="goTo('screenStep1')">建立我的 LOVEFIX</button>
     <div class="tw-photo-hint">完全免費，不需要付款資訊</div>
   </div>
 
@@ -283,14 +351,14 @@
       <div class="tw-field">
         <label class="tw-label">關係類型</label>
         <div class="tw-choice-pair">
-          <div class="tw-choice" data-rel="情侶" onclick="selectRel(this)">情侶</div>
-          <div class="tw-choice" data-rel="夫妻" onclick="selectRel(this)">夫妻</div>
+          <button type="button" class="cat-pill" data-rel="情侶" onclick="selectRel(this)">情侶</button>
+          <button type="button" class="cat-pill" data-rel="夫妻" onclick="selectRel(this)">夫妻</button>
         </div>
       </div>
 
       <div class="tw-nav-row">
-        <button class="btn btn-ghost" onclick="goTo('screenIntro')">上一步</button>
-        <button class="btn btn-primary" id="btnStep1Next" onclick="validateStep1()">下一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenIntro')">上一步</button>
+        <button class="gate-btn" id="btnStep1Next" onclick="validateStep1()">下一步</button>
       </div>
     </div>
   </div>
@@ -313,13 +381,13 @@
       <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="handlePhotoFile(this)">
 
       <div class="tw-photo-actions" id="photoActions" style="display:none;">
-        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="triggerPhotoPick()">重新選擇</button>
+        <button class="share-btn-outline" style="flex:1;" onclick="triggerPhotoPick()">重新選擇</button>
       </div>
       <div class="tw-photo-hint">上傳後可直接在照片上拖曳，調整顯示位置</div>
 
       <div class="tw-nav-row">
-        <button class="btn btn-ghost" onclick="goTo('screenStep1')">上一步</button>
-        <button class="btn btn-primary" onclick="validateStep2()">下一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep1')">上一步</button>
+        <button class="gate-btn" onclick="validateStep2()">下一步</button>
       </div>
     </div>
   </div>
@@ -355,8 +423,8 @@
       </div>
 
       <div class="tw-nav-row">
-        <button class="btn btn-ghost" onclick="goTo('screenStep2')">上一步</button>
-        <button class="btn btn-primary" onclick="goTo('screenStep4')">下一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep2')">上一步</button>
+        <button class="gate-btn" onclick="goTo('screenStep4')">下一步</button>
       </div>
     </div>
   </div>
@@ -370,18 +438,18 @@
       <div class="tw-sub">選一個最貼近你們關係的描述。</div>
 
       <div class="tw-choice-list" id="descChoices">
-        <div class="tw-choice" onclick="selectDesc(this)">我們一起走過很長一段路</div>
-        <div class="tw-choice" onclick="selectDesc(this)">我們最喜歡一起旅行</div>
-        <div class="tw-choice" onclick="selectDesc(this)">我們一起經歷過很多事情</div>
-        <div class="tw-choice" onclick="selectDesc(this)">對方是我最重要的人</div>
-        <div class="tw-choice" onclick="selectDesc(this)">我們的故事才正要開始</div>
-        <div class="tw-choice" onclick="selectDesc(this)">平凡的日子，因為你變得特別</div>
-        <div class="tw-choice" onclick="selectDesc(this)">我們不是最完美，卻很適合彼此</div>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們一起走過很長一段路</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們最喜歡一起旅行</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們一起經歷過很多事情</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">對方是我最重要的人</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們的故事才正要開始</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">平凡的日子，因為你變得特別</button>
+        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們不是最完美，卻很適合彼此</button>
       </div>
 
       <div class="tw-nav-row">
-        <button class="btn btn-ghost" onclick="goTo('screenStep3')">上一步</button>
-        <button class="btn btn-primary" onclick="goTo('screenStep5')">下一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep3')">上一步</button>
+        <button class="gate-btn" onclick="goTo('screenStep5')">下一步</button>
       </div>
     </div>
   </div>
@@ -400,8 +468,8 @@
       </div>
 
       <div class="tw-nav-row">
-        <button class="btn btn-ghost" onclick="goTo('screenStep4')">上一步</button>
-        <button class="btn btn-gold" onclick="startReveal()">建立我們的 LOVEFIX</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep4')">上一步</button>
+        <button class="add-season-btn" onclick="startReveal()">建立我們的 LOVEFIX</button>
       </div>
     </div>
   </div>
@@ -443,31 +511,32 @@
         <span class="logo-word">LOVEFIX</span>
         <span class="page-label">想你的頁</span>
       </div>
-      <div class="brand-powered">Powered by <b>見怪不怪 x 客製化歌曲</b></div>
+      <div class="brand-powered">Powered by <span class="brand-powered-name">見怪不怪 x 客製化歌曲</span></div>
     </div>
   </div>
   <div class="topbar-spacer"></div>
 
-  <div class="rs-hero reveal-on-scroll">
-    <div class="rs-photo" id="rsPhotoBox"></div>
-    <div class="rs-names" id="rsNames"></div>
-    <div class="rs-days" id="rsDaysBox"></div>
-    <div class="rs-desc" id="rsDesc"></div>
-    <div class="rs-message" id="rsMessage"></div>
-  </div>
-
-  <div class="cta-block reveal-on-scroll">
-    <div class="cta-text">這只是你們故事的第一章節。</div>
-    <button class="btn btn-primary" onclick="notReadyToast()">繼續完整我們的故事</button>
-  </div>
-
-  <div class="rs-section reveal-on-scroll">
-    <div class="rs-section-head">
-      <div class="rs-section-title">體驗成就</div>
+  <!-- Hero -->
+  <div class="hero reveal-on-scroll" id="rsHero">
+    <div class="hero-badge">L</div>
+    <div class="hero-content">
+      <div class="hero-tag">LOVEFIX 免費體驗</div>
+      <div class="hero-title" id="rsNames"></div>
+      <div class="hero-meta-row" id="rsMetaRow"></div>
+      <div class="hero-text" id="rsHeroText"></div>
+      <div class="hero-actions">
+        <button class="btn-play" onclick="notReadyToast()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>繼續故事</button>
+        <button class="btn-list" onclick="scrollToLockGrid()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>解鎖項目</button>
+      </div>
     </div>
   </div>
-  <div class="ach-card reveal-on-scroll">
-    <div class="ach-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 6.1 6.6.5-5 4.4 1.6 6.4L12 16l-5.8 3.4 1.6-6.4-5-4.4 6.6-.5z"/></svg></div>
+
+  <!-- Achievement -->
+  <div class="section reveal-on-scroll">
+    <div class="section-heading-row"><div class="section-heading">🏆 體驗成就</div></div>
+  </div>
+  <div class="reason-card reveal-on-scroll" style="margin-left:18px; margin-right:18px;">
+    <div class="ach-badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 6.1 6.6.5-5 4.4 1.6 6.4L12 16l-5.8 3.4 1.6-6.4-5-4.4 6.6-.5z"/></svg></div>
     <div>
       <div class="ach-name" id="achName"></div>
       <div class="ach-meta" id="achMeta"></div>
@@ -475,48 +544,135 @@
     </div>
   </div>
 
-  <div class="cta-block gold reveal-on-scroll">
-    <div class="cta-text">還有更多共同時刻，等著被收藏。</div>
-    <button class="btn btn-gold" onclick="scrollToLockGrid()">查看可以解鎖的內容</button>
+  <div class="cta-block reveal-on-scroll">
+    <div class="cta-text">這只是你們故事的第一章節，還有更多回憶等著被收藏。</div>
+    <button class="gate-btn" onclick="scrollToLockGrid()">查看可以解鎖的內容</button>
   </div>
 
-  <div class="rs-section reveal-on-scroll">
-    <div class="rs-section-head">
-      <div class="rs-section-title">第一季｜我們的故事</div>
-      <div class="rs-section-tag">體驗版已建立</div>
+  <!-- Season 1 -->
+  <div class="section reveal-on-scroll">
+    <div class="section-heading-row">
+      <div class="section-heading">🎬 第一季：我們的故事</div>
     </div>
-    <div class="rs-section-sub">完整第一季有 5 集，這裡先解鎖第一張回憶卡片。</div>
-  </div>
-  <div class="s1-card reveal-on-scroll" id="s1PreviewCard"></div>
-
-  <div class="rs-section reveal-on-scroll" style="margin-top:24px;" id="lockGridSection">
-    <div class="rs-section-title">更多內容，尚未解鎖</div>
-    <div class="rs-section-sub">完成第一季後即可全部解鎖</div>
-  </div>
-  <div class="lock-grid reveal-on-scroll" id="lockGrid"></div>
-
-  <div class="rs-section reveal-on-scroll" style="margin-top:26px;">
-    <div class="rs-section-title">我們的原聲帶</div>
-  </div>
-  <div class="ost-lock reveal-on-scroll">
-    <div class="ost-cover">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
-      <div class="lock-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 00-4 4v2H7a1 1 0 00-1 1v9a1 1 0 001 1h10a1 1 0 001-1v-9a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm0 2a2 2 0 012 2v2h-4V6a2 2 0 012-2z"/></svg></div>
+    <div class="section-sub">5 集 · 愛情劇 · 體驗版開放第 1 集</div>
+    <div class="season-cover" id="rsSeasonCover">
+      <div class="season-cover-overlay">
+        <div class="season-cover-badge">第 1 季</div>
+        <div class="season-cover-title">第一季：我們的故事</div>
+      </div>
     </div>
-    <div>
-      <div class="ost-name">我們的故事主題曲</div>
-      <div class="ost-status">尚未解鎖</div>
-      <div class="ost-desc">完成第一季後，即可獲得一首根據你們故事製作的 30 秒專屬歌曲。</div>
+
+    <div class="episode-block">
+      <div class="episode-title-row">
+        <div class="episode-title">EP1 · 相遇</div>
+        <div class="episode-num-tag">已開放</div>
+      </div>
+      <div class="episode-desc">你們故事的起點。</div>
+      <div class="chapter-cards">
+        <div class="qa-card ep-red" id="rsEp1Card"></div>
+      </div>
+    </div>
+
+    <div class="episode-block" id="lockGridSection">
+      <div class="episode-title-row">
+        <div class="episode-title locked">🔒 EP2 · 相處</div>
+        <div class="episode-num-tag">尚未解鎖</div>
+      </div>
+      <div class="episode-desc">完成第一季即可解鎖。</div>
+      <div class="chapter-cards">
+        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
+      </div>
+    </div>
+    <div class="episode-block">
+      <div class="episode-title-row">
+        <div class="episode-title locked">🔒 EP3 · 磨合</div>
+        <div class="episode-num-tag">尚未解鎖</div>
+      </div>
+      <div class="chapter-cards">
+        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
+      </div>
+    </div>
+    <div class="episode-block">
+      <div class="episode-title-row">
+        <div class="episode-title locked">🔒 EP4 · 現在</div>
+        <div class="episode-num-tag">尚未解鎖</div>
+      </div>
+      <div class="chapter-cards">
+        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
+      </div>
+    </div>
+    <div class="episode-block">
+      <div class="episode-title-row">
+        <div class="episode-title locked">🔒 EP5 · 未來</div>
+        <div class="episode-num-tag">尚未解鎖</div>
+      </div>
+      <div class="chapter-cards">
+        <div class="qa-card locked"><div class="qa-tag">尚未解鎖</div><div class="qa-a">🔒 完成第一季即可解鎖這段回憶</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top5-style photos row -->
+  <div class="section reveal-on-scroll" style="padding-bottom:0;">
+    <div class="section-heading-row"><div class="section-heading">🖼️ 我們的回憶 TOP 5</div></div>
+    <div class="section-sub">體驗版先解鎖第 1 張，其餘完成第一季後開放</div>
+  </div>
+  <div class="top5-outer reveal-on-scroll">
+    <div class="top5-track" id="top5Track"></div>
+  </div>
+
+  <!-- More locked content grid -->
+  <div class="section reveal-on-scroll" style="margin-top:6px;">
+    <div class="section-heading-row"><div class="section-heading">更多內容</div></div>
+    <div class="section-sub">完成第一季後即可全部解鎖</div>
+    <div class="season-teaser-row">
+      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">更多照片</div></div>
+      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">更多成就</div></div>
+      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">密碼保護</div></div>
+      <div class="season-lock-card" onclick="notReadyToast()"><div class="season-lock-icon">🔒</div><div class="season-lock-label">影片收藏</div></div>
+    </div>
+    <div class="season-teaser-hint">✨ 更多回憶，等待被解鎖...</div>
+  </div>
+
+  <!-- Soundtrack -->
+  <div class="section reveal-on-scroll">
+    <div class="section-heading-row"><div class="section-heading">🎧 我們的原聲帶</div></div>
+  </div>
+  <div style="padding:0 18px;">
+    <div class="player-card reveal-on-scroll">
+      <div class="player-top">
+        <div class="player-cover" id="rsPlayerCover">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="player-meta">
+          <div class="song">我們的故事主題曲</div>
+          <div class="sub">🔒 尚未解鎖</div>
+        </div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-bar"><div class="progress-fill" style="width:0%;"></div></div>
+        <div class="time-row"><span>0:00</span><span>0:30</span></div>
+      </div>
+      <div class="controls-row">
+        <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L4 12l7 7V5zM13 5l7 7-7 7V5z"/></svg></button>
+        <button class="ctrl-btn main"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg></button>
+        <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 5l7 7-7 7V5zM11 5l-7 7 7 7V5z"/></svg></button>
+      </div>
+    </div>
+    <div class="lyrics-card reveal-on-scroll">
+      <div class="lyrics-heading">🔒 歌詞</div>
+      <div class="lyrics-locked-body">完成第一季後，即可解鎖根據你們故事製作的<br>30 秒專屬歌曲與完整歌詞。</div>
     </div>
   </div>
 
   <div class="cta-block reveal-on-scroll">
     <div class="cta-text">完成第一季，即可獲得一首 30 秒專屬歌曲。</div>
-    <button class="btn btn-primary" onclick="notReadyToast()">解鎖我們的故事主題曲</button>
+    <button class="add-season-btn" onclick="notReadyToast()">解鎖我們的故事主題曲</button>
   </div>
 
-  <div class="rs-section reveal-on-scroll" style="margin-top:10px;">
-    <div class="rs-section-title">分享這個頁面</div>
+  <!-- Share -->
+  <div class="section reveal-on-scroll">
+    <div class="section-heading-row"><div class="section-heading">分享這個頁面</div></div>
   </div>
   <div class="share-grid reveal-on-scroll">
     <div class="share-item" onclick="shareCopyLink()">
@@ -542,7 +698,7 @@
 
   <div class="bottom-cta reveal-on-scroll">
     <div class="bottom-cta-title">也想建立屬於你們的 LOVEFIX？</div>
-    <button class="btn btn-ghost" onclick="restartTrial()">免費建立我的 LOVEFIX</button>
+    <button class="share-btn-outline" onclick="restartTrial()">免費建立我的 LOVEFIX</button>
   </div>
 
   <div style="text-align:center; padding-bottom:30px;">
@@ -572,19 +728,19 @@ function goTo(id){
 }
 
 function selectRel(el){
-  document.querySelectorAll('.tw-choice-pair .tw-choice').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel');
+  document.querySelectorAll('.tw-choice-pair .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
   trial.relType = el.dataset.rel;
 }
 selectRelDefault();
 function selectRelDefault(){
-  var first = document.querySelector('.tw-choice-pair .tw-choice');
-  if(first){ first.classList.add('sel'); }
+  var first = document.querySelector('.tw-choice-pair .cat-pill');
+  if(first){ first.classList.add('active'); }
 }
 
 function selectDesc(el){
-  document.querySelectorAll('#descChoices .tw-choice').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel');
+  document.querySelectorAll('#descChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
   trial.description = el.textContent;
 }
 
@@ -679,15 +835,6 @@ function diffYMD(fromDateStr){
   return {y:y, m:m, d:d, totalDays:totalDays};
 }
 
-function formatTogetherLine(ymd){
-  if(!ymd) return '';
-  var parts = [];
-  if(ymd.y > 0) parts.push(ymd.y + '年');
-  parts.push(ymd.m + '個月');
-  parts.push(ymd.d + '天');
-  return '已經一起走過 ' + parts.join(' ');
-}
-
 /* ============ Achievement selection ============ */
 function pickAchievement(days){
   if(days === null){
@@ -752,84 +899,84 @@ function startReveal(){
 
 /* ============ Render result page ============ */
 function renderResult(){
-  var photoBox = document.getElementById('rsPhotoBox');
-  if(hasPhoto){
-    photoBox.innerHTML = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">' +
-      '<div class="rs-rel-badge">' + esc(trial.relType) + '</div>';
-  } else {
-    photoBox.innerHTML = '<div class="rs-photo-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8L12 19l8.8-8.8c1.6-1.6 1.6-4.1 0-5.6z"/></svg></div>' +
-      '<div class="rs-rel-badge">' + esc(trial.relType) + '</div>';
-  }
-
-  document.getElementById('rsNames').textContent = trial.myName + ' 與 ' + trial.partnerName + ' 的故事';
-
   var ymd = diffYMD(trial.togetherDate);
-  var daysBox = document.getElementById('rsDaysBox');
+
+  // Hero
+  var hero = document.getElementById('rsHero');
+  if(hasPhoto){
+    var existingImg = hero.querySelector('img');
+    if(!existingImg){
+      existingImg = document.createElement('img');
+      hero.insertBefore(existingImg, hero.firstChild);
+    }
+    existingImg.src = trial.photoDataUrl;
+    existingImg.style.objectPosition = trial.photoPosX + '% ' + trial.photoPosY + '%';
+    existingImg.alt = '我們的合照';
+  }
+  document.getElementById('rsNames').textContent = trial.myName + ' 與 ' + trial.partnerName;
+
+  var metaParts = ['<span class="rating-badge">' + esc(trial.relType) + '</span>'];
+  if(trial.togetherDate){
+    metaParts.push('<span>' + trial.togetherDate.replace(/-/g,'.') + ' 在一起</span>');
+  }
   if(ymd){
-    daysBox.innerHTML =
-      (ymd.y > 0 ? '<div class="rs-days-item"><div class="rs-days-num">'+ymd.y+'</div><div class="rs-days-label">年</div></div>' : '') +
-      '<div class="rs-days-item"><div class="rs-days-num">'+ymd.m+'</div><div class="rs-days-label">月</div></div>' +
-      '<div class="rs-days-item"><div class="rs-days-num">'+ymd.d+'</div><div class="rs-days-label">天</div></div>';
+    var durTxt = (ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天';
+    metaParts.push('<span class="dot-sep">·</span><span>' + durTxt + '</span>');
+  }
+  document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
+  document.getElementById('rsHeroText').textContent = trial.message || trial.description;
+
+  // season cover uses same photo
+  var seasonCover = document.getElementById('rsSeasonCover');
+  if(hasPhoto){
+    seasonCover.innerHTML = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">' + seasonCover.innerHTML;
   } else {
-    daysBox.style.display = 'none';
+    seasonCover.innerHTML = '<div class="season-cover-noimg"></div>' + seasonCover.innerHTML;
   }
 
-  document.getElementById('rsDesc').textContent = trial.description;
-  var msgEl = document.getElementById('rsMessage');
-  if(trial.message){
-    msgEl.textContent = '「' + trial.message + '」';
-  } else {
-    msgEl.style.display = 'none';
-  }
+  // EP1 card (unlocked, real content)
+  document.getElementById('rsEp1Card').innerHTML =
+    '<div class="qa-tag">初次相遇</div>' +
+    '<div class="qa-a">' + esc(trial.message || trial.description) + '</div>';
 
   var ach = trial.achievement || pickAchievement(ymd ? ymd.totalDays : null);
   document.getElementById('achName').textContent = ach.name;
   document.getElementById('achMeta').textContent = todayStr() + ' 解鎖 · 免費體驗版';
   document.getElementById('achDesc').textContent = ach.desc;
 
-  var s1 = document.getElementById('s1PreviewCard');
-  s1.innerHTML =
-    '<div class="s1-card-photo">' + (hasPhoto ? '<img src="'+trial.photoDataUrl+'" style="object-position:'+trial.photoPosX+'% '+trial.photoPosY+'%;">' : '<div class="rs-photo-fallback" style="position:absolute;inset:0;"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8L12 19l8.8-8.8c1.6-1.6 1.6-4.1 0-5.6z"/></svg></div>') + '</div>' +
-    '<div class="s1-card-body">' +
-      (trial.togetherDate ? '<div class="s1-card-date">' + trial.togetherDate.replace(/-/g,'.') + ' 在一起</div>' : '') +
-      '<div class="s1-card-msg">' + esc(trial.message || trial.description) + '</div>' +
-    '</div>';
-
-  renderLockGrid();
+  renderTop5();
   renderQr();
 }
 
-function renderLockGrid(){
-  var items = [
-    {name:'完整第一季', cond:'完成 5 集填寫', icon:'film'},
-    {name:'更多照片', cond:'升級正式版', icon:'photo'},
-    {name:'第一集到第五集', cond:'完成第一季', icon:'list'},
-    {name:'更多成就', cond:'持續收藏回憶', icon:'badge'},
-    {name:'30 秒專屬歌曲', cond:'完成第一季', icon:'music'},
-    {name:'我們的主題曲', cond:'完成歌曲喜好調查', icon:'album'},
-    {name:'密碼保護', cond:'升級正式版', icon:'lock'},
-    {name:'影片收藏', cond:'升級正式版', icon:'video'}
-  ];
-  var icons = {
-    film:'<path d="M4 4h16v16H4z"/><path d="M4 8h16M4 16h16M9 4v16M15 4v16"/>',
-    photo:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-4 4-3-3-6 6"/>',
-    list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
-    badge:'<circle cx="12" cy="8" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/>',
-    music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
-    album:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>',
-    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/>',
-    video:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>'
-  };
-  var html = items.map(function(it){
-    return '<div class="lock-card">' +
-      '<div class="lock-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' + icons[it.icon] + '</svg></div>' +
-      '<div class="lock-card-name">' + it.name + '</div>' +
-      '<div class="lock-card-desc">' + it.cond + '</div>' +
-      '<div class="lock-card-cond">尚未解鎖</div>' +
-      '<button class="lock-card-btn" onclick="notReadyToast()">解鎖 →</button>' +
+function renderTop5(){
+  var track = document.getElementById('top5Track');
+  var html = '';
+  for(var i=0; i<5; i++){
+    var rank = i+1;
+    var isRank1 = rank===1;
+    var locked = !isRank1;
+    var rankClass = isRank1 ? ' rank1' : '';
+    var lockedClass = locked ? ' locked' : '';
+    var imgHtml;
+    if(isRank1 && hasPhoto){
+      imgHtml = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">';
+    } else if(isRank1){
+      imgHtml = '<div class="top5-card-noimg"></div>';
+    } else {
+      imgHtml = '<div class="top5-card-noimg"></div>';
+    }
+    var lockOverlay = locked ? '<div class="top5-lock-overlay">🔒</div>' : '';
+    var caption = isRank1 ? esc(trial.message || trial.description) : '尚未解鎖';
+    html += '<div class="top5-item' + rankClass + '">' +
+      '<div class="rank-number">' + rank + '</div>' +
+      '<div class="top5-card' + lockedClass + '">' +
+        '<div class="rank-tag">TOP ' + rank + '</div>' +
+        imgHtml + lockOverlay +
+        '<div class="top5-caption">' + caption + '</div>' +
+      '</div>' +
     '</div>';
-  }).join('');
-  document.getElementById('lockGrid').innerHTML = html;
+  }
+  track.innerHTML = html;
 }
 
 function scrollToLockGrid(){
@@ -925,7 +1072,7 @@ function downloadShareCard(){
   var W = canvas.width, H = canvas.height;
 
   function draw(img){
-    ctx.fillStyle = '#0a0a0a';
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0,0,W,H);
     if(img){
       var side = Math.min(img.width, img.height);
