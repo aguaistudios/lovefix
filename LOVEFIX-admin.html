@@ -418,6 +418,10 @@
               <input type="text" data-path="recipientName" placeholder="例如：翁玟萱">
             </div>
             <div class="field">
+              <label>3 個搞笑假名（用逗號分開，建議跟本人名字只差一兩個字、諧音或有趣的意思，例如本名「翁玟萱」可以填「翁翁翁,翁蚊子,翁文章」；留空則使用預設的搞笑訪客名稱）</label>
+              <input type="text" data-path="decoyNames" placeholder="例如：翁翁翁,翁蚊子,翁文章">
+            </div>
+            <div class="field">
               <label>在一起的起始日期（首頁會顯示即時的相戀天數計時器；留空則不顯示）</label>
               <input type="date" data-path="startDate">
             </div>
@@ -509,6 +513,7 @@ const defaultState = {
   reasonText: '這是我們第一次約會時，計程車廣播裡剛好放的歌。後來每次聽到前奏，都會想起那天你笑著說「這首歌好好聽」的樣子。希望這首歌能一直陪著我們，就像我想一直陪著你一樣。',
   lyricsText: '因為有你 我的世界變得不一樣\n每一天 都有了新的光芒\n因為有你 生命有了新的意義\n未來的每一刻 都想和你一起\n你的笑容 是我最大的力量\n你的溫柔 讓我不再迷惘\n謝謝你一直在我身旁\n讓我學會愛 學會成長\n牽著你的手 走向幸福的方向\n不管未來有多少風浪\n我都會在你身邊\n永遠不放開你的手',
   recipientName: '',
+  decoyNames: '',
   startDate: '',
   passcode: '0000'
 };
@@ -1079,6 +1084,20 @@ function buildFinalHTML(s, slug){
   const realProfileImgJs = escJs(heroImg);
   const passcodeJs = escJs(s.passcode || '');
   const startDateJs = escJs(s.startDate || '');
+
+  const DEFAULT_DECOY_NAMES = ['隔壁老王', '神秘訪客', '路過的幽靈'];
+  const customDecoyNames = (s.decoyNames || '')
+    .split(/[,，、]/)
+    .map(n => n.trim())
+    .filter(n => n.length > 0)
+    .slice(0, 3);
+  const decoyNamesFinal = customDecoyNames.length > 0
+    ? customDecoyNames.concat(DEFAULT_DECOY_NAMES).slice(0, 3)
+    : DEFAULT_DECOY_NAMES;
+  const decoyEmojiPool = ['🕵️', '🐻', '👻', '🦄', '🐸', '🥸'];
+  const decoyProfilesJsArray = '[' + decoyNamesFinal.map((n, i) =>
+    '{emoji: \'' + decoyEmojiPool[i % decoyEmojiPool.length] + '\', name: \'' + escJs(n) + '\'}'
+  ).join(', ') + ']';
 
   const gateHTML =
     '<div class="gate-layer" id="gateLayer">\n' +
@@ -1702,20 +1721,17 @@ function buildFinalHTML(s, slug){
 '    100%{transform:scale(1); opacity:1;}\n' +
 '  }\n' +
 '  .certify-badge{\n' +
-'    display:none; justify-content:center; margin:30px 0 6px;\n' +
+'    display:none; align-items:center; justify-content:center; gap:7px;\n' +
+'    width:fit-content; margin:16px auto 0; padding:9px 20px;\n' +
+'    background:rgba(230,182,79,0.09);\n' +
+'    border:1.3px solid var(--gold); border-radius:999px;\n' +
 '    opacity:0; transform:scale(0.85);\n' +
 '    transition:opacity 0.5s ease, transform 0.5s ease;\n' +
 '  }\n' +
 '  .certify-badge.show{opacity:1; transform:scale(1);}\n' +
-'  .certify-badge-inner{\n' +
-'    display:flex; align-items:center; gap:12px;\n' +
-'    background:linear-gradient(135deg, rgba(230,182,79,0.16), rgba(229,9,20,0.1));\n' +
-'    border:1.5px solid var(--gold);\n' +
-'    border-radius:16px; padding:14px 22px;\n' +
-'  }\n' +
-'  .certify-badge-icon{font-size:26px;}\n' +
-'  .certify-badge-title{font-size:12px; color:var(--text-soft); font-weight:700;}\n' +
-'  .certify-badge-forever{font-size:19px; font-weight:900; letter-spacing:2px; color:var(--gold);}\n' +
+'  .certify-badge-icon{font-size:15px;}\n' +
+'  .certify-badge-text{font-size:12px; font-weight:700; color:var(--gold); letter-spacing:0.3px; white-space:nowrap;}\n' +
+'  .certify-badge-text b{letter-spacing:1px;}\n' +
 '  .fw-canvas{position:fixed; inset:0; z-index:600; pointer-events:none;}\n' +
 '</style>\n' +
 '</head>\n' +
@@ -1888,6 +1904,10 @@ lyricsHTML + '\n' +
 '      <div class="certify-result" id="certifyResult" style="display:none;">\n' +
 '        <div class="certify-result-text">LOVEFIX 認證！期待你們未來的日子！</div>\n' +
 '      </div>\n' +
+'      <div class="certify-badge" id="certifyBadge">\n' +
+'        <span class="certify-badge-icon">💍</span>\n' +
+'        <span class="certify-badge-text">本頁面已認證 <b>FOREVER</b></span>\n' +
+'      </div>\n' +
 '    </div>\n' +
 '\n' +
 '    <button class="end-btn" onclick="restartShow()">\n' +
@@ -1912,16 +1932,6 @@ lyricsHTML + '\n' +
 '        複製分享連結\n' +
 '      </button>\n' +
 '    </div>\n' +
-'\n' +
-'    <div class="certify-badge" id="certifyBadge">\n' +
-'      <div class="certify-badge-inner">\n' +
-'        <div class="certify-badge-icon">💍</div>\n' +
-'        <div class="certify-badge-text">\n' +
-'          <div class="certify-badge-title">本頁面已認證</div>\n' +
-'          <div class="certify-badge-forever">FOREVER</div>\n' +
-'        </div>\n' +
-'      </div>\n' +
-'    </div>\n' +
 '  </div>\n' +
 '\n' +
 '</div>\n' +
@@ -1939,11 +1949,7 @@ lyricsHTML + '\n' +
 '<script>\n' +
 '  var REAL_PROFILE_NAME = \'' + realProfileNameJs + '\';\n' +
 '  var REAL_PROFILE_IMG = \'' + realProfileImgJs + '\';\n' +
-'  var DECOY_PROFILES = [\n' +
-'    {emoji: \'🕵️\', name: \'神秘訪客\'},\n' +
-'    {emoji: \'🐻\', name: \'隔壁老王\'},\n' +
-'    {emoji: \'👻\', name: \'路過的幽靈\'}\n' +
-'  ];\n' +
+'  var DECOY_PROFILES = ' + decoyProfilesJsArray + ';\n' +
 '  var GATE_PASS = \'' + passcodeJs + '\';\n' +
 '  var HAS_PASS_GATE = ' + (hasPassGate ? 'true' : 'false') + ';\n' +
 '  var START_DATE = \'' + startDateJs + '\';\n' +
