@@ -97,10 +97,11 @@
   .tw-choice-pair .cat-pill{flex:1; text-align:center;}
 
   .tw-photo-drop{
-    width:100%; aspect-ratio:3/4; border-radius:8px; overflow:hidden; position:relative;
+    width:100%; max-width:230px; aspect-ratio:1/1; border-radius:8px; overflow:hidden; position:relative;
     background:linear-gradient(180deg,#3a2a2c 0%,#241417 60%,#141414 100%);
     border:1.5px dashed var(--border);
     display:flex; align-items:center; justify-content:center; cursor:pointer;
+    margin:0 auto;
   }
   .tw-photo-drop.has-img{border-style:solid;}
   .tw-photo-drop img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; touch-action:none;}
@@ -108,6 +109,10 @@
   .tw-photo-empty svg{width:34px; height:34px; margin-bottom:10px; opacity:0.6;}
   .tw-photo-actions{display:flex; gap:10px; margin-top:12px;}
   .tw-photo-hint{font-size:11px; color:var(--text-mute); margin-top:10px; text-align:center; line-height:1.6;}
+  .tw-photo-zoom{display:flex; align-items:center; gap:10px; margin-top:14px; max-width:230px; margin-left:auto; margin-right:auto;}
+  .tw-photo-zoom svg{width:16px; height:16px; color:var(--text-mute); flex-shrink:0;}
+  .tw-photo-zoom input[type=range]{flex:1; accent-color:var(--red);}
+  .creator-hint{font-size:12px; color:var(--text-mute); margin-bottom:10px;}
 
   /* ---------- Reveal ---------- */
   .tw-reveal{
@@ -133,6 +138,25 @@
   .tw-reveal-ach-label{font-size:11px; color:var(--gold); font-weight:800; letter-spacing:0.5px;}
   .tw-reveal-ach-name{font-size:15px; font-weight:800;}
   .tw-reveal-final{font-size:17px; font-weight:800; line-height:1.6;}
+  .now-loading-label{font-size:11px; letter-spacing:3px; color:var(--text-mute); font-weight:800; margin-top:6px;}
+  .now-loading-bar{width:170px; height:3px; background:#333; border-radius:999px; overflow:hidden; margin-top:8px;}
+  .now-loading-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--red),var(--gold)); border-radius:999px; transition:width 2s linear;}
+
+  /* Genre step: tone preview */
+  .genre-preview-box{margin-top:16px; padding:14px 16px; border-radius:12px; background:var(--bg-soft); border:1px solid var(--border); display:none;}
+  .genre-preview-box.show{display:block;}
+  .genre-preview-label{font-size:10.5px; font-weight:800; color:var(--text-mute); letter-spacing:0.5px; margin-bottom:6px;}
+  .genre-preview-text{font-size:13.5px; color:var(--text-soft); line-height:1.75; font-style:italic;}
+
+  /* Text clamp with unlock fade (intro teaser + EP1) */
+  .text-clamp-wrap{position:relative; max-height:150px; overflow:hidden;}
+  .text-clamp-fade{position:absolute; left:0; right:0; bottom:0; height:64px; background:linear-gradient(180deg, rgba(35,35,35,0) 0%, var(--bg-card) 80%); display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px;}
+  .text-clamp-fade.on-card{background:linear-gradient(180deg, rgba(20,20,20,0) 0%, var(--bg) 80%);}
+  .text-clamp-pill{font-size:12px; font-weight:800; color:#241a05; background:var(--gold); border-radius:999px; padding:6px 16px; cursor:pointer;}
+  .unlock-tease{margin:14px 18px 0; text-align:center; font-size:12.5px; font-weight:700; color:var(--gold); background:var(--gold-dim); border:1px solid rgba(230,182,79,0.35); border-radius:999px; padding:10px 14px; cursor:pointer;}
+
+  /* Compact achievement line */
+  .achievement-line{margin:0 18px; padding:11px 16px; background:var(--bg-soft); border:1px solid var(--border); border-radius:999px; font-size:12.5px; font-weight:700; color:var(--text-soft); display:flex; align-items:center; gap:6px;}
 
   /* ================= RESULT PAGE — matches real customer template ================= */
 
@@ -294,12 +318,15 @@
   .lyrics-locked-body{font-size:13px; line-height:1.9; color:var(--text-mute); text-align:center; padding:8px 0;}
 
   /* Share section */
-  .share-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px 18px 4px;}
+  .share-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 18px 4px;}
   .share-item{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer;}
   .share-icon{width:46px; height:46px; border-radius:50%; background:var(--bg-soft); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
   .share-icon svg{width:19px; height:19px; color:var(--text-soft);}
   .share-item span{font-size:10.5px; color:var(--text-mute); font-weight:600;}
   .share-item:active .share-icon{background:rgba(255,255,255,0.1);}
+  .share-item.featured .share-icon{width:54px; height:54px; background:var(--gold-dim); border-color:rgba(230,182,79,0.5);}
+  .share-item.featured .share-icon svg{width:22px; height:22px; color:var(--gold);}
+  .share-item.featured span{color:var(--gold); font-weight:800;}
   .qr-box{display:flex; justify-content:center; padding:16px 18px 4px;}
   .qr-box img{border-radius:10px; background:#fff; padding:8px;}
 
@@ -332,27 +359,40 @@
   </div>
   <div class="topbar-spacer"></div>
 
-  <!-- ===== SCREEN 0: Intro / Example (styled as real hero) ===== -->
+  <!-- ===== SCREEN 0: Intro — full showcase modeled on a real completed LOVEFIX page ===== -->
   <div class="tw-screen active" id="screenIntro">
-    <div class="hero" style="margin:0 -20px 20px; width:calc(100% + 40px);">
+    <div class="hero" style="margin:0 -20px 0; width:calc(100% + 40px);">
       <div class="hero-badge">L</div>
       <div class="hero-content">
-        <div class="hero-tag">LOVEFIX 範例</div>
-        <div class="hero-title">小明 與 小美</div>
+        <div class="hero-tag">LOVEFIX 原創</div>
+        <div class="hero-title">玟萱 與 有倫</div>
         <div class="hero-meta-row">
-          <span class="rating-badge">情侶</span>
-          <span>2020.05.20 在一起</span>
+          <span class="rating-badge">校園戀愛</span>
+          <span>2019.09.12 相遇</span>
           <span class="dot-sep">·</span>
-          <span>6 年 1 個月</span>
+          <span>浪漫校園劇</span>
         </div>
-        <div class="hero-text">平凡的日子，因為你變得特別。</div>
+        <div class="hero-text">那年社團教室的燈，比我們想的都亮得久。</div>
       </div>
     </div>
-    <div class="tw-eyebrow">免費體驗</div>
-    <div class="tw-title">你們的故事，值得一個專屬頁面</div>
-    <div class="tw-sub">1～3 分鐘完成，馬上看到你們自己的 LOVEFIX。</div>
-    <button class="gate-btn" onclick="goTo('screenStep1')">建立我的 LOVEFIX</button>
-    <div class="tw-photo-hint">完全免費，不需要付款資訊</div>
+
+    <div class="section" style="padding-top:22px;">
+      <div class="section-heading-row"><div class="section-heading">🎬 第一季：『我們的開始』</div></div>
+      <div class="section-sub">EP1 · 相遇</div>
+      <div class="qa-card ep-red text-clamp-wrap">
+        <div class="qa-tag">初次相遇</div>
+        <div class="qa-a">大三那年的社課，玟萱抱著一疊剛印好的樂譜，一頭撞上正好經過的有倫。樂譜灑了一地，兩人蹲下來一起撿，指尖不小心碰在一起，兩個人都愣住了三秒。原本只是想道歉了事，卻在圖書館前一路聊到閉館鈴響。從那天起，有倫的機車後座多了一個固定乘客，玟萱的筆記本邊角也多了很多奇怪的塗鴉。他們說，那是命運在社團教室裡，偷偷排好的座位表……</div>
+        <div class="text-clamp-fade"><div class="text-clamp-pill" onclick="goTo('screenStep1')">看更多故事</div></div>
+      </div>
+    </div>
+
+    <div style="padding:6px 20px 0;">
+      <div class="tw-eyebrow" style="margin-top:6px;">免費體驗</div>
+      <div class="tw-title">你們的故事，也值得一個這樣的頁面</div>
+      <div class="tw-sub">1～3 分鐘完成，馬上看到你們自己的 LOVEFIX。</div>
+      <button class="gate-btn" onclick="goTo('screenStep1')">開始建立我的 LOVEFIX</button>
+      <div class="tw-photo-hint">完全免費，不需要付款資訊</div>
+    </div>
   </div>
 
   <!-- ===== SCREEN 1 ===== -->
@@ -365,17 +405,18 @@
 
       <div class="tw-field">
         <label class="tw-label">我的名字（或暱稱）</label>
-        <input class="tw-input" id="inMyName" placeholder="例如：小明" maxlength="20">
+        <input class="tw-input" id="inMyName" placeholder="例如：小明" maxlength="20" oninput="updateCreatorPills()">
       </div>
       <div class="tw-field">
         <label class="tw-label">對方名字（或暱稱）</label>
-        <input class="tw-input" id="inPartnerName" placeholder="例如：小美" maxlength="20">
+        <input class="tw-input" id="inPartnerName" placeholder="例如：小美" maxlength="20" oninput="updateCreatorPills()">
       </div>
       <div class="tw-field">
-        <label class="tw-label">關係類型</label>
-        <div class="tw-choice-pair">
-          <button type="button" class="cat-pill" data-rel="情侶" onclick="selectRel(this)">情侶</button>
-          <button type="button" class="cat-pill" data-rel="夫妻" onclick="selectRel(this)">夫妻</button>
+        <label class="tw-label">製作者</label>
+        <div class="creator-hint">這個頁面是你們兩位中，誰要送給對方的呢？</div>
+        <div class="tw-choice-pair" id="creatorChoice">
+          <button type="button" class="cat-pill active" data-creator="me" id="creatorPillMe" onclick="selectCreator(this)">我</button>
+          <button type="button" class="cat-pill" data-creator="partner" id="creatorPillPartner" onclick="selectCreator(this)">對方</button>
         </div>
       </div>
 
@@ -392,7 +433,7 @@
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 2 / 6</div>
       <div class="tw-title">上傳一張代表照片</div>
-      <div class="tw-sub">拖曳照片可以調整位置，選一張你們最喜歡的合照。</div>
+      <div class="tw-sub">拖曳照片可以調整位置，也能放大縮小，選一張你們最喜歡的合照。</div>
 
       <div class="tw-photo-drop" id="photoDrop" onclick="if(!hasPhoto) triggerPhotoPick()">
         <div class="tw-photo-empty" id="photoEmpty">
@@ -403,10 +444,16 @@
       </div>
       <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="handlePhotoFile(this)">
 
+      <div class="tw-photo-zoom" id="photoZoomRow" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+        <input type="range" id="photoZoom" min="100" max="250" value="100" oninput="updatePhotoZoom(this.value)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10h5" stroke-width="2"/></svg>
+      </div>
+
       <div class="tw-photo-actions" id="photoActions" style="display:none;">
         <button class="share-btn-outline" style="flex:1;" onclick="triggerPhotoPick()">重新選擇</button>
       </div>
-      <div class="tw-photo-hint">上傳後可直接在照片上拖曳，調整顯示位置</div>
+      <div class="tw-photo-hint">上傳後可直接在照片上拖曳調整位置，並用滑桿放大縮小</div>
 
       <div class="tw-nav-row">
         <button class="share-btn-outline" onclick="goTo('screenStep1')">上一步</button>
@@ -421,18 +468,18 @@
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 3 / 6</div>
       <div class="tw-title">重要的日子</div>
-      <div class="tw-sub">至少填寫「在一起日期」。填上兩人生日，還能解鎖 AI 星座默契分析 ✨</div>
+      <div class="tw-sub">至少填寫「在一起的紀念日」。填上兩人生日，還能解鎖專屬默契分析 ✨</div>
 
       <div class="tw-field">
-        <label class="tw-label">在一起日期</label>
+        <label class="tw-label">在一起的紀念日</label>
         <input type="date" class="tw-input" id="inTogetherDate">
       </div>
       <div class="tw-field">
-        <label class="tw-label">我的生日 <span class="opt">（選填，用於星座分析）</span></label>
+        <label class="tw-label">我的生日</label>
         <input type="date" class="tw-input" id="inMyBirthday">
       </div>
       <div class="tw-field">
-        <label class="tw-label">對方生日 <span class="opt">（選填，用於星座分析）</span></label>
+        <label class="tw-label">對方生日</label>
         <input type="date" class="tw-input" id="inPartnerBirthday">
       </div>
 
@@ -449,7 +496,7 @@
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 4 / 6</div>
       <div class="tw-title">你們的故事，是什麼類型？</div>
-      <div class="tw-sub">選一個最像你們的戲劇類型，AI 會用這個調性重新呈現你們的故事。</div>
+      <div class="tw-sub">你選擇的風格，將會是你的 LOVEFIX 頁面風格。</div>
 
       <div class="tw-choice-list" id="genreChoices">
         <button type="button" class="cat-pill" data-genre="戀愛" onclick="selectGenre(this)">💕 戀愛</button>
@@ -459,6 +506,11 @@
         <button type="button" class="cat-pill" data-genre="驚悚片" onclick="selectGenre(this)">⚡ 驚悚片</button>
         <button type="button" class="cat-pill" data-genre="紀錄片" onclick="selectGenre(this)">📽 紀錄片</button>
         <button type="button" class="cat-pill" data-genre="實境秀" onclick="selectGenre(this)">🎥 實境秀</button>
+      </div>
+
+      <div class="genre-preview-box" id="genrePreviewBox">
+        <div class="genre-preview-label">故事口吻預覽</div>
+        <div class="genre-preview-text" id="genrePreviewText"></div>
       </div>
 
       <div class="tw-nav-row">
@@ -478,12 +530,14 @@
 
       <div class="tw-choice-list" id="descChoices">
         <button type="button" class="cat-pill" onclick="selectDesc(this)">我們一起走過很長一段路</button>
-        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們最喜歡一起旅行</button>
-        <button type="button" class="cat-pill" onclick="selectDesc(this)">我們一起經歷過很多事情</button>
         <button type="button" class="cat-pill" onclick="selectDesc(this)">對方是我最重要的人</button>
         <button type="button" class="cat-pill" onclick="selectDesc(this)">我們的故事才正要開始</button>
         <button type="button" class="cat-pill" onclick="selectDesc(this)">平凡的日子，因為你變得特別</button>
         <button type="button" class="cat-pill" onclick="selectDesc(this)">我們不是最完美，卻很適合彼此</button>
+        <button type="button" class="cat-pill" data-custom="1" onclick="selectDesc(this)">✏️ 自行填寫</button>
+      </div>
+      <div class="tw-field" id="customDescField" style="display:none; margin-top:12px;">
+        <input class="tw-input" id="inCustomDesc" placeholder="寫下屬於你們的一句話" maxlength="30" oninput="updateCustomDesc()">
       </div>
 
       <div class="tw-nav-row">
@@ -498,12 +552,12 @@
     <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 6 / 6</div>
-      <div class="tw-title">最後一句話</div>
-      <div class="tw-sub">如果明天就再也見不到對方，只能留下最後一句話，你想對對方說什麼？<span class="opt">（選填）</span></div>
+      <div class="tw-title">用一段話，介紹你們的關係</div>
+      <div class="tw-sub">隨意寫就好，可以是怎麼認識的、印象最深的一件事、或現在的日常。這段文字會套用你在步驟 4 選的風格，變成你們故事的開頭。</div>
 
       <div class="tw-field">
-        <textarea class="tw-textarea" id="inMessage" rows="4" maxlength="50" oninput="updateMsgCounter()" placeholder="寫下你想說的話..."></textarea>
-        <div class="tw-counter"><span id="msgCount">0</span>/50</div>
+        <textarea class="tw-textarea" id="inMessage" rows="6" maxlength="300" oninput="updateMsgCounter()" placeholder="例如：我們是在社團認識的，那天他抱著一堆樂譜撞到我，我們就這樣聊到閉館……"></textarea>
+        <div class="tw-counter"><span id="msgCount">0</span>/300</div>
       </div>
 
       <div class="tw-nav-row">
@@ -519,6 +573,8 @@
 <div class="tw-reveal" id="revealLayer">
   <div class="tw-reveal-stage" id="revealStage1">
     <div class="tw-reveal-logo">LOVEFIX</div>
+    <div class="now-loading-label">NOW LOADING</div>
+    <div class="now-loading-bar"><div class="now-loading-fill" id="loadingFill"></div></div>
   </div>
   <div class="tw-reveal-stage" id="revealStage2">
     <div class="tw-reveal-msg">正在建立你們的故事...</div>
@@ -559,7 +615,7 @@
   <div class="hero reveal-on-scroll" id="rsHero">
     <div class="hero-badge">L</div>
     <div class="hero-content">
-      <div class="hero-tag">LOVEFIX 免費體驗</div>
+      <div class="hero-tag">LOVEFIX</div>
       <div class="hero-title" id="rsNames"></div>
       <div class="hero-meta-row" id="rsMetaRow"></div>
       <div class="hero-text" id="rsHeroText"></div>
@@ -570,39 +626,22 @@
     </div>
   </div>
 
-  <!-- Zodiac compatibility bonus -->
-  <div class="section reveal-on-scroll" id="zodiacSection" style="display:none; padding-bottom:0;">
-    <div class="section-heading-row"><div class="section-heading">💫 AI 星座默契分析</div></div>
-    <div class="section-sub">根據雙方生日自動生成的專屬默契分析</div>
-  </div>
-  <div class="zodiac-card reveal-on-scroll" id="zodiacCard" style="display:none;">
+  <!-- Compatibility bonus (no AI branding, written to flatter both people) -->
+  <div class="zodiac-card reveal-on-scroll" id="zodiacCard" style="display:none; margin-top:20px;">
     <div class="zodiac-signs-row" id="zodiacSignsRow"></div>
     <div class="zodiac-text" id="zodiacText"></div>
-  </div>
-
-  <!-- Achievement -->
-  <div class="section reveal-on-scroll">
-    <div class="section-heading-row"><div class="section-heading">🏆 體驗成就</div></div>
-  </div>
-  <div class="reason-card reveal-on-scroll" style="margin-left:18px; margin-right:18px;">
-    <div class="ach-badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 6.1 6.6.5-5 4.4 1.6 6.4L12 16l-5.8 3.4 1.6-6.4-5-4.4 6.6-.5z"/></svg></div>
-    <div>
-      <div class="ach-name" id="achName"></div>
-      <div class="ach-meta" id="achMeta"></div>
-      <div class="ach-desc" id="achDesc"></div>
-    </div>
   </div>
 
   <!-- Season 1 (compact, no locked-episode clutter) -->
   <div class="section reveal-on-scroll">
     <div class="section-heading-row">
-      <div class="section-heading" id="rsSeasonHeading">🎬 第一季：我們的故事</div>
+      <div class="section-heading" id="rsSeasonHeading">🎬 第一季：『我們的開始』</div>
     </div>
     <div class="section-sub" id="rsGenreFrame"></div>
     <div class="season-cover" id="rsSeasonCover">
       <div class="season-cover-overlay">
         <div class="season-cover-badge" id="rsSeasonBadge">第 1 季</div>
-        <div class="season-cover-title" id="rsSeasonCoverTitle">第一季：我們的故事</div>
+        <div class="season-cover-title" id="rsSeasonCoverTitle">我們的開始</div>
       </div>
     </div>
 
@@ -612,21 +651,18 @@
         <div class="episode-num-tag">已開放</div>
       </div>
       <div class="chapter-cards">
-        <div class="qa-card ep-red" id="rsEp1Card"></div>
+        <div class="qa-card ep-red text-clamp-wrap" id="rsEp1CardWrap">
+          <div class="qa-tag">初次相遇</div>
+          <div class="qa-a" id="rsEp1Card"></div>
+          <div class="text-clamp-fade on-card"><div class="text-clamp-pill" onclick="scrollToUnlock()">解鎖全部</div></div>
+        </div>
       </div>
-      <div class="episode-desc" style="margin-top:12px;">完整第一季共 5 集，解鎖後即可看完整段故事。</div>
     </div>
-  </div>
 
-  <!-- Soundtrack (compact teaser, single touchpoint) -->
-  <div class="section reveal-on-scroll">
-    <div class="section-heading-row"><div class="section-heading">🎧 我們的原聲帶</div></div>
-  </div>
-  <div class="sound-teaser reveal-on-scroll">
-    <div class="sound-teaser-cover"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
-    <div class="sound-teaser-meta">
-      <div class="song">我們的故事主題曲</div>
-      <div class="sub">🔒 尚未解鎖 · 專屬 30 秒創作曲</div>
+    <div class="unlock-tease" onclick="scrollToUnlock()">🔓 立即解鎖，完成 EP1 即可獲得專屬歌曲！</div>
+
+    <div class="achievement-line reveal-on-scroll" style="margin-top:16px;">
+      🏆 <span id="achName"></span>
     </div>
   </div>
 
@@ -643,30 +679,23 @@
       <div class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
       <span>LINE</span>
     </div>
-    <div class="share-item" onclick="shareNative()">
-      <div class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></div>
-      <span>更多分享</span>
-    </div>
-    <div class="share-item" onclick="downloadShareCard()">
+    <div class="share-item featured" onclick="downloadShareCard()">
       <div class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg></div>
-      <span>分享圖卡</span>
+      <span>分享 LOVEFIX 截圖</span>
     </div>
-  </div>
-  <div class="qr-box reveal-on-scroll">
-    <img id="qrImg" width="140" height="140" alt="QR Code">
   </div>
 
   <!-- Final consolidated unlock CTA (the one real conversion moment) -->
   <div class="final-cta-card reveal-on-scroll" id="finalCtaCard">
-    <div class="final-cta-title">解鎖完整版，你將獲得：</div>
+    <div class="final-cta-title">你將獲得：</div>
     <div class="final-cta-list">
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>完整第一季（5 集故事）</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>全部回憶照片與 TOP 5 排行</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>專屬 30 秒主題曲與完整歌詞</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>更多成就收藏與紀念日提醒</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>密碼保護，只有你們能看</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>完整第一季「我們的開始」橋段創作</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>解鎖每季專屬故事歌曲</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>無限次修改與調整</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>專屬分享連結與愛情驗證碼（私密發送）</div>
+      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>人生故事 TOP 5 排行</div>
     </div>
-    <button class="add-season-btn" onclick="notReadyToast()">解鎖完整版</button>
+    <button class="add-season-btn" onclick="notReadyToast()">了解更多解鎖完整版</button>
   </div>
 
   <div class="bottom-cta reveal-on-scroll">
@@ -685,8 +714,8 @@
 <script>
 /* ============ State ============ */
 var trial = {
-  myName:'', partnerName:'', relType:'情侶',
-  photoDataUrl:'', photoThumb:'', photoPosX:50, photoPosY:50,
+  myName:'', partnerName:'', creator:'me',
+  photoDataUrl:'', photoThumb:'', photoPosX:50, photoPosY:50, photoScale:1,
   togetherDate:'', myBirthday:'', partnerBirthday:'',
   genre:'戀愛',
   description:'我們的故事才正要開始', message:''
@@ -695,22 +724,76 @@ var hasPhoto = false;
 
 /* ============ Genre engine ============ */
 var GENRES = {
-  '戀愛':     {tag:'戀愛體驗', rating:'💕 甜蜜升溫', badge:'第 1 季', frame:function(n1,n2){ return '這是一部關於 ' + n1 + ' 與 ' + n2 + ' 的甜蜜愛情故事。'; }},
-  '青春校園': {tag:'校園青春', rating:'🎒 青春回憶', badge:'第 1 季', frame:function(n1,n2){ return '回到最青澀的時光，這是 ' + n1 + ' 與 ' + n2 + ' 獨有的校園記憶。'; }},
-  '動作片':   {tag:'熱血動作', rating:'🔥 熱血滿點', badge:'第 1 季', frame:function(n1,n2){ return '在充滿挑戰的日子裡，' + n1 + ' 與 ' + n2 + ' 始終並肩作戰。'; }},
-  '文藝片':   {tag:'文藝愛情', rating:'🎬 細膩動人', badge:'第 1 季', frame:function(n1,n2){ return '細膩、真實，這是 ' + n1 + ' 與 ' + n2 + ' 緩緩流動的生活切片。'; }},
-  '驚悚片':   {tag:'驚悚愛情', rating:'⚡ 心跳加速', badge:'第 1 季', frame:function(n1,n2){ return '心跳、悸動、意外的驚喜——這是 ' + n1 + ' 與 ' + n2 + ' 充滿張力的故事。'; }},
-  '紀錄片':   {tag:'真實紀錄', rating:'📽 真實記錄', badge:'第 1 季', frame:function(n1,n2){ return '真實紀錄 ' + n1 + ' 與 ' + n2 + ' 最真切的日常片刻。'; }},
-  '實境秀':   {tag:'真人實境', rating:'🎥 真人實境', badge:'第 1 季', frame:function(n1,n2){ return '鏡頭之下，' + n1 + ' 與 ' + n2 + ' 的真實互動比劇本更精彩。'; }}
+  '戀愛': {
+    tag:'浪漫愛情', rating:'💕 甜蜜升溫',
+    frame:function(n1,n2){ return '這是一部關於 ' + n1 + ' 與 ' + n2 + ' 的甜蜜愛情故事。'; },
+    preview:'「他們笑著鬧著，卻在轉身的瞬間，都紅了眼眶。」',
+    opener:function(n1,n2){ return '命運總喜歡開一些浪漫的玩笑。以下，是屬於 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
+    closer:function(n1,n2){ return '而這，只是他們故事的開始……'; }
+  },
+  '青春校園': {
+    tag:'校園青春', rating:'🎒 青春回憶',
+    frame:function(n1,n2){ return '回到最青澀的時光，這是 ' + n1 + ' 與 ' + n2 + ' 獨有的校園記憶。'; },
+    preview:'「鐘聲響起的那個午後，走廊盡頭，他們的青春正要開始。」',
+    opener:function(n1,n2){ return '青春最好的部分，往往發生在課本以外。這是 ' + n1 + ' 與 ' + n2 + ' 的校園記憶——'; },
+    closer:function(n1,n2){ return '鐘聲還會再響，而他們的故事還很長……'; }
+  },
+  '動作片': {
+    tag:'熱血動作', rating:'🔥 熱血滿點',
+    frame:function(n1,n2){ return '在充滿挑戰的日子裡，' + n1 + ' 與 ' + n2 + ' 始終並肩作戰。'; },
+    preview:'「無論多大的風浪，他們選擇並肩，一起衝過去。」',
+    opener:function(n1,n2){ return '有些關係，是在一次次的並肩作戰中被淬鍊出來的。這是 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
+    closer:function(n1,n2){ return '而真正的考驗，才正要開始……'; }
+  },
+  '文藝片': {
+    tag:'文藝愛情', rating:'🎬 細膩動人',
+    frame:function(n1,n2){ return '細膩、真實，這是 ' + n1 + ' 與 ' + n2 + ' 緩緩流動的生活切片。'; },
+    preview:'「生活很安靜，而愛，藏在每一個不起眼的日常裡。」',
+    opener:function(n1,n2){ return '生活很安靜，但有些片刻值得被慢慢說。這是 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
+    closer:function(n1,n2){ return '而那些沒說出口的，都藏在接下來的日子裡……'; }
+  },
+  '驚悚片': {
+    tag:'驚悚愛情', rating:'⚡ 心跳加速',
+    frame:function(n1,n2){ return '心跳、悸動、意外的驚喜——這是 ' + n1 + ' 與 ' + n2 + ' 充滿張力的故事。'; },
+    preview:'「心跳加速的不只是意外，還有靠近彼此的那一瞬間。」',
+    opener:function(n1,n2){ return '沒有人預料到，一場意外的相遇，會讓 ' + n1 + ' 與 ' + n2 + ' 的人生從此不同——'; },
+    closer:function(n1,n2){ return '但真正讓人心跳加速的，還在後面……'; }
+  },
+  '紀錄片': {
+    tag:'真實紀錄', rating:'📽 真實記錄',
+    frame:function(n1,n2){ return '真實紀錄 ' + n1 + ' 與 ' + n2 + ' 最真切的日常片刻。'; },
+    preview:'「沒有劇本，這就是他們最真實的生活記錄。」',
+    opener:function(n1,n2){ return '沒有劇本、沒有彩排，這是 ' + n1 + ' 與 ' + n2 + ' 最真實的紀錄——'; },
+    closer:function(n1,n2){ return '鏡頭還在繼續，他們的故事也是……'; }
+  },
+  '實境秀': {
+    tag:'真人實境', rating:'🎥 真人實境',
+    frame:function(n1,n2){ return '鏡頭之下，' + n1 + ' 與 ' + n2 + ' 的真實互動比劇本更精彩。'; },
+    preview:'「鏡頭記錄下的，是比任何劇本都更精彩的真實反應。」',
+    opener:function(n1,n2){ return '鏡頭打開，沒有NG——這是 ' + n1 + ' 與 ' + n2 + ' 最真實的互動——'; },
+    closer:function(n1,n2){ return '而觀眾都在等，接下來會發生什麼……'; }
+  }
 };
 function selectGenre(el){
   document.querySelectorAll('#genreChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
   el.classList.add('active');
   trial.genre = el.dataset.genre;
+  var g = GENRES[trial.genre];
+  if(g){
+    document.getElementById('genrePreviewText').textContent = g.preview;
+    document.getElementById('genrePreviewBox').classList.add('show');
+  }
 }
 function selectGenreDefault(){
   var first = document.querySelector('#genreChoices .cat-pill');
   if(first){ first.classList.add('active'); trial.genre = first.dataset.genre; }
+}
+
+/* ============ Genre-styled story ============ */
+function styleStory(genreKey, raw, n1, n2){
+  var g = GENRES[genreKey] || GENRES['戀愛'];
+  var body = raw ? esc(raw) : (n1 + '與' + n2 + '的故事，正要被寫下。');
+  return esc(g.opener(n1,n2)) + '<br><br>' + body + '<br><br>' + esc(g.closer(n1,n2));
 }
 
 /* ============ Zodiac compatibility engine ============ */
@@ -764,8 +847,16 @@ function zodiacCompat(name1, date1, name2, date2){
   var z1 = getZodiac(date1), z2 = getZodiac(date2);
   if(!z1 || !z2) return null;
   var flavor = ELEMENT_FLAVOR[elementFlavorKey(z1.el, z2.el)] || '你們用各自的方式，為彼此的生活增添色彩。';
-  var text = flavor + name1 + '的' + z1.traits[0] + '，遇上' + name2 + '的' + z2.traits[0] + '，是很有默契的組合，值得好好珍惜。';
+  var text = name1 + '天生' + z1.traits[0] + '又' + z1.traits[1] + '，' + name2 + '則是' + z2.traits[0] + '且' + z2.traits[1] + '。' +
+    flavor + '這樣的兩個人湊在一起，怎麼看都是很優秀的組合，值得好好珍惜彼此。';
   return {z1:z1, z2:z2, text:text};
+}
+function heroIntroLine(genreKey, compat, n1, n2){
+  var g = GENRES[genreKey] || GENRES['戀愛'];
+  if(compat){
+    return compat.z1.name + '的' + n1 + '，與' + compat.z2.name + '的' + n2 + '，即將在這部《' + g.tag + '》裡，寫下屬於他們故事的開始……';
+  }
+  return g.frame(n1, n2);
 }
 selectGenreDefault();
 
@@ -776,21 +867,31 @@ function goTo(id){
   window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
 }
 
-function selectRel(el){
-  document.querySelectorAll('.tw-choice-pair .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+function selectCreator(el){
+  document.querySelectorAll('#creatorChoice .cat-pill').forEach(function(c){ c.classList.remove('active'); });
   el.classList.add('active');
-  trial.relType = el.dataset.rel;
+  trial.creator = el.dataset.creator;
 }
-selectRelDefault();
-function selectRelDefault(){
-  var first = document.querySelector('.tw-choice-pair .cat-pill');
-  if(first){ first.classList.add('active'); }
+function updateCreatorPills(){
+  var my = document.getElementById('inMyName').value.trim() || '我';
+  var pt = document.getElementById('inPartnerName').value.trim() || '對方';
+  document.getElementById('creatorPillMe').textContent = my;
+  document.getElementById('creatorPillPartner').textContent = pt;
 }
 
 function selectDesc(el){
   document.querySelectorAll('#descChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
   el.classList.add('active');
-  trial.description = el.textContent;
+  if(el.dataset.custom === '1'){
+    document.getElementById('customDescField').style.display = 'block';
+    trial.description = document.getElementById('inCustomDesc').value.trim() || '我們的故事才正要開始';
+  } else {
+    document.getElementById('customDescField').style.display = 'none';
+    trial.description = el.textContent;
+  }
+}
+function updateCustomDesc(){
+  trial.description = document.getElementById('inCustomDesc').value.trim() || '我們的故事才正要開始';
 }
 
 function validateStep1(){
@@ -823,18 +924,28 @@ function handlePhotoFile(el){
       trial.photoDataUrl = e.target.result;
       trial.photoThumb = makeThumb(img, 64, 0.5);
       hasPhoto = true;
+      trial.photoScale = 1; trial.photoPosX = 50; trial.photoPosY = 50;
       document.getElementById('photoEmpty').style.display = 'none';
       var pImg = document.getElementById('photoImg');
       pImg.src = trial.photoDataUrl;
       pImg.style.display = 'block';
       pImg.style.objectPosition = '50% 50%';
+      pImg.style.transform = 'scale(1)';
       document.getElementById('photoDrop').classList.add('has-img');
       document.getElementById('photoActions').style.display = 'flex';
+      document.getElementById('photoZoomRow').style.display = 'flex';
+      document.getElementById('photoZoom').value = 100;
       initPhotoDrag();
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+function updatePhotoZoom(val){
+  trial.photoScale = val / 100;
+  var pImg = document.getElementById('photoImg');
+  if(pImg) pImg.style.transform = 'scale(' + trial.photoScale + ')';
 }
 
 function makeThumb(img, size, quality){
@@ -910,6 +1021,10 @@ function syncFormToTrial(){
 function startReveal(){
   syncFormToTrial();
   document.getElementById('revealLayer').classList.add('active');
+  setTimeout(function(){
+    var fill = document.getElementById('loadingFill');
+    if(fill) fill.style.width = '100%';
+  }, 120);
 
   var photoWrap = document.getElementById('revealPhotoWrap');
   if(hasPhoto){
@@ -926,7 +1041,7 @@ function startReveal(){
   document.getElementById('revealAchName').textContent = ach.name;
 
   var stages = ['revealStage1','revealStage2','revealStage3','revealStage4','revealStage5','revealStage6'];
-  var delays = [0, 700, 1500, 2400, 3200, 4200];
+  var delays = [0, 2200, 4400, 6600, 8600, 10600];
   stages.forEach(function(id, i){
     setTimeout(function(){
       document.getElementById(id).classList.add('show');
@@ -940,13 +1055,14 @@ function startReveal(){
     window.scrollTo(0,0);
     initScrollReveal();
     encodeStateToUrl();
-  }, 5400);
+  }, 13000);
 }
 
 /* ============ Render result page ============ */
 function renderResult(){
   var ymd = diffYMD(trial.togetherDate);
   var genre = GENRES[trial.genre] || GENRES['戀愛'];
+  var compat = zodiacCompat(trial.myName, trial.myBirthday, trial.partnerName, trial.partnerBirthday);
 
   // Hero
   var hero = document.getElementById('rsHero');
@@ -958,12 +1074,13 @@ function renderResult(){
     }
     existingImg.src = trial.photoDataUrl;
     existingImg.style.objectPosition = trial.photoPosX + '% ' + trial.photoPosY + '%';
+    existingImg.style.transform = 'scale(' + (trial.photoScale || 1) + ')';
     existingImg.alt = '我們的合照';
   }
   document.getElementById('rsNames').textContent = trial.myName + ' 與 ' + trial.partnerName;
-  document.querySelector('#rsHero .hero-tag').textContent = genre.tag + ' · 免費體驗';
+  document.querySelector('#rsHero .hero-tag').textContent = genre.tag;
 
-  var metaParts = ['<span class="rating-badge">' + esc(trial.relType) + '</span>'];
+  var metaParts = [];
   if(trial.togetherDate){
     metaParts.push('<span>' + trial.togetherDate.replace(/-/g,'.') + ' 在一起</span>');
   }
@@ -971,43 +1088,34 @@ function renderResult(){
     var durTxt = (ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天';
     metaParts.push('<span class="dot-sep">·</span><span>' + durTxt + '</span>');
   }
-  metaParts.push('<span class="dot-sep">·</span><span>' + genre.rating + '</span>');
+  metaParts.push((metaParts.length ? '<span class="dot-sep">·</span>' : '') + '<span>' + genre.rating + '</span>');
   document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
-  document.getElementById('rsHeroText').textContent = trial.message || trial.description;
+  document.getElementById('rsHeroText').textContent = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
 
-  // Zodiac compatibility bonus
-  var compat = zodiacCompat(trial.myName, trial.myBirthday, trial.partnerName, trial.partnerBirthday);
+  // Compatibility bonus card (no AI branding, flattering tone)
   if(compat){
-    document.getElementById('zodiacSection').style.display = 'block';
     document.getElementById('zodiacCard').style.display = 'block';
     document.getElementById('zodiacSignsRow').textContent =
       compat.z1.emoji + ' ' + trial.myName + '（' + compat.z1.name + '）  ✕  ' + compat.z2.emoji + ' ' + trial.partnerName + '（' + compat.z2.name + '）';
     document.getElementById('zodiacText').textContent = compat.text;
   } else {
-    document.getElementById('zodiacSection').style.display = 'none';
     document.getElementById('zodiacCard').style.display = 'none';
   }
 
   // season cover uses same photo
   var seasonCover = document.getElementById('rsSeasonCover');
   if(hasPhoto){
-    seasonCover.innerHTML = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">' + seasonCover.innerHTML;
+    seasonCover.innerHTML = '<img src="' + trial.photoDataUrl + '" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%; transform:scale(' + (trial.photoScale || 1) + ');">' + seasonCover.innerHTML;
   } else {
     seasonCover.innerHTML = '<div class="season-cover-noimg"></div>' + seasonCover.innerHTML;
   }
   document.getElementById('rsGenreFrame').textContent = genre.frame(trial.myName, trial.partnerName);
 
-  // EP1 card (unlocked, real content, genre-styled framing wraps the original message unchanged)
-  document.getElementById('rsEp1Card').innerHTML =
-    '<div class="qa-tag">初次相遇</div>' +
-    '<div class="qa-a">' + esc(trial.message || trial.description) + '</div>';
+  // EP1 card: customer's guided story, genre-styled, written long then clamped with a 解鎖全部 fade
+  document.getElementById('rsEp1Card').innerHTML = styleStory(trial.genre, trial.message, trial.myName, trial.partnerName);
 
   var ach = trial.achievement || pickAchievement(ymd ? ymd.totalDays : null);
   document.getElementById('achName').textContent = ach.name;
-  document.getElementById('achMeta').textContent = todayStr() + ' 解鎖 · 免費體驗版';
-  document.getElementById('achDesc').textContent = ach.desc;
-
-  renderQr();
 }
 
 function scrollToUnlock(){
@@ -1027,10 +1135,10 @@ function todayStr(){
 function encodeStateToUrl(){
   try{
     var payload = {
-      n1:trial.myName, n2:trial.partnerName, rt:trial.relType,
+      n1:trial.myName, n2:trial.partnerName, cr:trial.creator,
       td:trial.togetherDate, bd1:trial.myBirthday, bd2:trial.partnerBirthday,
       gr:trial.genre, ds:trial.description, ms:trial.message,
-      th:trial.photoThumb || '', px:trial.photoPosX, py:trial.photoPosY
+      th:trial.photoThumb || '', px:trial.photoPosX, py:trial.photoPosY, sc:trial.photoScale
     };
     var json = JSON.stringify(payload);
     var b64 = btoa(unescape(encodeURIComponent(json)));
@@ -1048,11 +1156,12 @@ function decodeStateFromUrl(){
     var b64 = hash.slice(3);
     var json = decodeURIComponent(escape(atob(b64)));
     var payload = JSON.parse(json);
-    trial.myName = payload.n1 || ''; trial.partnerName = payload.n2 || ''; trial.relType = payload.rt || '情侶';
+    trial.myName = payload.n1 || ''; trial.partnerName = payload.n2 || ''; trial.creator = payload.cr || 'me';
     trial.togetherDate = payload.td || ''; trial.description = payload.ds || ''; trial.message = payload.ms || '';
     trial.myBirthday = payload.bd1 || ''; trial.partnerBirthday = payload.bd2 || '';
     trial.genre = payload.gr || '戀愛';
     trial.photoPosX = payload.px != null ? payload.px : 50; trial.photoPosY = payload.py != null ? payload.py : 50;
+    trial.photoScale = payload.sc != null ? payload.sc : 1;
     var fullPhoto = null;
     try{ fullPhoto = localStorage.getItem('lovefix_trial_full_' + b64.slice(0,24)); }catch(e){}
     if(fullPhoto){ trial.photoDataUrl = fullPhoto; hasPhoto = true; }
@@ -1084,20 +1193,6 @@ function shareToLine(){
   var url = window.__shareUrl || location.href;
   var text = encodeURIComponent(trial.myName + ' 與 ' + trial.partnerName + ' 的 LOVEFIX，快來看看！');
   window.open('https://line.me/R/msg/text/?' + text + '%0A' + encodeURIComponent(url), '_blank');
-}
-
-function shareNative(){
-  var url = window.__shareUrl || location.href;
-  if(navigator.share){
-    navigator.share({title:'LOVEFIX — ' + trial.myName + ' 與 ' + trial.partnerName, text:trial.description, url:url}).catch(function(){});
-  } else {
-    shareCopyLink();
-  }
-}
-
-function renderQr(){
-  var url = window.__shareUrl || location.href;
-  document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=' + encodeURIComponent(url);
 }
 
 function downloadShareCard(){
