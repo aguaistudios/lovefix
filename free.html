@@ -1931,11 +1931,16 @@ async function decodeStateFromUrl(){
 }
 
 /* ============ Share actions ============ */
-/* Best-effort URL shortening via TinyURL — falls back silently to the long link
-   if the API is unreachable, so share actions never actually break. */
+/* Best-effort URL shortening via da.gd — chosen over TinyURL because TinyURL's
+   api-create.php links now land on an interstitial "continue to this link?"
+   page instead of redirecting straight through, which broke the one-tap share
+   flow. da.gd redirects directly (no click-through page) and its API allows
+   cross-origin fetch from a browser page, unlike is.gd/v.gd which block CORS.
+   Falls back silently to the long link if the API is unreachable, so share
+   actions never actually break. */
 async function shortenUrl(longUrl){
   try{
-    var resp = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(longUrl));
+    var resp = await fetch('https://da.gd/shorten?url=' + encodeURIComponent(longUrl));
     if(!resp.ok) throw new Error('bad status');
     var short = (await resp.text()).trim();
     if(short && short.indexOf('http') === 0) return short;
