@@ -87,6 +87,16 @@
   .tw-sub{font-size:13px; color:var(--text-mute); line-height:1.7; margin-bottom:24px;}
   .tw-field{margin-bottom:18px;}
   .tw-label{display:block; font-size:12.5px; font-weight:700; color:var(--text-soft); margin-bottom:8px;}
+  /* Question-card wrapper: gives each of the 3 quick questions its own clearly
+     bounded card with a numbered badge, so they read as 3 separate, equally
+     necessary decisions rather than one long blended list of buttons. Every
+     question already has a sensible default pre-selected (so nothing blocks
+     the "下一步" button), but the numbering + card boundary makes that legible
+     at a glance instead of relying on the customer noticing it themselves. */
+  .tw-qcard{background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; padding:16px 16px 15px; margin-bottom:12px;}
+  .tw-qcard-head{display:flex; align-items:flex-start; gap:10px; margin-bottom:13px;}
+  .tw-qnum{flex-shrink:0; width:23px; height:23px; margin-top:1px; border-radius:50%; background:var(--red); color:#fff; font-size:11.5px; font-weight:900; display:flex; align-items:center; justify-content:center;}
+  .tw-qcard-head .tw-label{margin-bottom:0; font-size:14.5px; font-weight:800; color:var(--text); line-height:1.4;}
   .tw-label .opt{color:var(--text-mute); font-weight:500;}
   .tw-input, .tw-textarea{
     width:100%; background:var(--bg-soft); border:1px solid var(--border); border-radius:8px;
@@ -211,7 +221,17 @@
     display:flex; align-items:center; justify-content:center; border-radius:4px; z-index:3;
     font-family:"Arial Black","Noto Sans TC",sans-serif;
   }
-  .hero-content{position:absolute; left:0; right:0; bottom:0; padding:0 20px 22px; z-index:2; color:#fff;}
+  /* The scrim used to be a single gradient painted across the whole photo at fixed
+     %-stops (.hero::after below), which only guaranteed contrast if the text block
+     happened to be short. Longer content (e.g. the intro hero's tag+title+meta+long
+     description) could grow tall enough to reach up into the lightly-tinted part of
+     that gradient and sit on top of a bright patch of the photo, unreadable. Giving
+     .hero-content its own gradient — anchored to *its own* box height rather than the
+     photo's — guarantees the darkest point is always right behind the bottom-most
+     text and fades out well above the first line, no matter how much text there is,
+     while still leaving most of the photo above it clearly visible (poster look intact). */
+  .hero-content{position:absolute; left:0; right:0; bottom:0; padding:54px 20px 22px; z-index:2; color:#fff;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.42) 20%, rgba(0,0,0,0.8) 52%, rgba(0,0,0,0.95) 100%);}
   .hero-tag{
     display:inline-block; background:var(--red); color:#fff; font-size:12.5px; font-weight:700;
     padding:4px 9px; border-radius:3px; margin-bottom:12px;
@@ -763,10 +783,10 @@
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 5 / 7</div>
       <div class="tw-title">關於你們的三個小問題</div>
-      <div class="tw-sub">很快就能填完，這會幫助 LOVEFIX 更了解你們的關係。</div>
+      <div class="tw-sub">3 個問題都已經幫你選好一個預設答案，只要挑一個更貼近你們的就好——每題都要選喔！</div>
 
-      <div class="tw-field">
-        <label class="tw-label">你們比較像哪一種關係？</label>
+      <div class="tw-qcard">
+        <div class="tw-qcard-head"><span class="tw-qnum">1</span><label class="tw-label">你們比較像哪一種關係？</label></div>
         <div class="tw-choice-list" id="relTypeChoices">
           <button type="button" class="cat-pill active" onclick="selectRelType(this)">每天互相鬥嘴，但其實最了解彼此</button>
           <button type="button" class="cat-pill" onclick="selectRelType(this)">不常說甜言蜜語，但一直都在</button>
@@ -778,8 +798,8 @@
         </div>
       </div>
 
-      <div class="tw-field">
-        <label class="tw-label">哪個畫面最像你們？</label>
+      <div class="tw-qcard">
+        <div class="tw-qcard-head"><span class="tw-qnum">2</span><label class="tw-label">哪個畫面最像你們？</label></div>
         <div class="tw-choice-list" id="sceneChoices">
           <button type="button" class="cat-pill active" onclick="selectScene(this)">一起旅行時最開心</button>
           <button type="button" class="cat-pill" onclick="selectScene(this)">窩在家裡什麼都不做</button>
@@ -790,8 +810,8 @@
         </div>
       </div>
 
-      <div class="tw-field">
-        <label class="tw-label">這段關係最珍貴的是什麼？</label>
+      <div class="tw-qcard">
+        <div class="tw-qcard-head"><span class="tw-qnum">3</span><label class="tw-label">這段關係最珍貴的是什麼？</label></div>
         <div class="tw-choice-list" id="valueChoices">
           <button type="button" class="cat-pill active" onclick="selectValue(this)">陪伴</button>
           <button type="button" class="cat-pill" onclick="selectValue(this)">理解</button>
@@ -1427,7 +1447,8 @@ var SONG_CLUE = {
   '紀錄片': {mood:'真實、帶著不加修飾的深情', scene:'鏡頭記錄下兩人最自然的日常互動', line:'「沒有一句台詞是設計過的，我們就是這樣走到現在。」'},
   '實境秀': {mood:'閃亮、帶著全世界都在看的浪漫', scene:'在眾人面前，他還是只在乎你的反應', line:'「全世界都在看，他卻只在乎我一個人。」'}
 };
-var SONG_TITLES = ['還是你','把日子過成我們','每一次回頭','從今天到以後','習慣有你'];
+var SONG_TITLES = ['還是你','把日子過成我們','每一次回頭','從今天到以後','習慣有你','我們的軌道','剛好是你','慢慢喜歡你','你是我的答案','後來的我們','一直都在','靠近一點點','剛剛好的距離','原來是你','最長的擁抱','有你的城市','時間都記得','願意',
+  '不早也不晚','找到你'];
 function buildSongClue(t){
   var clue = SONG_CLUE[t.genre] || SONG_CLUE['戀愛'];
   var seed = (t.myName||'') + (t.partnerName||'') + (t.togetherDate||'') + (t.genre||'');
