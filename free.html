@@ -272,6 +272,21 @@
   .zodiac-vs{color:var(--text-mute); font-weight:700; font-size:12px;}
   .zodiac-text{font-size:13px; color:var(--text-soft); line-height:1.85;}
 
+  /* Love analysis / compatibility quiz surprise card */
+  .love-analysis-card{background:linear-gradient(160deg,#1c1428,#14141c 60%); border:1px solid rgba(155,140,255,0.35); border-radius:14px; padding:20px; margin:14px 18px 6px; box-shadow:0 14px 30px rgba(155,140,255,0.12);}
+  .love-analysis-title{font-size:14.5px; font-weight:900; color:var(--purple); margin-bottom:4px; display:flex; align-items:center; gap:6px;}
+  .love-analysis-sub{font-size:11.5px; color:var(--text-mute); margin-bottom:16px;}
+  .love-metric-row{margin-bottom:13px;}
+  .love-metric-row:last-child{margin-bottom:0;}
+  .love-metric-label{display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--text-soft); margin-bottom:6px;}
+  .love-metric-label b{color:#fff; font-size:13px;}
+  .love-metric-bar{height:7px; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden;}
+  .love-metric-fill{height:100%; background:linear-gradient(90deg,var(--purple),#5fd6a8); border-radius:999px;}
+  .love-archetype{margin-top:17px; padding:14px 16px; background:rgba(155,140,255,0.1); border:1px solid rgba(155,140,255,0.3); border-radius:12px; text-align:center;}
+  .love-archetype-eyebrow{font-size:10.5px; font-weight:800; color:var(--purple); letter-spacing:1.5px; margin-bottom:5px; text-transform:uppercase;}
+  .love-archetype-name{font-size:15.5px; font-weight:900; color:#fff; margin-bottom:5px;}
+  .love-archetype-desc{font-size:12px; color:var(--text-soft); line-height:1.7;}
+
   /* Final unlock CTA card */
   .final-cta-card{margin:22px 18px; padding:22px 20px; border-radius:16px; background:linear-gradient(160deg,#241a05,#1c1c1c 65%); border:1px solid rgba(230,182,79,0.4); box-shadow:0 14px 32px rgba(230,182,79,0.1);}
   .final-cta-title{font-size:16.5px; font-weight:900; margin-bottom:12px; color:#fff;}
@@ -365,6 +380,22 @@
 
   /* Player card (soundtrack — locked state) */
   .player-card{background:linear-gradient(160deg,#3a1418,#1c1010 65%); border:1px solid rgba(229,9,20,0.4); box-shadow:0 12px 30px rgba(229,9,20,0.18), inset 0 1px 0 rgba(255,255,255,0.04); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:15px; margin-bottom:12px;}
+  /* Brighter "spotlight" variant — the theme song is meant to be a highlight, not a dim teaser */
+  .player-card.spotlight{background:linear-gradient(135deg,#ff3b4e 0%,#e50914 45%,#7a1006 100%); border:1.5px solid rgba(230,182,79,0.75); box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 16px 40px rgba(229,9,20,0.4), 0 0 60px rgba(230,182,79,0.18);}
+  .player-card.spotlight .player-cover{background:linear-gradient(160deg,#ffe9b3,#e6b64f); color:#3a1006; box-shadow:0 6px 20px rgba(230,182,79,0.5);}
+  .player-card.spotlight .player-meta .song{color:#fff;}
+  .player-card.spotlight .player-meta .sub{color:rgba(255,255,255,0.75);}
+  .player-card.spotlight .progress-bar{background:rgba(255,255,255,0.22);}
+  .player-card.spotlight .progress-fill{background:linear-gradient(90deg,#ffe9b3,#e6b64f);}
+  .player-card.spotlight .time-row{color:rgba(255,255,255,0.85);}
+  .player-card.spotlight .ctrl-btn{color:rgba(255,255,255,0.55);}
+  .player-card.spotlight .ctrl-btn.main{background:#fff; color:#e50914; box-shadow:0 6px 18px rgba(0,0,0,0.3);}
+  /* Locked/teaser variant — used for the result-page "人生主題曲" preview that drives page creation */
+  .player-card.locked-player{cursor:pointer; background:linear-gradient(160deg,#241a05,#1c1c1c 65%); border:1px dashed rgba(230,182,79,0.5); box-shadow:none;}
+  .player-card.locked-player:active{background:rgba(230,182,79,0.06);}
+  .player-card.locked-player .player-cover{background:rgba(230,182,79,0.12); color:var(--gold); font-size:24px; box-shadow:none;}
+  .player-card.locked-player .player-meta .song{color:var(--gold);}
+  .player-card.locked-player .locked-player-cta{margin-top:2px; font-size:11.5px; font-weight:800; color:var(--gold); display:flex; align-items:center; gap:5px;}
   .player-top{display:flex; gap:14px; align-items:center;}
   .player-cover{width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a); box-shadow:0 6px 18px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:26px;}
   .ctrl-btn[aria-hidden="true"]{pointer-events:none;}
@@ -489,7 +520,7 @@
         <div class="episode-title-row"><div class="episode-title">EP1 · 相遇</div></div>
         <div class="chapter-cards">
           <div class="qa-card ep-red text-clamp-wrap" id="introEp1CardWrap">
-            <div class="qa-a">那是一場再普通不過的朋友聚會，誰也沒料到，這一晚會被往後無數次提起。在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。原本只是隨口的一瞥，卻怎麼樣都收不回目光——笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。誰都以為這只是一次再普通不過的聚會，會就此結束、各自散場。但那晚離開後，我卻鬼使神差地翻出了聊天紀錄，打下第一句話。而接下來發生的事，遠比任何人想像的都還要不一樣……</div>
+            <div class="qa-a">那是一場再普通不過的朋友聚會，誰也沒料到，這一晚會被往後無數次提起。在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。<br><br>原本只是隨口的一瞥，卻怎麼樣都收不回目光——笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。誰都以為這只是一次再普通不過的聚會，會就此結束、各自散場。<br><br>但那晚離開後，我卻鬼使神差地翻出了聊天紀錄，打下第一句話。而接下來發生的事，遠比任何人想像的都還要不一樣……</div>
             <div class="text-clamp-fade on-card"><div class="text-clamp-pill" onclick="goTo('screenStep1')">解鎖閱讀更多</div></div>
           </div>
         </div>
@@ -502,7 +533,7 @@
       <div class="section-sub">每一段故事，都值得一首只屬於他們的歌</div>
     </div>
     <div style="margin:0 18px;">
-      <div class="player-card">
+      <div class="player-card spotlight">
         <div class="player-top">
           <div class="player-cover">🎵</div>
           <div class="player-meta">
@@ -525,12 +556,13 @@
       <div class="lyrics-card" style="margin-top:12px;">
         <div class="lyrics-heading">🎤 歌詞</div>
         <div style="font-size:13px; line-height:2; color:var(--text-soft);">
-          曾經只是擦肩而過的兩個人<br>
-          如今變成生命裡最亮的風景<br>
-          你說未來很遠，我說你在就好<br>
-          每一步，都想牽著你的手往前走<br>
-          就算未知，也沒什麼好怕<br>
-          因為未來，有你才完整
+          未來很長 就算白了頭髮<br>
+          也想和 你消磨時光<br>
+          睡醒後的幸福 是親愛的你<br>
+          躺在我身旁<br>
+          喜歡你的浪漫<br>
+          照亮在 每個平凡不過的日常<br>
+          你就是我 最溫暖的陽光
         </div>
       </div>
     </div>
@@ -553,7 +585,7 @@
         </div>
       </div>
       <div class="locked-teaser-overlay">
-        <div class="locked-teaser-badge" onclick="goTo('screenStep1')">🔒 解鎖看完整故事</div>
+        <div class="locked-teaser-badge" onclick="goTo('screenStep1')">✨ 現在就建立自己的頁面</div>
       </div>
     </div>
 
@@ -810,6 +842,14 @@
     <div class="zodiac-text" id="zodiacText"></div>
   </div>
 
+  <!-- Love analysis / compatibility quiz — surprise result to add intrigue -->
+  <div class="love-analysis-card reveal-on-scroll" id="loveAnalysisCard" style="display:none;">
+    <div class="love-analysis-title">💫 你們的愛情契合力分析</div>
+    <div class="love-analysis-sub">根據你們的故事，計算出的專屬契合結果</div>
+    <div id="loveMetricsWrap"></div>
+    <div class="love-archetype" id="loveArchetypeWrap"></div>
+  </div>
+
   <!-- Season 1 (compact, no locked-episode clutter) -->
   <div class="section reveal-on-scroll">
     <div class="section-heading-row">
@@ -837,6 +877,24 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Locked 人生主題曲 teaser — echoes the intro showcase's real player, but drives EP1 completion -->
+  <div class="section reveal-on-scroll" style="padding-top:6px;">
+    <div class="section-heading-row"><div class="section-heading">🎵 你們的人生主題曲</div></div>
+    <div class="section-sub">趕緊完成 EP1，獲得第一手人生階段主題曲</div>
+  </div>
+  <div style="margin:0 18px 6px;">
+    <div class="player-card locked-player" onclick="scrollToUnlock()">
+      <div class="player-top">
+        <div class="player-cover">🔒</div>
+        <div class="player-meta">
+          <div class="song">尚未解鎖</div>
+          <div class="sub">完成 EP1 後，專屬主題曲即刻解鎖</div>
+          <div class="locked-player-cta">✨ 現在就建立自己的頁面</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 生活 TOP5 — rank1 is their real photo, ranks 2-5 teased locked -->
@@ -917,7 +975,7 @@ var GENRES = {
     closer:function(n1,n2){ return '而這，只是他們故事的開始，往後的每一天，都將被這份心動悄悄改寫……'; },
     connectors:['誰也沒想到，','那一刻，','從那天起，','而這份心動，','沒有多說什麼，'],
     beats:['空氣裡彷彿都是甜甜的味道。','兩人的距離，好像又更近了一點。','那種心動的感覺，怎麼樣都藏不住。','連時間都好像慢了下來。','誰都看得出來，這段關係正在悄悄升溫。'],
-    descOptions:['我們一起走過很長一段路','對方是我最重要的人','我們的故事才正要開始','平凡的日子，因為你變得特別','我們不是最完美，卻很適合彼此']
+    descOptions:['遇見你的那一刻，我的世界瞬間被點亮','你是我拼了命也要留住的幸運','全世界的浪漫，加起來也比不過你的一個眼神','為了你，我願意重新相信一見鍾情','你的存在，讓我甘願把整顆心都交出去']
   },
   '青春校園': {
     tag:'校園青春', rating:'🎒 青春回憶', trophy:{icon:'🎒', name:'青春主角'},
@@ -927,7 +985,7 @@ var GENRES = {
     closer:function(n1,n2){ return '鐘聲還會再響，而他們的故事還很長，青春的下一頁，正等著被翻開……'; },
     connectors:['下課鐘響起時，','那個午後，','誰也沒有多想，','就這樣，','放學的路上，'],
     beats:['陽光灑落在走廊上，一切都顯得特別柔軟。','那種青澀的緊張感，藏都藏不住。','空氣中彷彿還留著粉筆灰與夏天的味道。','時間在那一刻，好像被按下了慢動作。','那份悸動，成了記憶裡最鮮明的畫面。'],
-    descOptions:['我們是彼此青春最亮的一頁','從教室到現在，故事還沒說完','那些年，我們一起蹺過的課','畢業後，我們沒有散場','我們的默契，是從書桌前開始的']
+    descOptions:['他為了我，一次次翻牆闖進教官室','那年我們把整個青春都賭在彼此身上','蹺過的課、傳過的紙條，全都指向你','畢業那天，我發誓一定要追到你','我們的青春，因為彼此才完整燃燒']
   },
   '動作片': {
     tag:'熱血動作', rating:'🔥 熱血滿點', trophy:{icon:'🔥', name:'並肩戰友'},
@@ -937,7 +995,7 @@ var GENRES = {
     closer:function(n1,n2){ return '而真正的考驗，才正要開始，但這一次，他們知道彼此不會是一個人面對……'; },
     connectors:['毫無預警地，','下一秒，','在那個瞬間，','沒有人退縮，','緊接著，'],
     beats:['腎上腺素瞬間飆升，一切變得更加真實。','沒有退路，只能往前衝。','那種並肩作戰的默契，是無法偽裝的。','緊張的氣氛中，卻藏著一絲安心。','戰友之間的信任，就在那一刻被確立。'],
-    descOptions:['再大的風浪，我們都選擇並肩衝過去','為了你，我什麼都願意豁出去','我們是彼此最強的隊友','沒有什麼能把我們分開','每一次考驗，都讓我們更靠近']
+    descOptions:['他跳過兩米深的懸崖，只為了趕來見我一面','再大的風暴，他都毫不猶豫衝在我前面','為了保護我，他什麼都豁得出去','我們一起闖過的難關，多到數不清','他說：只要有我在，你什麼都不用怕']
   },
   '文藝片': {
     tag:'文藝愛情', rating:'🎬 細膩動人', trophy:{icon:'🎬', name:'生活詩人'},
@@ -947,7 +1005,7 @@ var GENRES = {
     closer:function(n1,n2){ return '而那些沒說出口的，都藏在接下來的日子裡，等著被一天一天讀懂……'; },
     connectors:['很安靜地，','日子照常，','而在某個瞬間，','悄悄地，','沒有誰刻意提起，'],
     beats:['生活的細節，總是藏著最真實的情感。','沒有誇張的橋段，卻讓人特別有感觸。','時間靜靜流淌，一切顯得特別真實。','那些微小的瞬間，拼湊出最完整的故事。','安靜的日常裡，藏著最深的溫柔。'],
-    descOptions:['我們的愛，藏在最安靜的日常裡','不用轟轟烈烈，只要一直在一起','生活很平凡，但有你就不一樣','我們慢慢地愛，卻愛得很深','那些沒說出口的，都藏在陪伴裡']
+    descOptions:['他把我們的每一句話都抄下來，說要留到老','我們的愛，安靜卻深得讓人心疼','他用十年如一日的溫柔，把我寵成了孩子','那些沒說出口的深情，全藏在他的眼神裡','平凡的日子，因為他，都成了詩']
   },
   '驚悚片': {
     tag:'驚悚愛情', rating:'⚡ 心跳加速', trophy:{icon:'⚡', name:'心動偵探'},
@@ -957,7 +1015,7 @@ var GENRES = {
     closer:function(n1,n2){ return '但真正讓人心跳加速的，還在後面，這只是整個故事最開始的一小段……'; },
     connectors:['誰也想不到，','心跳漏了一拍，','下一秒，','命運的齒輪悄悄轉動，','而就在那時，'],
     beats:['空氣瞬間凝結，彷彿有什麼即將發生。','沒有人說話，但心跳聲卻異常清晰。','那種不安又期待的感覺，讓人無法忽視。','時間彷彿被按下了暫停鍵。','線索一點一點被串了起來。'],
-    descOptions:['遇見你，是我人生最大的意外','心跳加速的，不只是意外，還有你','我們的故事，從一場意外開始','靠近你的那一刻，世界都靜止了','命運讓我們相遇，誰也逃不掉']
+    descOptions:['電話那頭一沒了聲音，他就衝到了我家樓下','命運像設計好一樣，把我們狠狠推向彼此','那一次意外，讓我徹底栽進了他的世界','我心跳漏拍的那一刻，才驚覺已經淪陷','他的出現，是我人生劇本裡最大的意外']
   },
   '紀錄片': {
     tag:'真實紀錄', rating:'📽 真實記錄', trophy:{icon:'📽', name:'真實記錄者'},
@@ -967,7 +1025,7 @@ var GENRES = {
     closer:function(n1,n2){ return '鏡頭還在繼續，他們的故事也是，真實的日子，永遠比劇本更精彩……'; },
     connectors:['鏡頭記錄下，','真實的畫面裡，','那一天，','毫無修飾地，','就這樣被記錄下來，'],
     beats:['鏡頭忠實記錄下每一個細節。','沒有多餘的修飾，只有最真實的反應。','那一刻的表情，比任何台詞都更有說服力。','時間軸緩緩推進，故事持續發生。','真實，往往比虛構更打動人心。'],
-    descOptions:['這是我們最真實的生活記錄','沒有劇本，我們就是這樣走到現在','真實的日子，比任何故事都精彩','鏡頭之外，我們依然是彼此的主角','平凡卻真實，這就是我們的故事']
+    descOptions:['攝影機都還沒關，他就當眾說出想娶我的那句話','沒有一句台詞是設計過的，我們就是這樣走到現在','每一格畫面，都記錄著他有多愛我','真實的他，比任何劇本都動人','鏡頭記不下的，是他藏在心裡的萬千寵愛']
   },
   '實境秀': {
     tag:'真人實境', rating:'🎥 真人實境', trophy:{icon:'🎥', name:'真人主角'},
@@ -977,7 +1035,7 @@ var GENRES = {
     closer:function(n1,n2){ return '而觀眾都在等，接下來會發生什麼，畢竟最好看的戲，永遠是真實的……'; },
     connectors:['鏡頭捕捉到，','毫無劇本地，','真實反應是，','那個當下，','緊接著發生的是，'],
     beats:['鏡頭前的反應，完全藏不住真實情緒。','觀眾席彷彿都能感受到那份心動。','沒有劇本的橋段，往往最令人難忘。','那一刻，全場的目光都聚焦在他們身上。','真實的互動，永遠是最好看的戲。'],
-    descOptions:['我們的愛，比任何劇本都精彩','沒有NG，這就是我們最真實的反應','鏡頭之下，我們依然做自己','全世界都在看，我們卻只看著彼此','最好看的戲，永遠是真實的我們']
+    descOptions:['他在直播鏡頭前單膝下跪，全場瞬間安靜','沒有NG，這就是他對我最真實的告白','全世界都在看，他卻只在乎我一個人的反應','我們的故事，比任何節目效果都精彩','鏡頭外的他，比鏡頭前更寵我一百倍']
   }
 };
 function selectGenre(el){
@@ -1053,13 +1111,15 @@ var ELEMENT_TROPHY_NAME = {
   '風,風':'心有靈犀','風,水':'浪漫共鳴','水,水':'心意相通'
 };
 function buildTrophies(days, genreKey, storyLen, compat){
+  /* Concrete, milestone-style achievements — feels like game progression
+     (things they just DID), not vague adjectives. */
   var list = [];
+  list.push({icon:'📁', name:'LOVEFIX 第一次建檔'});
+  if(storyLen > 0){ list.push({icon:'🎬', name:'完成 EP1'}); }
   var durAch = pickAchievement(days);
   list.push({icon:'🏆', name:durAch.name});
   var g = GENRES[genreKey] || GENRES['戀愛'];
   if(g.trophy) list.push(g.trophy);
-  if(storyLen >= 60){ list.push({icon:'📖', name:'細膩敘事家'}); }
-  else if(storyLen > 0){ list.push({icon:'⚡', name:'直球告白手'}); }
   if(compat){
     var comboName = ELEMENT_TROPHY_NAME[elementFlavorKey(compat.z1.el, compat.z2.el)] || '絕配組合';
     list.push({icon: compat.z1.emoji, name: comboName});
@@ -1128,6 +1188,38 @@ function heroIntroLine(genreKey, compat, n1, n2){
     return compat.z1.name + '的' + n1 + '，與' + compat.z2.name + '的' + n2 + '，即將在這部《' + g.tag + '》裡，寫下屬於他們故事的開始……';
   }
   return g.frame(n1, n2);
+}
+
+/* ============ Love analysis / compatibility quiz (deterministic "surprise" results) ============ */
+function simpleHash(str){
+  var h = 0;
+  str = String(str || '');
+  for(var i = 0; i < str.length; i++){ h = (h * 31 + str.charCodeAt(i)) >>> 0; }
+  return h;
+}
+function pctFromHash(seed, min, max){
+  var h = simpleHash(seed);
+  return min + (h % (max - min + 1));
+}
+var LOVE_ARCHETYPES = [
+  {icon:'☀️', name:'太陽 x 月亮型戀人', desc:'一個溫暖主動，一個溫柔守候，彼此互補又契合。'},
+  {icon:'🔥', name:'火花直球型戀人', desc:'兩人一拍即合，相處總是又甜又帶勁。'},
+  {icon:'🌊', name:'深海共鳴型戀人', desc:'情感細膩深厚，越了解彼此越離不開。'},
+  {icon:'⭐', name:'命中注定型戀人', desc:'不管怎麼看，都覺得早就該遇見彼此。'},
+  {icon:'🍯', name:'甜蜜日常型戀人', desc:'不需要轟轟烈烈，平凡日子也很幸福。'},
+  {icon:'🎈', name:'青春不敗型戀人', desc:'在一起總像回到最單純快樂的自己。'},
+  {icon:'💎', name:'穩定長久型戀人', desc:'感情像慢慢打磨的鑽石，越久越閃亮。'}
+];
+function buildLoveAnalysis(n1, n2, dateStr, genreKey){
+  var seed = (n1 || '') + '|' + (n2 || '') + '|' + (dateStr || '') + '|' + (genreKey || '');
+  var metrics = [
+    {label:'默契指數', value: pctFromHash(seed + 'a', 82, 98)},
+    {label:'浪漫指數', value: pctFromHash(seed + 'b', 80, 99)},
+    {label:'心靈同步率', value: pctFromHash(seed + 'c', 78, 97)},
+    {label:'未來穩定度', value: pctFromHash(seed + 'd', 83, 99)}
+  ];
+  var archetype = LOVE_ARCHETYPES[simpleHash(seed + 'type') % LOVE_ARCHETYPES.length];
+  return {metrics: metrics, archetype: archetype};
 }
 selectGenreDefault();
 
@@ -1389,9 +1481,8 @@ function renderResult(){
   if(trial.togetherDate){
     metaParts.push('<span>' + trial.togetherDate.replace(/-/g,'.') + ' 在一起</span>');
   }
-  if(ymd){
-    metaParts.push('<span class="dot-sep">·</span><span>' + durTxt + '</span>');
-  }
+  /* Duration is intentionally NOT repeated here — the ornate time-frame box right
+     below the hero already shows it prominently, so keep this row to date + rating only. */
   metaParts.push((metaParts.length ? '<span class="dot-sep">·</span>' : '') + '<span>' + genre.rating + '</span>');
   document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
   document.getElementById('rsHeroText').textContent = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
@@ -1415,6 +1506,18 @@ function renderResult(){
     document.getElementById('zodiacCard').style.display = 'none';
   }
 
+  // Love analysis / compatibility quiz — deterministic per-couple "surprise" results
+  var analysis = buildLoveAnalysis(trial.myName, trial.partnerName, trial.togetherDate, trial.genre);
+  document.getElementById('loveAnalysisCard').style.display = 'block';
+  document.getElementById('loveMetricsWrap').innerHTML = analysis.metrics.map(function(m){
+    return '<div class="love-metric-row"><div class="love-metric-label"><span>' + esc(m.label) + '</span><b>' + m.value + '%</b></div>' +
+      '<div class="love-metric-bar"><div class="love-metric-fill" style="width:' + m.value + '%;"></div></div></div>';
+  }).join('');
+  document.getElementById('loveArchetypeWrap').innerHTML =
+    '<div class="love-archetype-eyebrow">你們的戀愛類型</div>' +
+    '<div class="love-archetype-name">' + analysis.archetype.icon + ' ' + esc(analysis.archetype.name) + '</div>' +
+    '<div class="love-archetype-desc">' + esc(analysis.archetype.desc) + '</div>';
+
   // season cover uses same photo
   var seasonCover = document.getElementById('rsSeasonCover');
   if(hasPhoto){
@@ -1437,7 +1540,7 @@ function renderResult(){
     top5Html += '<div class="top5-item"><div class="rank-number">' + ri + '</div>' +
       '<div class="top5-card locked" onclick="scrollToUnlock()"><div class="rank-tag" style="background:var(--gold); color:#241a05;">解鎖</div>' +
       '<div class="top5-card-noimg"></div><div class="top5-lock-overlay">🔒</div>' +
-      '<div class="top5-caption">解鎖看更多故事瞬間</div></div></div>';
+      '<div class="top5-caption">解鎖發掘更多人生重要瞬間</div></div></div>';
   }
   document.getElementById('rsTop5Track').innerHTML = top5Html;
 
@@ -1550,10 +1653,23 @@ async function decodeStateFromUrl(){
 }
 
 /* ============ Share actions ============ */
-function shareCopyLink(){
+/* Best-effort URL shortening via TinyURL — falls back silently to the long link
+   if the API is unreachable, so share actions never actually break. */
+async function shortenUrl(longUrl){
+  try{
+    var resp = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(longUrl));
+    if(!resp.ok) throw new Error('bad status');
+    var short = (await resp.text()).trim();
+    if(short && short.indexOf('http') === 0) return short;
+    throw new Error('invalid short url');
+  }catch(e){ return longUrl; }
+}
+
+async function shareCopyLink(){
   var url = window.__shareUrl || location.href;
+  var shortUrl = await shortenUrl(url);
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(function(){ showToast('連結已複製'); }).catch(function(){ showToast('複製失敗，請手動複製網址列'); });
+    navigator.clipboard.writeText(shortUrl).then(function(){ showToast('連結已複製'); }).catch(function(){ showToast('複製失敗，請手動複製網址列'); });
   } else {
     showToast('請手動複製網址列的連結');
   }
@@ -1562,7 +1678,14 @@ function shareCopyLink(){
 function shareToLine(){
   var url = window.__shareUrl || location.href;
   var text = encodeURIComponent(trial.myName + ' 與 ' + trial.partnerName + ' 的 LOVEFIX，快來看看！');
-  window.open('https://line.me/R/msg/text/?' + text + '%0A' + encodeURIComponent(url), '_blank');
+  /* Open the window synchronously (within the click gesture) to avoid popup
+     blockers, then redirect it once the short link is ready. */
+  var win = window.open('', '_blank');
+  shortenUrl(url).then(function(shortUrl){
+    var target = 'https://line.me/R/msg/text/?' + text + '%0A' + encodeURIComponent(shortUrl);
+    if(win && !win.closed){ win.location.href = target; }
+    else { window.open(target, '_blank'); }
+  });
 }
 
 function downloadShareCard(){
