@@ -279,6 +279,9 @@
   /* LOVEFIX 看見的你們 — 3 short text insights (replaces zodiac card + percentage-bar analysis) */
   .insight-card{background:linear-gradient(160deg,#1c1428,#14141c 60%); border:1px solid rgba(155,140,255,0.35); border-radius:14px; padding:20px; margin:0 18px 6px; box-shadow:0 14px 30px rgba(155,140,255,0.12);}
   .insight-card-title{font-size:14.5px; font-weight:900; color:var(--purple); margin-bottom:16px; display:flex; align-items:center; gap:6px;}
+  .insight-based-on-label{font-size:10.5px; font-weight:700; color:var(--text-mute); letter-spacing:0.5px; margin-bottom:8px;}
+  .insight-based-on{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:17px;}
+  .insight-based-on-chip{font-size:11px; font-weight:700; color:var(--purple); background:rgba(155,140,255,0.14); border:1px solid rgba(155,140,255,0.3); border-radius:999px; padding:5px 11px; line-height:1.4;}
   .insight-row{margin-bottom:15px;}
   .insight-row:last-child{margin-bottom:0;}
   .insight-label{font-size:11px; font-weight:800; color:var(--purple); letter-spacing:0.5px; margin-bottom:5px;}
@@ -702,7 +705,7 @@
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 3 / 7</div>
       <div class="tw-title">重要的日子</div>
-      <div class="tw-sub">至少填寫「在一起的紀念日」。填上兩人生日，還能解鎖專屬默契分析 ✨</div>
+      <div class="tw-sub">至少填寫「在一起的紀念日」。生日則能讓你們的故事更完整（非必填）。</div>
 
       <div class="tw-field">
         <label class="tw-label">在一起的紀念日</label>
@@ -923,6 +926,8 @@
   <!-- LOVEFIX 看見的你們 — 3 short text insights, no scores or percentages -->
   <div class="insight-card reveal-on-scroll" id="insightCard" style="margin-top:20px;">
     <div class="insight-card-title">💫 LOVEFIX 看見的你們</div>
+    <div class="insight-based-on-label">根據你們的三個選擇</div>
+    <div class="insight-based-on" id="insightBasedOn"></div>
     <div class="insight-row">
       <div class="insight-label">你們的相處方式</div>
       <div class="insight-text" id="insightCare"></div>
@@ -1032,6 +1037,17 @@
     <div class="share-item featured" onclick="downloadShareCard()">
       <div class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg></div>
       <span>分享 LOVEFIX 截圖</span>
+    </div>
+  </div>
+
+  <!-- Bottom CTA aimed at people VIEWING this page (e.g. a shared link) rather
+       than the couple who made it — lets any visitor jump straight into the
+       wizard and start playing immediately. -->
+  <div class="section reveal-on-scroll" style="padding-top:6px;">
+    <div class="intro-cta-block" style="margin:0 18px 6px;">
+      <div class="intro-cta-title">創建你們專屬的 LOVEFIX</div>
+      <div class="intro-cta-sub">看完了他們的故事，換你們了——1～3 分鐘，就能看到屬於你們自己的 LOVEFIX。</div>
+      <button class="gate-btn" onclick="startOwnLovefix()">創建你們專屬的 LOVEFIX</button>
     </div>
   </div>
 
@@ -1188,10 +1204,26 @@ function weaveSentences(genreKey, raw){
   });
   return out.join('');
 }
-function styleStory(genreKey, raw, n1, n2){
+/* A short literary "echo" line, keyed by the couple's own Step5 answer to
+   "哪個畫面最像你們". It looks forward from the first-meeting moment to the
+   relationship as it stands today, giving EP1 a more literary, full-circle
+   close — and doubles as another visible place where their actual choice
+   answer (not a template guess) shapes the story. */
+var SCENE_STORY_ECHO = {
+  '一起旅行時最開心': function(n1,n2){ return '後來，' + n1 + '與' + n2 + '一起去過很多地方，但那個開始的瞬間，始終被好好收藏在旅途最初的那一頁。'; },
+  '窩在家裡什麼都不做': function(n1,n2){ return '後來他們才懂，最好的時光，往往不是誰刻意安排的，而是窩在家裡什麼都不做，卻誰也不想離開的那種安靜。'; },
+  '一起吃飯、聊天的普通日常': function(n1,n2){ return '後來的日子裡，一頓飯、一段閒聊，都成了' + n1 + '與' + n2 + '之間，最捨不得省略的儀式。'; },
+  '吵完架後又默默和好': function(n1,n2){ return '後來他們也吵過、也冷戰過，但每一次，先伸出手的那個人，都讓這段關係又往前走了一步。'; },
+  '為了未來一起努力': function(n1,n2){ return '後來，他們開始一起規劃未來，把「我們」兩個字，一點一點活成了實際的計畫。'; },
+  '常常互相吐槽，但不能沒有對方': function(n1,n2){ return '後來他們依然嘴上不饒人，卻在對方缺席的日子裡，才發現自己有多想念。'; }
+};
+function styleStory(genreKey, raw, n1, n2, sceneType){
   var g = GENRES[genreKey] || GENRES['戀愛'];
   var body = raw ? weaveSentences(genreKey, raw) : (n1 + '與' + n2 + '的故事，正要被寫下。');
-  return esc(g.opener(n1,n2)) + '<br><br>' + body + '<br><br>' + esc(g.closer(n1,n2));
+  var closerText = esc(g.closer(n1,n2));
+  var echoFn = SCENE_STORY_ECHO[sceneType];
+  if(echoFn){ closerText += '<br><br>' + esc(echoFn(n1, n2)); }
+  return esc(g.opener(n1,n2)) + '<br><br>' + body + '<br><br>' + closerText;
 }
 
 /* ============ Single achievement (free version keeps exactly one, not a multi-trophy carousel) ============ */
@@ -1752,6 +1784,13 @@ function renderResult(){
   document.getElementById('insightCare').textContent = insights.care;
   document.getElementById('insightValue').textContent = insights.value;
   document.getElementById('insightDirection').textContent = insights.direction;
+  // Show back the couple's own 3 picked answers as visible evidence, so the
+  // insight above doesn't feel like a generic/fabricated reading — it's
+  // traceably built from exactly these three choices.
+  document.getElementById('insightBasedOn').innerHTML = [trial.relType, trial.sceneType, trial.coreValue]
+    .filter(Boolean)
+    .map(function(t){ return '<span class="insight-based-on-chip">「' + esc(t) + '」</span>'; })
+    .join('');
 
   // Layer 3: rewritten/expanded version of the couple's own short line
   document.getElementById('rsRewrittenLine').textContent = buildRewrittenLine(trial.genre, trial.description);
@@ -1773,7 +1812,7 @@ function renderResult(){
   document.getElementById('rsGenreFrame').textContent = genre.frame(trial.myName, trial.partnerName);
 
   // EP1 card: customer's guided story, genre-styled, written long then clamped with a 解鎖閱讀更多 fade
-  document.getElementById('rsEp1Card').innerHTML = styleStory(trial.genre, trial.message, trial.myName, trial.partnerName);
+  document.getElementById('rsEp1Card').innerHTML = styleStory(trial.genre, trial.message, trial.myName, trial.partnerName, trial.sceneType);
 
   // Free version: exactly one meaningful achievement, not a multi-trophy carousel
   var achievement = buildSingleAchievement(trial, ymd ? ymd.totalDays : null);
@@ -1782,6 +1821,16 @@ function renderResult(){
 
 function scrollToUnlock(){
   document.getElementById('finalCtaCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* Lets a VIEWER of a finished result page (e.g. someone who opened a shared
+   link) jump straight into building their own — swaps back to the wizard
+   container and resets it to Step 1, without touching the couple's own
+   already-rendered result underneath. */
+function startOwnLovefix(){
+  document.getElementById('resultPage').style.display = 'none';
+  document.querySelector('.page').style.display = '';
+  goTo('screenStep1');
 }
 
 function esc(s){
