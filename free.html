@@ -177,6 +177,10 @@
   /* Trophy grid (emphasized, story-connected) */
   .trophy-grid{display:flex; gap:10px; overflow-x:auto; padding:2px 18px 6px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
   .trophy-grid::-webkit-scrollbar{display:none;}
+  /* Single achievement card (free version keeps only one, not a carousel) */
+  .achievement-card-single{margin:0 18px; padding:18px 20px; border-radius:14px; background:linear-gradient(160deg,#241417,#1a1a1a 60%); border:1px solid rgba(230,182,79,0.4); display:flex; align-items:center; gap:14px; box-shadow:0 10px 24px rgba(230,182,79,0.1);}
+  .achievement-single-icon{font-size:30px; flex-shrink:0;}
+  .achievement-single-name{font-size:15.5px; font-weight:900; color:#fff;}
   .trophy-chip{flex-shrink:0; min-width:118px; background:linear-gradient(160deg,#241417,#1a1a1a 60%); border:1px solid rgba(230,182,79,0.4); border-radius:14px; padding:16px 12px; text-align:center; box-shadow:0 10px 24px rgba(230,182,79,0.08);}
   .trophy-chip-icon{font-size:26px; margin-bottom:8px;}
   .trophy-chip-name{font-size:12.5px; font-weight:800; color:#fff; line-height:1.4;}
@@ -272,7 +276,33 @@
   .zodiac-vs{color:var(--text-mute); font-weight:700; font-size:12px;}
   .zodiac-text{font-size:13px; color:var(--text-soft); line-height:1.85;}
 
-  /* Love analysis / compatibility quiz surprise card */
+  /* LOVEFIX 看見的你們 — 3 short text insights (replaces zodiac card + percentage-bar analysis) */
+  .insight-card{background:linear-gradient(160deg,#1c1428,#14141c 60%); border:1px solid rgba(155,140,255,0.35); border-radius:14px; padding:20px; margin:0 18px 6px; box-shadow:0 14px 30px rgba(155,140,255,0.12);}
+  .insight-card-title{font-size:14.5px; font-weight:900; color:var(--purple); margin-bottom:16px; display:flex; align-items:center; gap:6px;}
+  .insight-row{margin-bottom:15px;}
+  .insight-row:last-child{margin-bottom:0;}
+  .insight-label{font-size:11px; font-weight:800; color:var(--purple); letter-spacing:0.5px; margin-bottom:5px;}
+  .insight-text{font-size:13px; color:var(--text-soft); line-height:1.8;}
+
+  /* Layer 3 — rewritten/expanded version of the couple's own short line */
+  .rewritten-line-card{margin:0 18px 6px; padding:22px 20px; border-radius:14px; text-align:center;
+    background:linear-gradient(160deg,#241a05,#1c1c1c 65%); border:1px solid rgba(230,182,79,0.4);}
+  .rewritten-line-label{font-size:11px; font-weight:800; color:var(--gold); letter-spacing:1px; margin-bottom:13px;}
+  .rewritten-line-text{font-size:15px; font-weight:700; color:#fff; line-height:1.9; font-style:italic;}
+
+  /* Song clue card — replaces the old locked/paywalled player; feels like a discovery, not a lock */
+  .song-clue-card{background:linear-gradient(135deg,#ff3b4e 0%,#e50914 45%,#7a1006 100%); border:1.5px solid rgba(230,182,79,0.75); border-radius:16px; padding:20px; box-shadow:0 16px 40px rgba(229,9,20,0.35), 0 0 50px rgba(230,182,79,0.15);}
+  .song-clue-row{margin-bottom:13px;}
+  .song-clue-row:last-of-type{margin-bottom:0;}
+  .song-clue-label{font-size:10.5px; font-weight:800; color:rgba(255,255,255,0.65); letter-spacing:1px; margin-bottom:4px; text-transform:uppercase;}
+  .song-clue-text{font-size:13.5px; color:#fff; line-height:1.7;}
+  .song-clue-line{font-style:italic; font-weight:700;}
+  .song-clue-title-wrap{margin-top:16px; padding:14px 16px; background:rgba(0,0,0,0.25); border-radius:12px; text-align:center;}
+  .song-clue-title-label{font-size:11px; font-weight:700; color:rgba(255,255,255,0.75); margin-bottom:6px;}
+  .song-clue-title-name{font-size:16px; font-weight:900; color:#ffe9b3;}
+  .song-clue-cta{display:block; width:100%; margin-top:14px; padding:12px; border-radius:999px; border:none; background:#fff; color:#e50914; font-size:13.5px; font-weight:800; cursor:pointer;}
+
+  /* Love analysis / compatibility quiz surprise card (legacy, kept for CSS compat) */
   .love-analysis-card{background:linear-gradient(160deg,#1c1428,#14141c 60%); border:1px solid rgba(155,140,255,0.35); border-radius:14px; padding:20px; margin:14px 18px 6px; box-shadow:0 14px 30px rgba(155,140,255,0.12);}
   .love-analysis-title{font-size:14.5px; font-weight:900; color:var(--purple); margin-bottom:4px; display:flex; align-items:center; gap:6px;}
   .love-analysis-sub{font-size:11.5px; color:var(--text-mute); margin-bottom:16px;}
@@ -293,6 +323,7 @@
   .final-cta-list{display:flex; flex-direction:column; gap:8px; margin-bottom:16px;}
   .final-cta-item{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--text-soft);}
   .final-cta-item svg{width:15px; height:15px; color:var(--gold); flex-shrink:0;}
+  .final-cta-copy{font-size:13.5px; color:var(--text-soft); line-height:1.85; margin-bottom:18px; text-align:center;}
 
   /* Compact soundtrack teaser */
   .sound-teaser{display:flex; align-items:center; gap:14px; background:linear-gradient(160deg,#1c1416,#161414 65%); border:1px solid var(--border); border-radius:14px; padding:15px 16px; margin:0 18px;}
@@ -599,9 +630,9 @@
 
   <!-- ===== SCREEN 1 ===== -->
   <div class="tw-screen" id="screenStep1">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 1 / 6</div>
+      <div class="tw-eyebrow">步驟 1 / 7</div>
       <div class="tw-title">你們是誰？</div>
       <div class="tw-sub">先告訴我們兩位的稱呼。</div>
 
@@ -631,9 +662,9 @@
 
   <!-- ===== SCREEN 2 ===== -->
   <div class="tw-screen" id="screenStep2">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 2 / 6</div>
+      <div class="tw-eyebrow">步驟 2 / 7</div>
       <div class="tw-title">上傳一張代表照片</div>
       <div class="tw-sub">拖曳照片可以調整位置，也能放大縮小，選一張你們最喜歡的合照。</div>
 
@@ -667,9 +698,9 @@
 
   <!-- ===== SCREEN 3 ===== -->
   <div class="tw-screen" id="screenStep3">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 3 / 6</div>
+      <div class="tw-eyebrow">步驟 3 / 7</div>
       <div class="tw-title">重要的日子</div>
       <div class="tw-sub">至少填寫「在一起的紀念日」。填上兩人生日，還能解鎖專屬默契分析 ✨</div>
 
@@ -695,9 +726,9 @@
 
   <!-- ===== SCREEN 4 (genre) ===== -->
   <div class="tw-screen" id="screenStep4">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 4 / 6</div>
+      <div class="tw-eyebrow">步驟 4 / 7</div>
       <div class="tw-title">你們的故事，是什麼類型？</div>
       <div class="tw-sub">你選擇的風格，將會是你的 LOVEFIX 頁面風格。</div>
 
@@ -718,6 +749,59 @@
 
       <div class="tw-nav-row">
         <button class="share-btn-outline" onclick="goTo('screenStep3')">上一步</button>
+        <button class="gate-btn" onclick="goTo('screenStep4b')">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4b (3 quick relationship-insight questions) ===== -->
+  <div class="tw-screen" id="screenStep4b">
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div><div class="tw-progress-dot"></div></div>
+    <div style="padding-top:20px;">
+      <div class="tw-eyebrow">步驟 5 / 7</div>
+      <div class="tw-title">關於你們的三個小問題</div>
+      <div class="tw-sub">很快就能填完，這會幫助 LOVEFIX 更了解你們的關係。</div>
+
+      <div class="tw-field">
+        <label class="tw-label">你們比較像哪一種關係？</label>
+        <div class="tw-choice-list" id="relTypeChoices">
+          <button type="button" class="cat-pill active" onclick="selectRelType(this)">每天互相鬥嘴，但其實最了解彼此</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">不常說甜言蜜語，但一直都在</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">一個負責衝動，一個負責收拾</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">像情人，也像最好的朋友</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">經歷過很多事情，還是選擇留在彼此身邊</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">個性完全不同，卻意外地適合</button>
+          <button type="button" class="cat-pill" onclick="selectRelType(this)">我們的故事才剛開始</button>
+        </div>
+      </div>
+
+      <div class="tw-field">
+        <label class="tw-label">哪個畫面最像你們？</label>
+        <div class="tw-choice-list" id="sceneChoices">
+          <button type="button" class="cat-pill active" onclick="selectScene(this)">一起旅行時最開心</button>
+          <button type="button" class="cat-pill" onclick="selectScene(this)">窩在家裡什麼都不做</button>
+          <button type="button" class="cat-pill" onclick="selectScene(this)">一起吃飯、聊天的普通日常</button>
+          <button type="button" class="cat-pill" onclick="selectScene(this)">吵完架後又默默和好</button>
+          <button type="button" class="cat-pill" onclick="selectScene(this)">為了未來一起努力</button>
+          <button type="button" class="cat-pill" onclick="selectScene(this)">常常互相吐槽，但不能沒有對方</button>
+        </div>
+      </div>
+
+      <div class="tw-field">
+        <label class="tw-label">這段關係最珍貴的是什麼？</label>
+        <div class="tw-choice-list" id="valueChoices">
+          <button type="button" class="cat-pill active" onclick="selectValue(this)">陪伴</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">理解</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">安全感</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">成長</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">快樂</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">不離不棄</button>
+          <button type="button" class="cat-pill" onclick="selectValue(this)">一起期待未來</button>
+        </div>
+      </div>
+
+      <div class="tw-nav-row">
+        <button class="share-btn-outline" onclick="goTo('screenStep4')">上一步</button>
         <button class="gate-btn" onclick="goToStep5()">下一步</button>
       </div>
     </div>
@@ -725,9 +809,9 @@
 
   <!-- ===== SCREEN 5 ===== -->
   <div class="tw-screen" id="screenStep5">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 5 / 6</div>
+      <div class="tw-eyebrow">步驟 6 / 7</div>
       <div class="tw-title">哪一句話最像你們？</div>
       <div class="tw-sub">選一個最貼近你們關係的描述。</div>
 
@@ -744,7 +828,7 @@
       </div>
 
       <div class="tw-nav-row">
-        <button class="share-btn-outline" onclick="goTo('screenStep4')">上一步</button>
+        <button class="share-btn-outline" onclick="goTo('screenStep4b')">上一步</button>
         <button class="gate-btn" onclick="goTo('screenStep6')">下一步</button>
       </div>
     </div>
@@ -752,9 +836,9 @@
 
   <!-- ===== SCREEN 6 ===== -->
   <div class="tw-screen" id="screenStep6">
-    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
+    <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
     <div style="padding-top:20px;">
-      <div class="tw-eyebrow">步驟 6 / 6</div>
+      <div class="tw-eyebrow">步驟 7 / 7</div>
       <div class="tw-title">請告訴我，你們第一次見面的場景</div>
       <div class="tw-sub">越具體越好——那天在哪裡、發生了什麼、你注意到對方的哪個瞬間。這段文字會套用你在步驟 4 選的風格，變成你們 EP1 的開頭。</div>
 
@@ -780,7 +864,7 @@
     <div class="now-loading-bar"><div class="now-loading-fill" id="loadingFill"></div></div>
   </div>
   <div class="tw-reveal-stage" id="revealStage2">
-    <div class="tw-reveal-msg">正在建立你們的故事...</div>
+    <div class="tw-reveal-msg" id="revealAnalyzingText">正在整理你們一起走過的時間……</div>
   </div>
   <div class="tw-reveal-stage" id="revealStage3">
     <div class="tw-reveal-photo" id="revealPhotoWrap"></div>
@@ -836,18 +920,29 @@
     <div class="time-frame-sub">💛 幸福感，正在持續累積中</div>
   </div>
 
-  <!-- Compatibility bonus (no AI branding, written to flatter both people) -->
-  <div class="zodiac-card reveal-on-scroll" id="zodiacCard" style="display:none; margin-top:20px;">
-    <div class="zodiac-signs-row" id="zodiacSignsRow"></div>
-    <div class="zodiac-text" id="zodiacText"></div>
+  <!-- LOVEFIX 看見的你們 — 3 short text insights, no scores or percentages -->
+  <div class="insight-card reveal-on-scroll" id="insightCard" style="margin-top:20px;">
+    <div class="insight-card-title">💫 LOVEFIX 看見的你們</div>
+    <div class="insight-row">
+      <div class="insight-label">你們的相處方式</div>
+      <div class="insight-text" id="insightCare"></div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-label">這段關係最珍貴的地方</div>
+      <div class="insight-text" id="insightValue"></div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-label">這段故事正在走向哪裡</div>
+      <div class="insight-text" id="insightDirection"></div>
+    </div>
   </div>
 
-  <!-- Love analysis / compatibility quiz — surprise result to add intrigue -->
-  <div class="love-analysis-card reveal-on-scroll" id="loveAnalysisCard" style="display:none;">
-    <div class="love-analysis-title">💫 你們的愛情契合力分析</div>
-    <div class="love-analysis-sub">根據你們的故事，計算出的專屬契合結果</div>
-    <div id="loveMetricsWrap"></div>
-    <div class="love-archetype" id="loveArchetypeWrap"></div>
+  <!-- Layer 3: the customer's short line, expanded in their chosen genre's tone -->
+  <div class="section reveal-on-scroll" style="padding-top:10px;">
+    <div class="rewritten-line-card">
+      <div class="rewritten-line-label">如果把你沒說完的話，寫完整一點……</div>
+      <div class="rewritten-line-text" id="rsRewrittenLine"></div>
+    </div>
   </div>
 
   <!-- Season 1 (compact, no locked-episode clutter) -->
@@ -879,52 +974,46 @@
 
   </div>
 
-  <!-- Locked 人生主題曲 teaser — echoes the intro showcase's real player, but drives EP1 completion -->
+  <!-- Song clue — a hint the song already exists somewhere, not a locked/paywalled item -->
   <div class="section reveal-on-scroll" style="padding-top:6px;">
-    <div class="section-heading-row"><div class="section-heading">🎵 你們的人生主題曲</div></div>
-    <div class="section-sub">趕緊完成 EP1，獲得第一手人生階段主題曲</div>
+    <div class="section-heading-row"><div class="section-heading">🎵 如果你們的故事是一首歌……</div></div>
   </div>
-  <div style="margin:0 18px 6px;">
-    <div class="player-card locked-player" onclick="scrollToUnlock()">
-      <div class="player-top">
-        <div class="player-cover">🔒</div>
-        <div class="player-meta">
-          <div class="song">尚未解鎖</div>
-          <div class="sub">完成 EP1 後，專屬主題曲即刻解鎖</div>
-          <div class="locked-player-cta">✨ 現在就建立自己的頁面</div>
-        </div>
-      </div>
+  <div class="song-clue-card" style="margin:0 18px 6px;">
+    <div class="song-clue-row">
+      <div class="song-clue-label">歌曲情緒</div>
+      <div class="song-clue-text" id="songClueMood"></div>
     </div>
-  </div>
-
-  <!-- 生活 TOP5 — rank1 is their real photo, ranks 2-5 teased locked -->
-  <div class="section reveal-on-scroll" style="padding-top:6px;">
-    <div class="section-heading-row"><div class="section-heading">人生故事 TOP 5</div></div>
-    <div class="section-sub">屬於你們最重要的五個瞬間</div>
-  </div>
-  <div class="top5-outer">
-    <div class="top5-track" id="rsTop5Track"></div>
+    <div class="song-clue-row">
+      <div class="song-clue-label">可能的畫面</div>
+      <div class="song-clue-text" id="songClueScene"></div>
+    </div>
+    <div class="song-clue-row">
+      <div class="song-clue-label">可能出現在歌裡的一句話</div>
+      <div class="song-clue-text song-clue-line" id="songClueLine"></div>
+    </div>
+    <div class="song-clue-title-wrap">
+      <div class="song-clue-title-label">LOVEFIX 已經找到這首歌的第一個線索</div>
+      <div class="song-clue-title-name" id="songClueTitle"></div>
+    </div>
+    <button class="song-clue-cta" onclick="scrollToUnlock()">看看這首歌會怎麼誕生</button>
   </div>
 
   <div class="section reveal-on-scroll">
-    <!-- Story-connected trophy showcase -->
-    <div class="trophy-section" style="margin-top:18px;">
-      <div class="section-sub" style="padding:0 18px 8px;">🏆 你們解鎖的成就</div>
-      <div class="trophy-grid" id="trophyGrid"></div>
+    <!-- Free version keeps exactly one meaningful achievement, not a multi-trophy carousel -->
+    <div class="section-sub" style="padding:0 18px 8px;">🏆 你們解鎖的成就</div>
+    <div class="achievement-card-single">
+      <div class="achievement-single-icon">🏆</div>
+      <div class="achievement-single-name" id="rsAchievementName"></div>
     </div>
   </div>
 
-  <!-- Final consolidated unlock CTA (benefits-first, the one real conversion moment) -->
+  <!-- Single final CTA — the one real conversion moment, framed as continuing the story, not a feature checklist -->
   <div class="final-cta-card reveal-on-scroll" id="finalCtaCard">
-    <div class="final-cta-title">解鎖完整版，你將獲得：</div>
-    <div class="final-cta-list">
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>完整第一季「我們的開始」全部劇情，不再只有 EP1</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>專屬於你們故事的原創主題曲，每季都有新歌</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>內容可無限次修改與調整，故事持續更新</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>專屬分享連結與愛情驗證碼，私密發送給對方</div>
-      <div class="final-cta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L19 7"/></svg>登上人生故事 TOP 5 排行，留下最美的紀念</div>
+    <div class="final-cta-copy">
+      現在看到的，只是從幾個簡單答案裡找到的第一頁。<br><br>
+      當你把真正重要的故事交給 LOVEFIX，我們會把它整理成完整篇章，並讓一首只屬於你們的歌從故事裡誕生。
     </div>
-    <button class="add-season-btn" onclick="notReadyToast()">了解更多解鎖完整版</button>
+    <button class="add-season-btn" onclick="notReadyToast()">繼續看看我們的故事會變成什麼</button>
   </div>
 
   <!-- Share -->
@@ -961,6 +1050,7 @@ var trial = {
   photoDataUrl:'', photoThumb:'', photoPosX:50, photoPosY:50, photoScale:1,
   togetherDate:'', myBirthday:'', partnerBirthday:'',
   genre:'戀愛',
+  relType:'每天互相鬥嘴，但其實最了解彼此', sceneType:'一起旅行時最開心', coreValue:'陪伴',
   description:'我們的故事才正要開始', message:''
 };
 var hasPhoto = false;
@@ -1104,7 +1194,17 @@ function styleStory(genreKey, raw, n1, n2){
   return esc(g.opener(n1,n2)) + '<br><br>' + body + '<br><br>' + esc(g.closer(n1,n2));
 }
 
-/* ============ Trophy engine (connected to their story/timeline) ============ */
+/* ============ Single achievement (free version keeps exactly one, not a multi-trophy carousel) ============ */
+var SINGLE_ACH_POOL = ['故事正式被收藏','平凡日常收藏家','最熟悉的旅伴','吵不散的兩個人','彼此生活中的固定角色'];
+function buildSingleAchievement(t, days){
+  if(days != null && days >= 1825){ return {icon:'🏆', name:'五年的答案仍然是彼此'}; }
+  if(days != null && days >= 1000){ return {icon:'🏆', name:'一起走過第一千天'}; }
+  var seed = (t.relType||'') + '|' + (t.sceneType||'') + '|' + (t.coreValue||'') + '|' + (t.myName||'') + (t.partnerName||'');
+  var idx = simpleHash(seed + 'singleach') % SINGLE_ACH_POOL.length;
+  return {icon:'🏆', name: SINGLE_ACH_POOL[idx]};
+}
+
+/* ============ Trophy engine (legacy, no longer wired up — kept for reference) ============ */
 var ELEMENT_TROPHY_NAME = {
   '火,火':'烈焰同心','火,土':'剛柔並濟','火,風':'一拍即合','火,水':'冰火相融',
   '土,土':'穩如磐石','土,風':'絕佳拍檔','土,水':'安穩依靠',
@@ -1190,6 +1290,119 @@ function heroIntroLine(genreKey, compat, n1, n2){
   return g.frame(n1, n2);
 }
 
+/* ============ Headline "relationship definition" quote generator ============
+   This is the single most important line on the free result page — the one
+   most likely to get screenshotted and shared. It's deterministic (not a
+   real AI call) but pulls from the couple's actual answers (relType/
+   sceneType/coreValue/genre/date/names) so the same inputs always produce
+   the same quote, while different couples land on different lines. */
+var HEADLINE_QUOTES = [
+  '你們不是每天都把愛掛在嘴邊，但每一次回頭，對方都還站在原來的位置。',
+  '你們的故事沒有太多戲劇性的橋段，真正珍貴的，是那些早已習慣有彼此的日常。',
+  '吵過、鬧過，最後還是選擇留在彼此身邊——這比任何甜言蜜語都更有份量。',
+  '有些愛情靠激情維持，你們靠的是，早已把對方放進了生活裡。',
+  '你們把平凡的日子，過成了誰也複製不來的默契。',
+  '不是沒有更好的選擇，而是遇見了就不想再找了。',
+  '兩個不同的人，卻在無數個普通的日子裡，慢慢活成了同一種節奏。',
+  '你們的愛情不靠轟轟烈烈，靠的是一直都在。',
+  '真正的浪漫，往往藏在那些沒被說出口、卻一直被記得的小事裡。',
+  '有你在的地方，好像連平凡的日常，都值得被好好收藏。',
+  '你們最擅長的，不是製造驚喜，而是把日子過成理所當然的幸福。',
+  '這段關係最動人的地方，不是誰為誰做了什麼，而是誰都沒有放手。'
+];
+function buildHeadlineQuote(t){
+  var seed = (t.relType||'') + '|' + (t.sceneType||'') + '|' + (t.coreValue||'') + '|' +
+    (t.genre||'') + '|' + (t.togetherDate||'') + '|' + (t.myName||'') + (t.partnerName||'');
+  var idx = simpleHash(seed + 'headline') % HEADLINE_QUOTES.length;
+  return HEADLINE_QUOTES[idx];
+}
+
+/* ============ "LOVEFIX 看見的你們" — 3 short relationship insights ============
+   Driven directly by the couple's 3 quick-question answers (Step 4b), not by
+   zodiac signs or a scored quiz — closer to what the brief calls "a relationship
+   observation" than a compatibility test. */
+var RELTYPE_INSIGHT = {
+  '每天互相鬥嘴，但其實最了解彼此':'你們的感情不是靠甜言蜜語堆出來的，鬥嘴的背後，其實是連對方一個表情都看得懂的默契。',
+  '不常說甜言蜜語，但一直都在':'你們不擅長把愛說出口，但用行動證明了，「一直都在」比任何情話都更有重量。',
+  '一個負責衝動，一個負責收拾':'一個往前衝、一個在後面接住——你們早就把彼此的個性，活成了剛剛好的互補。',
+  '像情人，也像最好的朋友':'你們的關係裡，戀人的心動和朋友的自在同時存在，這比單純的浪漫更難得。',
+  '經歷過很多事情，還是選擇留在彼此身邊':'走過不容易的時候，你們仍然選擇留下——這份選擇，比一開始的心動更值得被記住。',
+  '個性完全不同，卻意外地適合':'你們用各自的方式生活，卻在磨合裡找到了讓彼此都舒服的節奏。',
+  '我們的故事才剛開始':'一切都還很新鮮，但那份想更了解對方的心情，已經藏不住了。'
+};
+var VALUE_INSIGHT = {
+  '陪伴':'即使沒有特別的事情發生，只要有對方在，日子就覺得踏實。',
+  '理解':'即使遇過不容易的時候，你們仍然願意重新理解彼此，而不是急著放棄。',
+  '安全感':'在對方面前，你們可以卸下防備，因為知道不管怎樣都不會被丟下。',
+  '成長':'因為有彼此，你們都在往更好的方向前進，而且是一起前進。',
+  '快樂':'你們總能在最普通的時刻裡，找到讓彼此笑出來的理由。',
+  '不離不棄':'不管遇到什麼，你們都選擇先解決問題，而不是先放棄這段關係。',
+  '一起期待未來':'你們已經開始把「未來」這兩個字，想成兩個人的事，而不是一個人的計畫。'
+};
+var SCENE_INSIGHT_BASE = {
+  '一起旅行時最開心':'你們喜歡一起探索新的地方，把陌生的風景，走成兩個人的回憶。',
+  '窩在家裡什麼都不做':'你們最享受的，不是特別安排的行程，而是什麼都不做也覺得剛剛好的時光。',
+  '一起吃飯、聊天的普通日常':'你們把最平凡的吃飯聊天，過成了每天都想重複的儀式。',
+  '吵完架後又默默和好':'你們吵得了架，也和得了好，這代表這段關係比表面看起來更有韌性。',
+  '為了未來一起努力':'你們已經不只是在談戀愛，而是在一起打造想要的生活。',
+  '常常互相吐槽，但不能沒有對方':'嘴上說著對方的不是，心裡卻誰也離不開誰——這是你們獨有的相處方式。'
+};
+function buildStoryDirection(sceneType, days){
+  var base = SCENE_INSIGHT_BASE[sceneType] || SCENE_INSIGHT_BASE['一起吃飯、聊天的普通日常'];
+  var tail;
+  if(days == null){ tail = '而現在的你們，正要一起翻開故事的下一頁。'; }
+  else if(days < 100){ tail = '現在的你們，正在把彼此慢慢放進生活裡。'; }
+  else if(days < 365){ tail = '現在的你們，已經不只是喜歡，而是在共同建立一種生活。'; }
+  else if(days < 1000){ tail = '走到現在，你們已經把彼此活成了日常裡理所當然的存在。'; }
+  else { tail = '這麼長的時間下來，你們早就不只是伴侶，更像是彼此人生裡最熟悉的風景。'; }
+  return base + tail;
+}
+function buildRelationshipInsights(t, days){
+  return {
+    care: RELTYPE_INSIGHT[t.relType] || RELTYPE_INSIGHT['我們的故事才剛開始'],
+    value: VALUE_INSIGHT[t.coreValue] || VALUE_INSIGHT['陪伴'],
+    direction: buildStoryDirection(t.sceneType, days)
+  };
+}
+
+/* ============ Layer 3: expand the customer's short line in their genre's tone ============
+   Their original words (trial.description) are always preserved 100% verbatim —
+   we only wrap genre-flavored atmosphere around it, the same principle used for EP1. */
+var REWRITE_WRAPS = {
+  '戀愛': {open:'不管未來的路會怎麼走，', close:'——這是我現在最真實的心情。'},
+  '青春校園': {open:'就算畢業很多年後回頭看，', close:'，這句話應該還是不會變。'},
+  '動作片': {open:'不管前面還有多少關卡，', close:'，這件事我從沒想過要放棄。'},
+  '文藝片': {open:'有些話不用天天說，但心裡一直都是：', close:''},
+  '驚悚片': {open:'命運繞了那麼多圈，最後我還是想說：', close:'。'},
+  '紀錄片': {open:'如果要為這段關係下一個註解，那會是：', close:'。'},
+  '實境秀': {open:'鏡頭外的我，最想讓你知道的是：', close:'。'}
+};
+function buildRewrittenLine(genreKey, description){
+  var w = REWRITE_WRAPS[genreKey] || REWRITE_WRAPS['戀愛'];
+  var d = description || '我們的故事才正要開始';
+  return w.open + d + w.close;
+}
+
+/* ============ Song clue — "如果你們的故事是一首歌……" ============
+   Replaces the old locked-player teaser. Frames the theme song as something
+   LOVEFIX has already started discovering, not a paywalled item. */
+var SONG_CLUE = {
+  '戀愛': {mood:'甜蜜、帶著怦然心動的雀躍', scene:'兩個人在人群中互相尋找彼此的目光', line:'「遇見你之後，全世界都變得不一樣。」'},
+  '青春校園': {mood:'青澀、帶著陽光味道的悸動', scene:'放學後的走廊，兩人並肩慢慢走著', line:'「那年夏天，我們都還很年輕。」'},
+  '動作片': {mood:'熱血、帶一點孤注一擲的堅定', scene:'兩人在風雨中依然緊緊牽著手', line:'「只要你在，我什麼都不怕。」'},
+  '文藝片': {mood:'細膩、帶著時間沉澱後的溫柔', scene:'兩個人靜靜坐著，不說話也很自在', line:'「平凡的日子，因為你，都成了詩。」'},
+  '驚悚片': {mood:'命定、帶著意外驚喜的心跳感', scene:'一次意外的相遇，從此再也離不開', line:'「你的出現，是我人生劇本裡最大的意外。」'},
+  '紀錄片': {mood:'真實、帶著不加修飾的深情', scene:'鏡頭記錄下兩人最自然的日常互動', line:'「沒有一句台詞是設計過的，我們就是這樣走到現在。」'},
+  '實境秀': {mood:'閃亮、帶著全世界都在看的浪漫', scene:'在眾人面前，他還是只在乎你的反應', line:'「全世界都在看，他卻只在乎我一個人。」'}
+};
+var SONG_TITLES = ['還是你','把日子過成我們','每一次回頭','從今天到以後','習慣有你'];
+function buildSongClue(t){
+  var clue = SONG_CLUE[t.genre] || SONG_CLUE['戀愛'];
+  var seed = (t.myName||'') + (t.partnerName||'') + (t.togetherDate||'') + (t.genre||'');
+  var title = SONG_TITLES[simpleHash(seed + 'songtitle') % SONG_TITLES.length];
+  return {mood: clue.mood, scene: clue.scene, line: clue.line, title: title};
+}
+
 /* ============ Love analysis / compatibility quiz (deterministic "surprise" results) ============ */
 function simpleHash(str){
   var h = 0;
@@ -1257,6 +1470,23 @@ function selectDesc(el){
 }
 function updateCustomDesc(){
   trial.description = document.getElementById('inCustomDesc').value.trim() || '我們的故事才正要開始';
+}
+
+/* ============ Step4b: 3 quick relationship-insight questions ============ */
+function selectRelType(el){
+  document.querySelectorAll('#relTypeChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  trial.relType = el.textContent;
+}
+function selectScene(el){
+  document.querySelectorAll('#sceneChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  trial.sceneType = el.textContent;
+}
+function selectValue(el){
+  document.querySelectorAll('#valueChoices .cat-pill').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  trial.coreValue = el.textContent;
 }
 
 function validateStep1(){
@@ -1429,12 +1659,31 @@ function startReveal(){
   document.getElementById('revealAchName').textContent = ach.name;
 
   var stages = ['revealStage1','revealStage2','revealStage3','revealStage4','revealStage5','revealStage6'];
-  var delays = [0, 2200, 4400, 6600, 8600, 10600];
+  var delays = [0, 1800, 9000, 11000, 12800, 14800];
   stages.forEach(function(id, i){
     setTimeout(function(){
       document.getElementById(id).classList.add('show');
     }, delays[i]);
   });
+
+  /* Sequential "AI analyzing" lines inside revealStage2 — gives the loading
+     phase a sense of the page actually reading their relationship, instead
+     of a single generic "building your story..." message. */
+  var analyzingLines = [
+    '正在整理你們一起走過的時間……',
+    '正在讀取這段關係裡，最重要的線索……',
+    '正在把那些沒說出口的感受，整理成文字……',
+    '正在建立只屬於你們的第一頁……',
+    '我們好像找到了一些，關於你們的事情。'
+  ];
+  var analyzingDelays = [1800, 3400, 5000, 6600, 8200];
+  analyzingLines.forEach(function(line, i){
+    setTimeout(function(){
+      var el = document.getElementById('revealAnalyzingText');
+      if(el) el.textContent = line;
+    }, analyzingDelays[i]);
+  });
+
   setTimeout(function(){
     renderResult();
     document.getElementById('revealLayer').classList.remove('active');
@@ -1443,7 +1692,7 @@ function startReveal(){
     window.scrollTo(0,0);
     initScrollReveal();
     encodeStateToUrl();
-  }, 13000);
+  }, 17000);
 }
 
 /* ============ Render result page ============ */
@@ -1485,7 +1734,9 @@ function renderResult(){
      below the hero already shows it prominently, so keep this row to date + rating only. */
   metaParts.push((metaParts.length ? '<span class="dot-sep">·</span>' : '') + '<span>' + genre.rating + '</span>');
   document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
-  document.getElementById('rsHeroText').textContent = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
+  var headlineQuote = buildHeadlineQuote(trial);
+  trial.headlineQuote = headlineQuote;
+  document.getElementById('rsHeroText').textContent = headlineQuote;
 
   // Ornate time-together frame
   var timeFrame = document.getElementById('rsTimeFrame');
@@ -1496,27 +1747,21 @@ function renderResult(){
     timeFrame.style.display = 'none';
   }
 
-  // Compatibility bonus card (no AI branding, flattering tone)
-  if(compat){
-    document.getElementById('zodiacCard').style.display = 'block';
-    document.getElementById('zodiacSignsRow').textContent =
-      compat.z1.emoji + ' ' + trial.myName + '（' + compat.z1.name + '）  ✕  ' + compat.z2.emoji + ' ' + trial.partnerName + '（' + compat.z2.name + '）';
-    document.getElementById('zodiacText').textContent = compat.text;
-  } else {
-    document.getElementById('zodiacCard').style.display = 'none';
-  }
+  // LOVEFIX 看見的你們 — 3 short text insights from the couple's own answers
+  var insights = buildRelationshipInsights(trial, ymd ? ymd.totalDays : null);
+  document.getElementById('insightCare').textContent = insights.care;
+  document.getElementById('insightValue').textContent = insights.value;
+  document.getElementById('insightDirection').textContent = insights.direction;
 
-  // Love analysis / compatibility quiz — deterministic per-couple "surprise" results
-  var analysis = buildLoveAnalysis(trial.myName, trial.partnerName, trial.togetherDate, trial.genre);
-  document.getElementById('loveAnalysisCard').style.display = 'block';
-  document.getElementById('loveMetricsWrap').innerHTML = analysis.metrics.map(function(m){
-    return '<div class="love-metric-row"><div class="love-metric-label"><span>' + esc(m.label) + '</span><b>' + m.value + '%</b></div>' +
-      '<div class="love-metric-bar"><div class="love-metric-fill" style="width:' + m.value + '%;"></div></div></div>';
-  }).join('');
-  document.getElementById('loveArchetypeWrap').innerHTML =
-    '<div class="love-archetype-eyebrow">你們的戀愛類型</div>' +
-    '<div class="love-archetype-name">' + analysis.archetype.icon + ' ' + esc(analysis.archetype.name) + '</div>' +
-    '<div class="love-archetype-desc">' + esc(analysis.archetype.desc) + '</div>';
+  // Layer 3: rewritten/expanded version of the couple's own short line
+  document.getElementById('rsRewrittenLine').textContent = buildRewrittenLine(trial.genre, trial.description);
+
+  // Song clue — "如果你們的故事是一首歌……"
+  var songClue = buildSongClue(trial);
+  document.getElementById('songClueMood').textContent = songClue.mood;
+  document.getElementById('songClueScene').textContent = songClue.scene;
+  document.getElementById('songClueLine').textContent = songClue.line;
+  document.getElementById('songClueTitle').textContent = '《' + songClue.title + '》';
 
   // season cover uses same photo
   var seasonCover = document.getElementById('rsSeasonCover');
@@ -1530,25 +1775,9 @@ function renderResult(){
   // EP1 card: customer's guided story, genre-styled, written long then clamped with a 解鎖閱讀更多 fade
   document.getElementById('rsEp1Card').innerHTML = styleStory(trial.genre, trial.message, trial.myName, trial.partnerName);
 
-  // 生活 TOP5: rank1 is their real photo + condensed story line, ranks 2-5 are locked teasers
-  var rank1Caption = trial.message ? (trial.message.length > 42 ? trial.message.slice(0,42) + '…' : trial.message) : trial.description;
-  var rank1Img = hasPhoto
-    ? ('<img src="' + trial.photoDataUrl + '" alt="Top5 第1名" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">')
-    : '<div class="top5-card-noimg"></div>';
-  var top5Html = '<div class="top5-item rank1"><div class="rank-number">1</div><div class="top5-card">' + rank1Img + '<div class="top5-caption">' + esc(rank1Caption) + '</div></div></div>';
-  for(var ri = 2; ri <= 5; ri++){
-    top5Html += '<div class="top5-item"><div class="rank-number">' + ri + '</div>' +
-      '<div class="top5-card locked" onclick="scrollToUnlock()"><div class="rank-tag" style="background:var(--gold); color:#241a05;">解鎖</div>' +
-      '<div class="top5-card-noimg"></div><div class="top5-lock-overlay">🔒</div>' +
-      '<div class="top5-caption">解鎖發掘更多人生重要瞬間</div></div></div>';
-  }
-  document.getElementById('rsTop5Track').innerHTML = top5Html;
-
-  // Trophy showcase: connected to their real duration, genre, and story — clear, non-cryptic names
-  var trophies = buildTrophies(ymd ? ymd.totalDays : null, trial.genre, (trial.message || '').length, compat);
-  document.getElementById('trophyGrid').innerHTML = trophies.map(function(t){
-    return '<div class="trophy-chip"><div class="trophy-chip-icon">' + t.icon + '</div><div class="trophy-chip-name">' + esc(t.name) + '</div></div>';
-  }).join('');
+  // Free version: exactly one meaningful achievement, not a multi-trophy carousel
+  var achievement = buildSingleAchievement(trial, ymd ? ymd.totalDays : null);
+  document.getElementById('rsAchievementName').textContent = achievement.name;
 }
 
 function scrollToUnlock(){
@@ -1692,16 +1921,11 @@ function downloadShareCard(){
   var canvas = document.getElementById('shareCanvas');
   var ctx = canvas.getContext('2d');
   var W = canvas.width, H = canvas.height;
-  var genre = GENRES[trial.genre] || GENRES['戀愛'];
-  var compat = zodiacCompat(trial.myName, trial.myBirthday, trial.partnerName, trial.partnerBirthday);
-  var introLine = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
-  var hookLine = introLine + genre.closer(trial.myName, trial.partnerName);
+  var headlineQuote = trial.headlineQuote || buildHeadlineQuote(trial);
   var ymd = diffYMD(trial.togetherDate);
   var dateLine = '';
   if(trial.togetherDate){ dateLine = trial.togetherDate.replace(/-/g,'.') + ' 在一起'; }
   if(ymd){ dateLine += (dateLine ? '　·　' : '') + ((ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天'); }
-  var photoTop = 130;
-  var photoBottom = H - 300; /* photo area shrinks to leave room for date line + suspense hook + CTA footer */
 
   function computeCoverCrop(img, destW, destH){
     var srcRatio = img.width / img.height, destRatio = destW / destH;
@@ -1785,57 +2009,50 @@ function downloadShareCard(){
     ctx.fillStyle = '#7a7a7a';
     ctx.fillText('Powered by 見怪不怪 x 客製化歌曲', 50, 88);
 
+    /* The generated headline quote is the visual centerpiece — this is the
+       part meant to be screenshotted and shared, not the photo. */
+    ctx.fillStyle = '#e6b64f';
+    ctx.font = '700 22px sans-serif';
+    ctx.fillText('LOVEFIX 說：', 50, 160);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 40px sans-serif';
+    var quoteLines = wrapText('「' + headlineQuote + '」', 50, 220, W-100, 54, 7);
+    var quoteBottom = 220 + quoteLines*54;
+
+    /* Supporting card: photo + names + date, secondary to the quote */
+    var cardTop = quoteBottom + 46;
+    var photoSize = 130;
     if(img){
-      var destW = W-100, destH = photoBottom-photoTop;
-      var crop = computeCoverCrop(img, destW, destH);
+      var crop = computeCoverCrop(img, photoSize, photoSize);
       ctx.save();
-      roundRect(50, photoTop, destW, destH, 22);
+      roundRect(50, cardTop, photoSize, photoSize, 16);
       ctx.clip();
       ctx.filter = 'saturate(1.18) contrast(1.14) brightness(0.92) sepia(0.12) hue-rotate(-8deg)';
       /* crop the source at the destination's own aspect ratio (cover-fit) so the
          photo is never stretched/distorted, regardless of its original shape */
-      ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, 50, photoTop, destW, destH);
+      ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, 50, cardTop, photoSize, photoSize);
       ctx.filter = 'none';
-      var pGrad = ctx.createLinearGradient(0, photoBottom-220, 0, photoBottom);
-      pGrad.addColorStop(0,'rgba(10,10,10,0)');
-      pGrad.addColorStop(1,'rgba(10,10,10,0.9)');
-      ctx.fillStyle = pGrad;
-      ctx.fillRect(50, photoBottom-220, destW, 220);
       ctx.restore();
     } else {
       ctx.fillStyle = '#1a1a1a';
-      roundRect(50, photoTop, W-100, photoBottom-photoTop, 22);
+      roundRect(50, cardTop, photoSize, photoSize, 16);
       ctx.fill();
     }
-
-    /* genre tag pill, top-left over the photo */
-    ctx.font = '700 24px sans-serif';
-    var tagW = ctx.measureText(genre.tag).width + 36;
-    ctx.fillStyle = '#e50914';
-    roundRect(70, photoTop+20, tagW, 44, 8);
-    ctx.fill();
+    var textX = 50 + photoSize + 24;
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(genre.tag, 88, photoTop+49);
-
-    /* names, large, over the photo's bottom scrim */
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '900 50px sans-serif';
-    ctx.fillText(trial.myName + ' ✕ ' + trial.partnerName, 70, photoBottom - 40);
-
-    /* together-date + day counter, right under the photo */
+    ctx.font = '900 30px sans-serif';
+    ctx.fillText(trial.myName + ' ✕ ' + trial.partnerName, textX, cardTop + 46);
     ctx.fillStyle = '#e6b64f';
-    ctx.font = '700 24px sans-serif';
-    ctx.fillText(dateLine, 70, photoBottom + 48);
-
-    /* suspenseful, movie-trailer-style hook (curiosity-inducing, not a flat summary) */
-    ctx.fillStyle = '#d8d8d8';
-    ctx.font = '500 25px sans-serif';
-    wrapText(hookLine, 70, photoBottom + 92, W-140, 37, 4);
+    ctx.font = '700 20px sans-serif';
+    ctx.fillText(dateLine, textX, cardTop + 80);
+    ctx.fillStyle = '#9b8cff';
+    ctx.font = '700 18px sans-serif';
+    wrapText('看看你們的故事會被寫成什麼', textX, cardTop + 112, W - textX - 50, 26, 2);
 
     /* bottom CTA: invite the viewer to make their own */
     ctx.fillStyle = '#e6b64f';
     ctx.font = '800 24px sans-serif';
-    ctx.fillText('✨ 製作你的 LOVEFIX 頁面', 70, H - 45);
+    ctx.fillText('✨ 製作你的 LOVEFIX 頁面', 50, H - 45);
 
     canvas.toBlob(function(blob){ finish(blob); }, 'image/png');
   }
