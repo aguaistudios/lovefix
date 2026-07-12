@@ -165,7 +165,7 @@
   .genre-preview-text{font-size:13.5px; color:var(--text-soft); line-height:1.75; font-style:italic;}
 
   /* Text clamp with unlock fade (intro teaser + EP1) */
-  .text-clamp-wrap{position:relative; max-height:150px; overflow:hidden;}
+  .text-clamp-wrap{position:relative; max-height:215px; overflow:hidden;}
   .text-clamp-fade{position:absolute; left:0; right:0; bottom:0; height:64px; background:linear-gradient(180deg, rgba(35,35,35,0) 0%, var(--bg-card) 80%); display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px;}
   .text-clamp-fade.on-card{background:linear-gradient(180deg, rgba(20,20,20,0) 0%, var(--bg) 80%);}
   .text-clamp-pill{font-size:12px; font-weight:800; color:#241a05; background:var(--gold); border-radius:999px; padding:6px 16px; cursor:pointer;}
@@ -182,8 +182,8 @@
   .trophy-chip-name{font-size:12.5px; font-weight:800; color:#fff; line-height:1.4;}
 
   /* Photo safe-zone guide (step2) */
-  .photo-safezone{position:absolute; left:0; right:0; bottom:0; height:34%; background:linear-gradient(180deg, rgba(229,9,20,0) 0%, rgba(229,9,20,0.16) 100%); border-top:1px dashed rgba(229,9,20,0.55); pointer-events:none; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px;}
-  .photo-safezone span{font-size:10px; font-weight:700; color:#ffb3b3; background:rgba(0,0,0,0.5); padding:3px 8px; border-radius:999px;}
+  .photo-safezone{position:absolute; left:0; right:0; bottom:0; height:42%; background:linear-gradient(180deg, rgba(229,9,20,0) 0%, rgba(229,9,20,0.28) 100%); border-top:2px dashed rgba(229,9,20,0.8); pointer-events:none; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; text-align:center;}
+  .photo-safezone span{font-size:13px; font-weight:800; line-height:1.5; color:#fff; background:rgba(229,9,20,0.9); padding:6px 14px; border-radius:999px; max-width:85%; box-shadow:0 4px 14px rgba(0,0,0,0.4);}
 
   /* ================= RESULT PAGE — matches real customer template ================= */
 
@@ -253,6 +253,19 @@
   .cta-block{margin:20px 18px; padding:18px; border-radius:14px; background:linear-gradient(160deg,#1c1c1c,#141414 65%); border:1px solid var(--border); text-align:center;}
   .cta-text{font-size:13px; color:var(--text-soft); line-height:1.7; margin-bottom:13px;}
 
+  /* Result-page topbar "free preview" tag */
+  .rs-topbar-tag{background:var(--red); color:#fff; font-size:11px; font-weight:800; padding:6px 12px; border-radius:999px; letter-spacing:0.3px; white-space:nowrap; box-shadow:0 4px 14px rgba(229,9,20,0.35);}
+
+  /* Ornate time-together frame — emphasizes the ever-growing counter */
+  .time-frame{margin:16px 18px 0; padding:18px 20px; border-radius:16px; text-align:center;
+    background:linear-gradient(160deg,#241a05,#1c1c1c 65%); border:1.5px solid rgba(230,182,79,0.55);
+    box-shadow:0 14px 30px rgba(230,182,79,0.16), inset 0 1px 0 rgba(255,255,255,0.05); position:relative;}
+  .time-frame::before, .time-frame::after{content:"✦"; color:var(--gold); font-size:13px; position:absolute; top:12px; opacity:0.7;}
+  .time-frame::before{left:16px;} .time-frame::after{right:16px;}
+  .time-frame-label{font-size:11px; font-weight:800; color:var(--gold); letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;}
+  .time-frame-value{font-size:27px; font-weight:900; color:#fff; letter-spacing:0.5px;}
+  .time-frame-sub{font-size:11.5px; color:var(--text-mute); margin-top:8px; font-weight:600;}
+
   /* Zodiac compatibility bonus card */
   .zodiac-card{background:linear-gradient(160deg,#241417,#1a1a1a 60%); border:1px solid rgba(230,182,79,0.35); border-radius:14px; padding:18px 20px; margin:0 18px 6px;}
   .zodiac-signs-row{display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; font-size:13.5px; font-weight:800; color:var(--gold);}
@@ -317,6 +330,12 @@
   .qa-card.locked{opacity:0.55;}
   .qa-card.locked .qa-tag{background:rgba(255,255,255,0.06); color:var(--text-mute);}
   .qa-card.locked .qa-a{color:var(--text-mute); display:flex; align-items:center; gap:6px;}
+  .qa-card.blurred{filter:blur(4px); user-select:none;}
+
+  /* Locked/blurred teaser wrap (intro EP2/EP3 hint) */
+  .locked-teaser-wrap{position:relative;}
+  .locked-teaser-overlay{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:5;}
+  .locked-teaser-badge{background:var(--gold); color:#241a05; font-size:13.5px; font-weight:900; padding:10px 20px; border-radius:999px; display:flex; align-items:center; gap:6px; box-shadow:0 10px 26px rgba(230,182,79,0.4); cursor:pointer;}
 
   /* Top5-style row for "更多照片" */
   .top5-outer{position:relative;}
@@ -347,7 +366,8 @@
   /* Player card (soundtrack — locked state) */
   .player-card{background:linear-gradient(160deg,#3a1418,#1c1010 65%); border:1px solid rgba(229,9,20,0.4); box-shadow:0 12px 30px rgba(229,9,20,0.18), inset 0 1px 0 rgba(255,255,255,0.04); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:15px; margin-bottom:12px;}
   .player-top{display:flex; gap:14px; align-items:center;}
-  .player-cover{width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a); box-shadow:0 6px 18px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;}
+  .player-cover{width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; background:linear-gradient(160deg,#3a2a2c,#1a1a1a); box-shadow:0 6px 18px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:26px;}
+  .ctrl-btn[aria-hidden="true"]{pointer-events:none;}
   .player-meta{flex:1; min-width:0;}
   .player-meta .song{font-size:17px; font-weight:900; color:var(--text); margin-bottom:4px;}
   .player-meta .sub{font-size:12.5px; color:var(--text-mute); font-weight:700;}
@@ -430,59 +450,8 @@
       </div>
     </div>
 
+    <!-- Top5 (moved up: right under the cover) -->
     <div class="section" style="padding-top:22px;">
-      <div class="section-heading-row"><div class="section-heading">🎬 第一季：『我們的開始』</div></div>
-      <div class="section-sub">真實客戶案例，完整呈現 EP1 - EP3</div>
-
-      <div class="episode-block">
-        <div class="episode-title-row"><div class="episode-title">EP1 · 相遇</div></div>
-        <div class="chapter-cards">
-          <div class="qa-card ep-red">
-            <div class="qa-tag">🌱 我們是怎麼認識的</div>
-            <div class="qa-a">在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。</div>
-          </div>
-          <div class="qa-card ep-red">
-            <div class="qa-tag">👀 第一眼對你的感覺</div>
-            <div class="qa-a">笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="episode-block">
-        <div class="episode-title-row"><div class="episode-title">EP2 · 相處</div></div>
-        <div class="chapter-cards">
-          <div class="qa-card ep-red">
-            <div class="qa-tag">💬 開始心動的瞬間</div>
-            <div class="qa-a">有次深夜聊天聊到捨不得掛電話，那時候我才確定，我好像喜歡上你了。</div>
-          </div>
-          <div class="qa-card ep-red">
-            <div class="qa-tag">🎈 我們最愛一起做的事</div>
-            <div class="qa-a">窩在沙發上看電影配鹹酥雞，什麼都不用做也覺得很幸福。</div>
-          </div>
-          <div class="qa-card ep-red">
-            <div class="qa-tag">💭 最印象深刻的一件事</div>
-            <div class="qa-a">那次我們在墾丁被雨淋成落湯雞，你卻笑到肚子痛，我才發現狼狽的樣子也可以這麼可愛。</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="episode-block">
-        <div class="episode-title-row"><div class="episode-title">EP3 · 磨合</div></div>
-        <div class="chapter-cards">
-          <div class="qa-card ep-red">
-            <div class="qa-tag">🌧️ 我們吵過最大的一次架</div>
-            <div class="qa-a">因為一次誤會冷戰了三天，最後是你先傳訊息說想我，我才知道兩個人願意先低頭有多重要。</div>
-          </div>
-          <div class="qa-card ep-red">
-            <div class="qa-tag">😤 最討厭你做的事</div>
-            <div class="qa-a">明明快遲到了還在那邊挑衣服，不過看你認真的樣子，還是覺得很可愛啦。</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top5 -->
-    <div class="section" style="padding-top:10px;">
       <div class="section-heading-row"><div class="section-heading">人生故事 TOP 5</div></div>
       <div class="section-sub">屬於他們最重要的五個瞬間</div>
     </div>
@@ -511,18 +480,82 @@
       </div>
     </div>
 
-    <!-- Song (real playable player) -->
-    <div class="song-player" style="margin:16px 18px 0;">
-      <button class="song-player-btn" id="songPlayBtn" onclick="toggleThemeSong()" aria-label="播放主題曲">
-        <svg id="songPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-      <div class="song-player-meta">
-        <div class="song">未來</div>
-        <div class="sub" id="songPlayerSub">這對故事的專屬原創主題曲 · 點擊播放</div>
+    <!-- Season 1 — EP1 only, written as one flowing narrative that ends on a cliffhanger -->
+    <div class="section" style="padding-top:14px;">
+      <div class="section-heading-row"><div class="section-heading">🎬 第一季：『我們的開始』</div></div>
+      <div class="section-sub">真實客戶案例 · EP1 搶先看</div>
+
+      <div class="episode-block">
+        <div class="episode-title-row"><div class="episode-title">EP1 · 相遇</div></div>
+        <div class="chapter-cards">
+          <div class="qa-card ep-red text-clamp-wrap" id="introEp1CardWrap">
+            <div class="qa-a">那是一場再普通不過的朋友聚會，誰也沒料到，這一晚會被往後無數次提起。在朋友的聚會上，你坐在我斜對面，笑得特別大聲，我就這樣記住了你。原本只是隨口的一瞥，卻怎麼樣都收不回目光——笑起來眼睛彎彎的，說話很有精神，那時候心裡就默默多看了你兩眼。誰都以為這只是一次再普通不過的聚會，會就此結束、各自散場。但那晚離開後，我卻鬼使神差地翻出了聊天紀錄，打下第一句話。而接下來發生的事，遠比任何人想像的都還要不一樣……</div>
+            <div class="text-clamp-fade on-card"><div class="text-clamp-pill" onclick="goTo('screenStep1')">解鎖閱讀更多</div></div>
+          </div>
+        </div>
       </div>
-      <div class="song-player-bars"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- Theme song — Spotify-style player, emphasized as the dreamy centerpiece -->
+    <div class="section" style="padding-top:6px;">
+      <div class="section-heading-row"><div class="section-heading">🎵 我們的主題曲原聲帶</div></div>
+      <div class="section-sub">每一段故事，都值得一首只屬於他們的歌</div>
+    </div>
+    <div style="margin:0 18px;">
+      <div class="player-card">
+        <div class="player-top">
+          <div class="player-cover">🎵</div>
+          <div class="player-meta">
+            <div class="song">未來</div>
+            <div class="sub">原創主題曲 · 為《未來》量身譜寫</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar" id="songProgressBar"><div class="progress-fill" id="songProgressFill"></div></div>
+          <div class="time-row"><span id="songTimeCur">0:00</span><span id="songTimeDur">0:00</span></div>
+        </div>
+        <div class="controls-row">
+          <button class="ctrl-btn" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+          <button class="ctrl-btn main" id="songPlayBtn" onclick="toggleThemeSong()" aria-label="播放主題曲">
+            <svg id="songPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="ctrl-btn" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM6 6l8.5 6L6 18z"/></svg></button>
+        </div>
+      </div>
+      <div class="lyrics-card" style="margin-top:12px;">
+        <div class="lyrics-heading">🎤 歌詞</div>
+        <div style="font-size:13px; line-height:2; color:var(--text-soft);">
+          曾經只是擦肩而過的兩個人<br>
+          如今變成生命裡最亮的風景<br>
+          你說未來很遠，我說你在就好<br>
+          每一步，都想牽著你的手往前走<br>
+          就算未知，也沒什麼好怕<br>
+          因為未來，有你才完整
+        </div>
+      </div>
     </div>
     <audio id="themeAudio" src="assets/future-theme.mp3" preload="none"></audio>
+
+    <!-- More episodes — blurred teaser, unlock-gated -->
+    <div class="section" style="padding-top:6px;">
+      <div class="section-heading-row"><div class="section-heading">更多精彩，即將揭曉</div></div>
+      <div class="section-sub">EP2 · 相處　EP3 · 磨合</div>
+    </div>
+    <div class="locked-teaser-wrap" style="margin:0 18px;">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="qa-card ep-red blurred">
+          <div class="qa-tag">💬 開始心動的瞬間</div>
+          <div class="qa-a">有次深夜聊天聊到捨不得掛電話，那時候我才確定，我好像喜歡上你了。</div>
+        </div>
+        <div class="qa-card ep-red blurred">
+          <div class="qa-tag">🌧️ 我們吵過最大的一次架</div>
+          <div class="qa-a">因為一次誤會冷戰了三天，最後是你先傳訊息說想我，我才知道兩個人願意先低頭有多重要。</div>
+        </div>
+      </div>
+      <div class="locked-teaser-overlay">
+        <div class="locked-teaser-badge" onclick="goTo('screenStep1')">🔒 解鎖看完整故事</div>
+      </div>
+    </div>
 
     <!-- Standalone, high-contrast free-trial CTA block -->
     <div class="intro-cta-block">
@@ -549,8 +582,8 @@
         <input class="tw-input" id="inPartnerName" placeholder="例如：小美" maxlength="20" oninput="updateCreatorPills()">
       </div>
       <div class="tw-field">
-        <label class="tw-label">製作者</label>
-        <div class="creator-hint">這個頁面是誰負責製作的？</div>
+        <label class="tw-label">頁面製作者</label>
+        <div class="creator-hint">這個頁面是誰的視角製作的？</div>
         <div class="tw-choice-pair" id="creatorChoice">
           <button type="button" class="cat-pill active" data-creator="me" id="creatorPillMe" onclick="selectCreator(this)">我</button>
           <button type="button" class="cat-pill" data-creator="partner" id="creatorPillPartner" onclick="selectCreator(this)">對方</button>
@@ -653,7 +686,7 @@
 
       <div class="tw-nav-row">
         <button class="share-btn-outline" onclick="goTo('screenStep3')">上一步</button>
-        <button class="gate-btn" onclick="goTo('screenStep5')">下一步</button>
+        <button class="gate-btn" onclick="goToStep5()">下一步</button>
       </div>
     </div>
   </div>
@@ -690,8 +723,8 @@
     <div class="tw-progress"><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div><div class="tw-progress-dot done"></div></div>
     <div style="padding-top:20px;">
       <div class="tw-eyebrow">步驟 6 / 6</div>
-      <div class="tw-title">用一段話，介紹你們的關係</div>
-      <div class="tw-sub">隨意寫就好，可以是怎麼認識的、印象最深的一件事、或現在的日常。這段文字會套用你在步驟 4 選的風格，變成你們故事的開頭。</div>
+      <div class="tw-title">請告訴我，你們第一次見面的場景</div>
+      <div class="tw-sub">越具體越好——那天在哪裡、發生了什麼、你注意到對方的哪個瞬間。這段文字會套用你在步驟 4 選的風格，變成你們 EP1 的開頭。</div>
 
       <div class="tw-field">
         <textarea class="tw-textarea" id="inMessage" rows="6" maxlength="300" oninput="updateMsgCounter()" placeholder="例如：我們是在社團認識的，那天他抱著一堆樂譜撞到我，我們就這樣聊到閉館……"></textarea>
@@ -746,6 +779,7 @@
       </div>
       <div class="brand-powered">Powered by <span class="brand-powered-name">見怪不怪 x 客製化歌曲</span></div>
     </div>
+    <div class="rs-topbar-tag">免費預覽</div>
   </div>
   <div class="topbar-spacer"></div>
 
@@ -761,6 +795,13 @@
         <button class="btn-list" onclick="scrollToUnlock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>解鎖完整版</button>
       </div>
     </div>
+  </div>
+
+  <!-- Ornate time-together frame — emphasize the ever-growing number -->
+  <div class="time-frame reveal-on-scroll" id="rsTimeFrame" style="display:none;">
+    <div class="time-frame-label">在一起</div>
+    <div class="time-frame-value" id="rsTimeFrameValue"></div>
+    <div class="time-frame-sub">💛 幸福感，正在持續累積中</div>
   </div>
 
   <!-- Compatibility bonus (no AI branding, written to flatter both people) -->
@@ -796,8 +837,20 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- 生活 TOP5 — rank1 is their real photo, ranks 2-5 teased locked -->
+  <div class="section reveal-on-scroll" style="padding-top:6px;">
+    <div class="section-heading-row"><div class="section-heading">人生故事 TOP 5</div></div>
+    <div class="section-sub">屬於你們最重要的五個瞬間</div>
+  </div>
+  <div class="top5-outer">
+    <div class="top5-track" id="rsTop5Track"></div>
+  </div>
+
+  <div class="section reveal-on-scroll">
     <!-- Story-connected trophy showcase -->
-    <div class="trophy-section reveal-on-scroll" style="margin-top:18px;">
+    <div class="trophy-section" style="margin-top:18px;">
       <div class="section-sub" style="padding:0 18px 8px;">🏆 你們解鎖的成就</div>
       <div class="trophy-grid" id="trophyGrid"></div>
     </div>
@@ -859,65 +912,72 @@ var GENRES = {
   '戀愛': {
     tag:'浪漫愛情', rating:'💕 甜蜜升溫', trophy:{icon:'💕', name:'浪漫主義者'},
     frame:function(n1,n2){ return '這是一部關於 ' + n1 + ' 與 ' + n2 + ' 的甜蜜愛情故事。'; },
-    preview:'「他們笑著鬧著，卻在轉身的瞬間，都紅了眼眶。」',
+    preview:'「他在人群中一眼就認出了我，從那一刻起，全世界的顏色都為我而變。」',
     opener:function(n1,n2){ return '命運總喜歡開一些浪漫的玩笑，在你意想不到的地方，悄悄埋下伏筆。以下，是屬於 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
     closer:function(n1,n2){ return '而這，只是他們故事的開始，往後的每一天，都將被這份心動悄悄改寫……'; },
     connectors:['誰也沒想到，','那一刻，','從那天起，','而這份心動，','沒有多說什麼，'],
-    beats:['空氣裡彷彿都是甜甜的味道。','兩人的距離，好像又更近了一點。','那種心動的感覺，怎麼樣都藏不住。','連時間都好像慢了下來。','誰都看得出來，這段關係正在悄悄升溫。']
+    beats:['空氣裡彷彿都是甜甜的味道。','兩人的距離，好像又更近了一點。','那種心動的感覺，怎麼樣都藏不住。','連時間都好像慢了下來。','誰都看得出來，這段關係正在悄悄升溫。'],
+    descOptions:['我們一起走過很長一段路','對方是我最重要的人','我們的故事才正要開始','平凡的日子，因為你變得特別','我們不是最完美，卻很適合彼此']
   },
   '青春校園': {
     tag:'校園青春', rating:'🎒 青春回憶', trophy:{icon:'🎒', name:'青春主角'},
     frame:function(n1,n2){ return '回到最青澀的時光，這是 ' + n1 + ' 與 ' + n2 + ' 獨有的校園記憶。'; },
-    preview:'「鐘聲響起的那個午後，走廊盡頭，他們的青春正要開始。」',
+    preview:'「他翻牆闖進教官辦公室，只為了在我的畢業紀念冊上，偷偷多寫一句話。」',
     opener:function(n1,n2){ return '青春最好的部分，往往發生在課本以外，藏在鐘聲與走廊的縫隙裡。這是 ' + n1 + ' 與 ' + n2 + ' 的校園記憶——'; },
     closer:function(n1,n2){ return '鐘聲還會再響，而他們的故事還很長，青春的下一頁，正等著被翻開……'; },
     connectors:['下課鐘響起時，','那個午後，','誰也沒有多想，','就這樣，','放學的路上，'],
-    beats:['陽光灑落在走廊上，一切都顯得特別柔軟。','那種青澀的緊張感，藏都藏不住。','空氣中彷彿還留著粉筆灰與夏天的味道。','時間在那一刻，好像被按下了慢動作。','那份悸動，成了記憶裡最鮮明的畫面。']
+    beats:['陽光灑落在走廊上，一切都顯得特別柔軟。','那種青澀的緊張感，藏都藏不住。','空氣中彷彿還留著粉筆灰與夏天的味道。','時間在那一刻，好像被按下了慢動作。','那份悸動，成了記憶裡最鮮明的畫面。'],
+    descOptions:['我們是彼此青春最亮的一頁','從教室到現在，故事還沒說完','那些年，我們一起蹺過的課','畢業後，我們沒有散場','我們的默契，是從書桌前開始的']
   },
   '動作片': {
     tag:'熱血動作', rating:'🔥 熱血滿點', trophy:{icon:'🔥', name:'並肩戰友'},
     frame:function(n1,n2){ return '在充滿挑戰的日子裡，' + n1 + ' 與 ' + n2 + ' 始終並肩作戰。'; },
-    preview:'「無論多大的風浪，他們選擇並肩，一起衝過去。」',
+    preview:'「他在見到我的那天，跳過了兩米深的懸崖，躲過了掉落的巨石，只為了來到我面前。」',
     opener:function(n1,n2){ return '有些關係，是在一次次的並肩作戰中被淬鍊出來的，每一次考驗都讓彼此更靠近。這是 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
     closer:function(n1,n2){ return '而真正的考驗，才正要開始，但這一次，他們知道彼此不會是一個人面對……'; },
     connectors:['毫無預警地，','下一秒，','在那個瞬間，','沒有人退縮，','緊接著，'],
-    beats:['腎上腺素瞬間飆升，一切變得更加真實。','沒有退路，只能往前衝。','那種並肩作戰的默契，是無法偽裝的。','緊張的氣氛中，卻藏著一絲安心。','戰友之間的信任，就在那一刻被確立。']
+    beats:['腎上腺素瞬間飆升，一切變得更加真實。','沒有退路，只能往前衝。','那種並肩作戰的默契，是無法偽裝的。','緊張的氣氛中，卻藏著一絲安心。','戰友之間的信任，就在那一刻被確立。'],
+    descOptions:['再大的風浪，我們都選擇並肩衝過去','為了你，我什麼都願意豁出去','我們是彼此最強的隊友','沒有什麼能把我們分開','每一次考驗，都讓我們更靠近']
   },
   '文藝片': {
     tag:'文藝愛情', rating:'🎬 細膩動人', trophy:{icon:'🎬', name:'生活詩人'},
     frame:function(n1,n2){ return '細膩、真實，這是 ' + n1 + ' 與 ' + n2 + ' 緩緩流動的生活切片。'; },
-    preview:'「生活很安靜，而愛，藏在每一個不起眼的日常裡。」',
+    preview:'「他把我們每一句對話都抄在筆記本裡，說要留到八十歲的時候，一起讀給彼此聽。」',
     opener:function(n1,n2){ return '生活很安靜，但有些片刻值得被慢慢說，慢慢記住。這是 ' + n1 + ' 與 ' + n2 + ' 的故事——'; },
     closer:function(n1,n2){ return '而那些沒說出口的，都藏在接下來的日子裡，等著被一天一天讀懂……'; },
     connectors:['很安靜地，','日子照常，','而在某個瞬間，','悄悄地，','沒有誰刻意提起，'],
-    beats:['生活的細節，總是藏著最真實的情感。','沒有誇張的橋段，卻讓人特別有感觸。','時間靜靜流淌，一切顯得特別真實。','那些微小的瞬間，拼湊出最完整的故事。','安靜的日常裡，藏著最深的溫柔。']
+    beats:['生活的細節，總是藏著最真實的情感。','沒有誇張的橋段，卻讓人特別有感觸。','時間靜靜流淌，一切顯得特別真實。','那些微小的瞬間，拼湊出最完整的故事。','安靜的日常裡，藏著最深的溫柔。'],
+    descOptions:['我們的愛，藏在最安靜的日常裡','不用轟轟烈烈，只要一直在一起','生活很平凡，但有你就不一樣','我們慢慢地愛，卻愛得很深','那些沒說出口的，都藏在陪伴裡']
   },
   '驚悚片': {
     tag:'驚悚愛情', rating:'⚡ 心跳加速', trophy:{icon:'⚡', name:'心動偵探'},
     frame:function(n1,n2){ return '心跳、悸動、意外的驚喜——這是 ' + n1 + ' 與 ' + n2 + ' 充滿張力的故事。'; },
-    preview:'「心跳加速的不只是意外，還有靠近彼此的那一瞬間。」',
+    preview:'「電話那頭突然沒了聲音，下一秒，他已經渾身濕透地站在我家樓下。」',
     opener:function(n1,n2){ return '沒有人預料到，一場意外的相遇，會讓 ' + n1 + ' 與 ' + n2 + ' 的人生從此不同，而伏筆，其實早就悄悄埋下——'; },
     closer:function(n1,n2){ return '但真正讓人心跳加速的，還在後面，這只是整個故事最開始的一小段……'; },
     connectors:['誰也想不到，','心跳漏了一拍，','下一秒，','命運的齒輪悄悄轉動，','而就在那時，'],
-    beats:['空氣瞬間凝結，彷彿有什麼即將發生。','沒有人說話，但心跳聲卻異常清晰。','那種不安又期待的感覺，讓人無法忽視。','時間彷彿被按下了暫停鍵。','線索一點一點被串了起來。']
+    beats:['空氣瞬間凝結，彷彿有什麼即將發生。','沒有人說話，但心跳聲卻異常清晰。','那種不安又期待的感覺，讓人無法忽視。','時間彷彿被按下了暫停鍵。','線索一點一點被串了起來。'],
+    descOptions:['遇見你，是我人生最大的意外','心跳加速的，不只是意外，還有你','我們的故事，從一場意外開始','靠近你的那一刻，世界都靜止了','命運讓我們相遇，誰也逃不掉']
   },
   '紀錄片': {
     tag:'真實紀錄', rating:'📽 真實記錄', trophy:{icon:'📽', name:'真實記錄者'},
     frame:function(n1,n2){ return '真實紀錄 ' + n1 + ' 與 ' + n2 + ' 最真切的日常片刻。'; },
-    preview:'「沒有劇本，這就是他們最真實的生活記錄。」',
+    preview:'「攝影機都還沒關，他就當著全公司的面，說出了想娶我的那句話。」',
     opener:function(n1,n2){ return '沒有劇本、沒有彩排，只有最真實的生活痕跡。這是 ' + n1 + ' 與 ' + n2 + ' 最真實的紀錄——'; },
     closer:function(n1,n2){ return '鏡頭還在繼續，他們的故事也是，真實的日子，永遠比劇本更精彩……'; },
     connectors:['鏡頭記錄下，','真實的畫面裡，','那一天，','毫無修飾地，','就這樣被記錄下來，'],
-    beats:['鏡頭忠實記錄下每一個細節。','沒有多餘的修飾，只有最真實的反應。','那一刻的表情，比任何台詞都更有說服力。','時間軸緩緩推進，故事持續發生。','真實，往往比虛構更打動人心。']
+    beats:['鏡頭忠實記錄下每一個細節。','沒有多餘的修飾，只有最真實的反應。','那一刻的表情，比任何台詞都更有說服力。','時間軸緩緩推進，故事持續發生。','真實，往往比虛構更打動人心。'],
+    descOptions:['這是我們最真實的生活記錄','沒有劇本，我們就是這樣走到現在','真實的日子，比任何故事都精彩','鏡頭之外，我們依然是彼此的主角','平凡卻真實，這就是我們的故事']
   },
   '實境秀': {
     tag:'真人實境', rating:'🎥 真人實境', trophy:{icon:'🎥', name:'真人主角'},
     frame:function(n1,n2){ return '鏡頭之下，' + n1 + ' 與 ' + n2 + ' 的真實互動比劇本更精彩。'; },
-    preview:'「鏡頭記錄下的，是比任何劇本都更精彩的真實反應。」',
+    preview:'「毫無預警，他在直播鏡頭前單膝下跪，全場瞬間安靜了整整三秒。」',
     opener:function(n1,n2){ return '鏡頭打開，沒有NG，也沒有第二次機會。這是 ' + n1 + ' 與 ' + n2 + ' 最真實的互動——'; },
     closer:function(n1,n2){ return '而觀眾都在等，接下來會發生什麼，畢竟最好看的戲，永遠是真實的……'; },
     connectors:['鏡頭捕捉到，','毫無劇本地，','真實反應是，','那個當下，','緊接著發生的是，'],
-    beats:['鏡頭前的反應，完全藏不住真實情緒。','觀眾席彷彿都能感受到那份心動。','沒有劇本的橋段，往往最令人難忘。','那一刻，全場的目光都聚焦在他們身上。','真實的互動，永遠是最好看的戲。']
+    beats:['鏡頭前的反應，完全藏不住真實情緒。','觀眾席彷彿都能感受到那份心動。','沒有劇本的橋段，往往最令人難忘。','那一刻，全場的目光都聚焦在他們身上。','真實的互動，永遠是最好看的戲。'],
+    descOptions:['我們的愛，比任何劇本都精彩','沒有NG，這就是我們最真實的反應','鏡頭之下，我們依然做自己','全世界都在看，我們卻只看著彼此','最好看的戲，永遠是真實的我們']
   }
 };
 function selectGenre(el){
@@ -933,6 +993,24 @@ function selectGenre(el){
 function selectGenreDefault(){
   var first = document.querySelector('#genreChoices .cat-pill');
   if(first){ first.classList.add('active'); trial.genre = first.dataset.genre; }
+}
+
+/* Step5 choices are re-rendered in the tone of whatever genre was just picked in Step4 */
+function renderDescChoices(){
+  var g = GENRES[trial.genre] || GENRES['戀愛'];
+  var opts = (g.descOptions && g.descOptions.length) ? g.descOptions :
+    ['我們一起走過很長一段路','對方是我最重要的人','我們的故事才正要開始','平凡的日子，因為你變得特別','我們不是最完美，卻很適合彼此'];
+  var html = opts.map(function(o){ return '<button type="button" class="cat-pill" onclick="selectDesc(this)">' + esc(o) + '</button>'; }).join('');
+  html += '<button type="button" class="cat-pill" data-custom="1" onclick="selectDesc(this)">✏️ 自行填寫</button>';
+  var wrap = document.getElementById('descChoices');
+  wrap.innerHTML = html;
+  var first = wrap.querySelector('.cat-pill');
+  if(first){ first.classList.add('active'); trial.description = first.textContent; }
+  document.getElementById('customDescField').style.display = 'none';
+}
+function goToStep5(){
+  renderDescChoices();
+  goTo('screenStep5');
 }
 
 /* ============ Genre-styled story ============ */
@@ -969,6 +1047,11 @@ function styleStory(genreKey, raw, n1, n2){
 }
 
 /* ============ Trophy engine (connected to their story/timeline) ============ */
+var ELEMENT_TROPHY_NAME = {
+  '火,火':'烈焰同心','火,土':'剛柔並濟','火,風':'一拍即合','火,水':'冰火相融',
+  '土,土':'穩如磐石','土,風':'絕佳拍檔','土,水':'安穩依靠',
+  '風,風':'心有靈犀','風,水':'浪漫共鳴','水,水':'心意相通'
+};
 function buildTrophies(days, genreKey, storyLen, compat){
   var list = [];
   var durAch = pickAchievement(days);
@@ -977,7 +1060,10 @@ function buildTrophies(days, genreKey, storyLen, compat){
   if(g.trophy) list.push(g.trophy);
   if(storyLen >= 60){ list.push({icon:'📖', name:'細膩敘事家'}); }
   else if(storyLen > 0){ list.push({icon:'⚡', name:'直球告白手'}); }
-  if(compat){ list.push({icon: compat.z1.emoji, name: compat.z1.el + compat.z2.el + ' 元素組合'}); }
+  if(compat){
+    var comboName = ELEMENT_TROPHY_NAME[elementFlavorKey(compat.z1.el, compat.z2.el)] || '絕配組合';
+    list.push({icon: compat.z1.emoji, name: comboName});
+  }
   return list.slice(0,4);
 }
 
@@ -1298,17 +1384,26 @@ function renderResult(){
   document.getElementById('rsNames').textContent = trial.myName + ' 與 ' + trial.partnerName;
   document.querySelector('#rsHero .hero-tag').textContent = '我們的開始';
 
+  var durTxt = ymd ? ((ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天') : '';
   var metaParts = [];
   if(trial.togetherDate){
     metaParts.push('<span>' + trial.togetherDate.replace(/-/g,'.') + ' 在一起</span>');
   }
   if(ymd){
-    var durTxt = (ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天';
     metaParts.push('<span class="dot-sep">·</span><span>' + durTxt + '</span>');
   }
   metaParts.push((metaParts.length ? '<span class="dot-sep">·</span>' : '') + '<span>' + genre.rating + '</span>');
   document.getElementById('rsMetaRow').innerHTML = metaParts.join('');
   document.getElementById('rsHeroText').textContent = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
+
+  // Ornate time-together frame
+  var timeFrame = document.getElementById('rsTimeFrame');
+  if(ymd){
+    timeFrame.style.display = 'block';
+    document.getElementById('rsTimeFrameValue').textContent = durTxt;
+  } else {
+    timeFrame.style.display = 'none';
+  }
 
   // Compatibility bonus card (no AI branding, flattering tone)
   if(compat){
@@ -1329,10 +1424,24 @@ function renderResult(){
   }
   document.getElementById('rsGenreFrame').textContent = genre.frame(trial.myName, trial.partnerName);
 
-  // EP1 card: customer's guided story, genre-styled, written long then clamped with a 解鎖全部 fade
+  // EP1 card: customer's guided story, genre-styled, written long then clamped with a 解鎖閱讀更多 fade
   document.getElementById('rsEp1Card').innerHTML = styleStory(trial.genre, trial.message, trial.myName, trial.partnerName);
 
-  // Trophy showcase: connected to their real duration, genre, and story
+  // 生活 TOP5: rank1 is their real photo + condensed story line, ranks 2-5 are locked teasers
+  var rank1Caption = trial.message ? (trial.message.length > 42 ? trial.message.slice(0,42) + '…' : trial.message) : trial.description;
+  var rank1Img = hasPhoto
+    ? ('<img src="' + trial.photoDataUrl + '" alt="Top5 第1名" style="object-position:' + trial.photoPosX + '% ' + trial.photoPosY + '%;">')
+    : '<div class="top5-card-noimg"></div>';
+  var top5Html = '<div class="top5-item rank1"><div class="rank-number">1</div><div class="top5-card">' + rank1Img + '<div class="top5-caption">' + esc(rank1Caption) + '</div></div></div>';
+  for(var ri = 2; ri <= 5; ri++){
+    top5Html += '<div class="top5-item"><div class="rank-number">' + ri + '</div>' +
+      '<div class="top5-card locked" onclick="scrollToUnlock()"><div class="rank-tag" style="background:var(--gold); color:#241a05;">解鎖</div>' +
+      '<div class="top5-card-noimg"></div><div class="top5-lock-overlay">🔒</div>' +
+      '<div class="top5-caption">解鎖看更多故事瞬間</div></div></div>';
+  }
+  document.getElementById('rsTop5Track').innerHTML = top5Html;
+
+  // Trophy showcase: connected to their real duration, genre, and story — clear, non-cryptic names
   var trophies = buildTrophies(ymd ? ymd.totalDays : null, trial.genre, (trial.message || '').length, compat);
   document.getElementById('trophyGrid').innerHTML = trophies.map(function(t){
     return '<div class="trophy-chip"><div class="trophy-chip-icon">' + t.icon + '</div><div class="trophy-chip-name">' + esc(t.name) + '</div></div>';
@@ -1463,7 +1572,21 @@ function downloadShareCard(){
   var genre = GENRES[trial.genre] || GENRES['戀愛'];
   var compat = zodiacCompat(trial.myName, trial.myBirthday, trial.partnerName, trial.partnerBirthday);
   var introLine = heroIntroLine(trial.genre, compat, trial.myName, trial.partnerName);
-  var photoBottom = H - 430; /* photo area shrinks to leave more room for the richer text block below */
+  var hookLine = introLine + genre.closer(trial.myName, trial.partnerName);
+  var ymd = diffYMD(trial.togetherDate);
+  var dateLine = '';
+  if(trial.togetherDate){ dateLine = trial.togetherDate.replace(/-/g,'.') + ' 在一起'; }
+  if(ymd){ dateLine += (dateLine ? '　·　' : '') + ((ymd.y>0 ? ymd.y+'年' : '') + ymd.m + '個月' + ymd.d + '天'); }
+  var photoTop = 130;
+  var photoBottom = H - 300; /* photo area shrinks to leave room for date line + suspense hook + CTA footer */
+
+  function computeCoverCrop(img, destW, destH){
+    var srcRatio = img.width / img.height, destRatio = destW / destH;
+    var sx, sy, sw, sh;
+    if(srcRatio > destRatio){ sh = img.height; sw = sh * destRatio; sx = (img.width - sw)/2; sy = 0; }
+    else { sw = img.width; sh = sw / destRatio; sx = 0; sy = (img.height - sh)/2; }
+    return {sx:sx, sy:sy, sw:sw, sh:sh};
+  }
 
   function roundRect(x, y, w, h, r){
     ctx.beginPath();
@@ -1527,24 +1650,38 @@ function downloadShareCard(){
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0,0,W,H);
 
+    /* top brand bar — "LOVEFIX 想你的頁" wordmark at the very top, matching the real page's topbar layout */
+    ctx.font = '900 36px sans-serif';
+    ctx.fillStyle = '#e50914';
+    ctx.fillText('LOVEFIX', 50, 62);
+    var lovefixW = ctx.measureText('LOVEFIX').width;
+    ctx.font = '700 24px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('想你的頁', 50 + lovefixW + 16, 62);
+    ctx.font = '600 15px sans-serif';
+    ctx.fillStyle = '#7a7a7a';
+    ctx.fillText('Powered by 見怪不怪 x 客製化歌曲', 50, 88);
+
     if(img){
-      var side = Math.min(img.width, img.height);
-      var sx = (img.width-side)/2, sy = (img.height-side)/2;
+      var destW = W-100, destH = photoBottom-photoTop;
+      var crop = computeCoverCrop(img, destW, destH);
       ctx.save();
-      roundRect(50, 50, W-100, photoBottom-50, 22);
+      roundRect(50, photoTop, destW, destH, 22);
       ctx.clip();
       ctx.filter = 'saturate(1.18) contrast(1.14) brightness(0.92) sepia(0.12) hue-rotate(-8deg)';
-      ctx.drawImage(img, sx, sy, side, side, 50, 50, W-100, photoBottom-50);
+      /* crop the source at the destination's own aspect ratio (cover-fit) so the
+         photo is never stretched/distorted, regardless of its original shape */
+      ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, 50, photoTop, destW, destH);
       ctx.filter = 'none';
       var pGrad = ctx.createLinearGradient(0, photoBottom-220, 0, photoBottom);
       pGrad.addColorStop(0,'rgba(10,10,10,0)');
       pGrad.addColorStop(1,'rgba(10,10,10,0.9)');
       ctx.fillStyle = pGrad;
-      ctx.fillRect(50, photoBottom-220, W-100, 220);
+      ctx.fillRect(50, photoBottom-220, destW, 220);
       ctx.restore();
     } else {
       ctx.fillStyle = '#1a1a1a';
-      roundRect(50, 50, W-100, photoBottom-50, 22);
+      roundRect(50, photoTop, W-100, photoBottom-photoTop, 22);
       ctx.fill();
     }
 
@@ -1552,34 +1689,30 @@ function downloadShareCard(){
     ctx.font = '700 24px sans-serif';
     var tagW = ctx.measureText(genre.tag).width + 36;
     ctx.fillStyle = '#e50914';
-    roundRect(70, 70, tagW, 44, 8);
+    roundRect(70, photoTop+20, tagW, 44, 8);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(genre.tag, 88, 99);
+    ctx.fillText(genre.tag, 88, photoTop+49);
 
     /* names, large, over the photo's bottom scrim */
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 50px sans-serif';
     ctx.fillText(trial.myName + ' ✕ ' + trial.partnerName, 70, photoBottom - 40);
 
-    /* brand row below the photo card: "LOVEFIX 想你的頁" wordmark */
-    ctx.font = '900 34px sans-serif';
-    ctx.fillStyle = '#e50914';
-    ctx.fillText('LOVEFIX', 70, photoBottom + 60);
-    var lovefixW = ctx.measureText('LOVEFIX').width;
-    ctx.font = '700 22px sans-serif';
+    /* together-date + day counter, right under the photo */
     ctx.fillStyle = '#e6b64f';
-    ctx.fillText('想你的頁', 70 + lovefixW + 14, photoBottom + 60);
+    ctx.font = '700 24px sans-serif';
+    ctx.fillText(dateLine, 70, photoBottom + 48);
 
-    /* intro-style description text (the "card" richness) */
+    /* suspenseful, movie-trailer-style hook (curiosity-inducing, not a flat summary) */
     ctx.fillStyle = '#d8d8d8';
-    ctx.font = '500 26px sans-serif';
-    var descLines = wrapText(introLine, 70, photoBottom + 110, W-140, 38, 4);
+    ctx.font = '500 25px sans-serif';
+    wrapText(hookLine, 70, photoBottom + 92, W-140, 37, 4);
 
-    /* footer credit: Powered by 見怪不怪 x 客製化歌曲 (no bare URL) */
-    ctx.fillStyle = '#6a6a6a';
-    ctx.font = '500 20px sans-serif';
-    ctx.fillText('Powered by 見怪不怪 x 客製化歌曲', 70, H - 40);
+    /* bottom CTA: invite the viewer to make their own */
+    ctx.fillStyle = '#e6b64f';
+    ctx.font = '800 24px sans-serif';
+    ctx.fillText('✨ 製作你的 LOVEFIX 頁面', 70, H - 45);
 
     canvas.toBlob(function(blob){ finish(blob); }, 'image/png');
   }
@@ -1635,28 +1768,37 @@ function initScrollReveal(){
   }
 }
 
-/* ============ Theme song player (intro) ============ */
+/* ============ Theme song player (intro, Spotify-style) ============ */
+function fmtTime(sec){
+  if(!isFinite(sec) || sec < 0) sec = 0;
+  var m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return m + ':' + String(s).padStart(2,'0');
+}
 function toggleThemeSong(){
   var audio = document.getElementById('themeAudio');
-  var wrap = document.getElementById('songPlayBtn').closest('.song-player');
   var icon = document.getElementById('songPlayIcon');
-  var sub = document.getElementById('songPlayerSub');
+  var fill = document.getElementById('songProgressFill');
+  var curEl = document.getElementById('songTimeCur');
+  var durEl = document.getElementById('songTimeDur');
   if(audio.paused){
     audio.play().catch(function(){ showToast('播放失敗，請再試一次'); });
   } else {
     audio.pause();
   }
   audio.onplay = function(){
-    wrap.classList.add('playing');
     icon.innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
-    sub.textContent = '正在播放...';
   };
   audio.onpause = function(){
-    wrap.classList.remove('playing');
     icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-    sub.textContent = '這對故事的專屬原創主題曲 · 點擊播放';
   };
-  audio.onended = function(){ audio.onpause(); };
+  audio.onended = function(){ audio.onpause(); if(fill) fill.style.width = '0%'; };
+  audio.onloadedmetadata = function(){
+    if(durEl) durEl.textContent = fmtTime(audio.duration);
+  };
+  audio.ontimeupdate = function(){
+    if(curEl) curEl.textContent = fmtTime(audio.currentTime);
+    if(fill && audio.duration) fill.style.width = (audio.currentTime/audio.duration*100) + '%';
+  };
 }
 
 /* ============ Init ============ */
